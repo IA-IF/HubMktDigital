@@ -102,12 +102,11 @@ importar codigo entre modulos). agente-ads perdeu o telegram_bot.py e o
 
 
 
-skill para instalar e usar no ga4
-
-npx skills add https://github.com/jdrhyne/agent-skills --skill ga4
-
-npx skills add https://github.com/cognyai/claude-code-marketing-skills --skill ga4-measurement-plan
-
-npx skills add https://github.com/cognyai/claude-code-marketing-skills --skill ga4-bigquery-schema
-
-npx skills add https://github.com/jdrhyne/agent-skills --skill ga4
+skills de ga4 testadas (2026-07-22, pasta skills-teste/ isolada, depois
+apagada): jdrhyne/agent-skills:ga4 (CLI generico de consulta, sem
+site-selection nem anti-alucinacao — nosso agente-ga4/src/trafego.py +
+agente-julio ja cobre isso melhor pro nosso caso), cognyai/claude-code-
+marketing-skills:ga4-measurement-plan (desenha plano de tracking a partir
+do site, nao consulta dado real — util pra outra tarefa, nao pra agora),
+:ga4-bigquery-schema (referencia de SQL, nao se aplica — nenhum site tem
+export pro BigQuery configurado). Nenhuma virou dependencia do projeto.
