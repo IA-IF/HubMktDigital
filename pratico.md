@@ -186,3 +186,33 @@ tracking):
 
 **3 sites onboarded no total agora: integrafoods, 3gfoods, adoro** — todos os 4 módulos rodando
 auditoria real pros três.
+
+## Teste real do Julio com o gestor de marketing da 3G Foods (22/07/2026)
+
+Conversa real pelo Telegram (chat_id `8800634507`, "Leandro Falcão" — gestor de marketing, não o
+usuário do projeto) enquanto o bot rodava pra validação. Pediu pro Julio atuar como CMO da 3G Foods
+e planejar tudo pra gerar vendas. O Julio consultou tráfego real antes de responder (508 sessões,
+2 compras, R$4.216,14 em 7 dias — Paid Search puxando a maior parte da receita) e foi coletando
+decisões de negócio passo a passo, a pedido do próprio gestor ("me dê um passo a passo... de forma
+segmentada").
+
+**Decisões de negócio reais capturadas na conversa** (a campanha nunca chegou a ser confirmada —
+bot foi encerrado no meio do fluxo, antes do Julio montar o rascunho final):
+- Escopo: **loja inteira**, não uma categoria específica
+- Landing page: **homepage** (`https://loja.3gfoods.com.br/`) como padrão
+- Orçamento: **R$ 40/dia** — bem abaixo da sugestão do briefing atual (`CLAUDE.3gfoods.md` sugere
+  ~R$333/dia com base no orçamento mensal de R$10.000); o gestor quer começar pequeno
+- **Geo-targeting: restringir a campanha só pra cidade de São Paulo**
+
+**Achado técnico importante: essa última decisão não é executável hoje.** `campaign_builder.py`
+tem `GEO_TARGET_BRASIL` fixo no código (targeting sempre Brasil inteiro) — não existe segmentação
+por cidade/estado. O schema `propor_campanha` do `agente-julio/src/orchestrator.py` também não tem
+campo de geografia — o Julio nem pergunta isso hoje, então se essa conversa tivesse ido até o fim,
+a proposta teria sido criada errada (Brasil inteiro em vez de só São Paulo) sem ninguém perceber até
+revisar manualmente no Google Ads. **Bloqueador real pra atender esse pedido específico** — precisa
+de decisão de arquitetura (adicionar `geo_target_constant` configurável ao schema + ao
+`campaign_builder.py`) antes de qualquer campanha real da 3G Foods ser criada com essa restrição.
+
+Também gerou 2 `pedidos-futuros.md` reais durante a conversa (já registrados e referenciados acima):
+validação de tracking (mesmo item já investigado nesta sessão) e criação de 2-3 landing pages de
+teste (produto/categoria/oferta) — esse segundo ainda não avaliado.
