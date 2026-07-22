@@ -1,17 +1,21 @@
 """Agente conversacional: Claude + memoria semantica no Redis.
 
-Corrige 3 problemas do REDIS/generated-reference-conversational-agent.py
-(codigo bruto gerado pelo agent-builder oficial da Redis): usa o SDK real
-da Anthropic (nao o hack openai.OpenAI(base_url=...) contra a API da
-Anthropic, que nao funciona), usa a REDIS_URL real do projeto, e conta
-com o vectorizer local (HFTextVectorizer) que ja e o default do
-SemanticMessageHistory - sem custo de API por mensagem.
+Chamadas ao LLM passam pelo llm_router (../llm_router) em vez do SDK
+Anthropic direto: __init__ usa router.ask() com o mesmo prompt de sempre
+("Hello") — candidata perfeita a cache; chat() usa router.ask_with_history()
+porque o historico da conversa varia a cada chamada, entao nunca deve ser
+cacheado (ver REDIS/llm_router/router.py).
 """
-import anthropic
-import redis
+import sys
+from pathlib import Path
+
 from redisvl.extensions.message_history import SemanticMessageHistory
 
-import config
+# llm_router e um pacote irmao (REDIS/llm_router), nao um subpacote deste
+# modulo — este projeto nao usa setup.py/pyproject, entao adicionamos o
+# caminho manualmente antes do import.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "llm_router"))
+from router import LLMRouter  # noqa: E402
 
 SYSTEM_PROMPT = (
     "You are a helpful assistant that will answer questions based on the "
@@ -21,34 +25,18 @@ SYSTEM_PROMPT = (
 
 class ConversationalAgent:
     def __init__(self, session_name: str = "chat"):
-        self.model = config.claude_model()
+        self.router = LLMRouter()
 
         try:
-            self.redis_client = redis.Redis.from_url(
-                config.redis_url(), decode_responses=True
-            )
-            self.redis_client.ping()
-            print("Connected to Redis successfully")
-        except redis.ConnectionError as e:
-            print(f"Failed to connect to Redis: {e}")
-            print("Please check your REDIS_URL and ensure Redis is running.")
-            raise
-
-        self.llm_client = anthropic.Anthropic(api_key=config.anthropic_api_key())
-        try:
-            self.llm_client.messages.create(
-                model=self.model,
-                max_tokens=5,
-                messages=[{"role": "user", "content": "Hello"}],
-            )
+            self.router.ask("Hello")
             print("Connected to LLM successfully")
-        except anthropic.AuthenticationError:
-            print("LLM authentication failed. Please check your API key.")
+        except Exception as e:
+            print(f"LLM connection error: {e}")
             raise
 
         self.session_manager = SemanticMessageHistory(
             name=session_name,
-            redis_client=self.redis_client,
+            redis_client=self.router.redis_client,
         )
         # Looser than redisvl's own default (0.3): we'd rather pull in
         # some borderline-relevant history than miss a useful match, since
@@ -74,17 +62,12 @@ class ConversationalAgent:
         messages.append({"role": "user", "content": user_input})
 
         try:
-            response = self.llm_client.messages.create(
-                model=self.model,
-                max_tokens=1024,
-                system=SYSTEM_PROMPT,
-                messages=messages,
+            assistant_response = self.router.ask_with_history(
+                messages, system=SYSTEM_PROMPT
             )
         except Exception as e:
             print(f"Error getting LLM response: {e}")
             return "Sorry, I'm having trouble understanding your question. Please try again later."
-
-        assistant_response = response.content[0].text
 
         try:
             self.session_manager.add_messages([
