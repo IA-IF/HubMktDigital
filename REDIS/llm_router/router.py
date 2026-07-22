@@ -46,12 +46,22 @@ class LLMRouter:
         # Uma instancia de cache por tier: garante que uma resposta gerada
         # pelo modelo barato nunca seja devolvida quando alguem pede o
         # modelo caro, e vice-versa.
+        # distance_threshold=0.1: mais estrito que os 0.9 usados para
+        # memoria de conversa (agente-conversacional) — decisao deliberada
+        # do design spec, porque uma pergunta "parecida mas nao identica"
+        # pode ter resposta correta diferente, ao contrario de recall de
+        # conversa por similaridade. Explicito aqui para nao depender do
+        # default implicito do redisvl (que pode mudar em versoes futuras).
         self._caches = {
             "simple": SemanticCache(
-                name="llmcache_simple", redis_client=self.redis_client
+                name="llmcache_simple",
+                redis_client=self.redis_client,
+                distance_threshold=0.1,
             ),
             "complex": SemanticCache(
-                name="llmcache_complex", redis_client=self.redis_client
+                name="llmcache_complex",
+                redis_client=self.redis_client,
+                distance_threshold=0.1,
             ),
         }
 
@@ -64,7 +74,14 @@ class LLMRouter:
         complexity = _validar_complexity(complexity)
         cache = self._caches[complexity]
 
-        hits = cache.check(prompt=prompt)
+        # `system` muda qual e a resposta certa (ex: "Resuma" com
+        # system="Responda em ingles" vs system="Responda em portugues" sao
+        # perguntas diferentes) — por isso entra na chave de cache junto
+        # com o prompt. A chamada ao LLM em si continua recebendo `system`
+        # e `prompt` separados, como o SDK da Anthropic espera.
+        cache_key_prompt = f"{system}\n\n{prompt}" if system else prompt
+
+        hits = cache.check(prompt=cache_key_prompt)
         if hits:
             return hits[0]["response"]
 
@@ -78,7 +95,7 @@ class LLMRouter:
         response = self.llm_client.messages.create(**kwargs)
         texto = response.content[0].text
 
-        cache.store(prompt=prompt, response=texto)
+        cache.store(prompt=cache_key_prompt, response=texto)
         return texto
 
     def ask_with_history(
