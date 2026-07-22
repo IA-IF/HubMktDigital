@@ -26,6 +26,10 @@ search_console_auditor.py (Search Console API v1, read-only)
       registrado no periodo
 ```
 
+Ver `referencia-api.md` (catálogo completo — só 11 métodos ao todo, a
+menor das 4 APIs do projeto) pra candidatos a tool do `../agente-julio`,
+em especial `urlInspection.index.inspect` (por que uma URL não indexa).
+
 ## Multi-site
 
 `config.py` carrega `.env.<SITE>` (variável de ambiente `SITE`, ex:

@@ -28,6 +28,11 @@ collector.py (Google Ads API, GAQL, 30 dias)
    -> reporter.py (relatorio em logs/<SITE>/ + Slack/e-mail opcionais)
 ```
 
+Ver `referencia-api.md` (183 recursos GAQL consultáveis, pré-filtrado pro
+que é relevante — a API completa é grande demais pra documentar inteira)
+pra candidatos a tool novo do `../agente-julio`, em especial
+`search_term_view` (termos de busca reais, base pra decisão de negativação).
+
 ## Setup de um site (ex: `.env.integrafoods`)
 
 1. `pip install -r requirements.txt`

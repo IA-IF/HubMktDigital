@@ -21,6 +21,10 @@ gtm_auditor.py (Tag Manager API v2, read-only)
    -> confere a tag do GA4 contra o measurement ID esperado
 ```
 
+Ver `referencia-api.md` (catálogo completo da API, extraído do discovery
+document ao vivo — ~50 métodos, maioria escrita) pra contexto de quais
+métodos de leitura ainda não usamos e valeriam virar tool do `../agente-julio`.
+
 ## Multi-site
 
 `config.py` carrega `.env.<SITE>` (variável de ambiente `SITE`, ex:
