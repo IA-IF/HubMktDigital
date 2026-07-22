@@ -51,6 +51,7 @@ revise e aplique manualmente (ou aprove e reexecute).
 
 ## Status
 
-Código replicado do `agente-cmo` (22/07/2026), ainda não configurado — falta
-preencher o `.env` (passo 2-3 do setup) e os valores `(AJUSTAR)` do
-`CLAUDE.md` antes do primeiro `--testar-conexao`.
+**Conectado.** `.env` preenchido e `python main.py --testar-conexao` confirmado
+(22/07/2026) — API acessível para a conta `332-316-6484`, sem campanhas ainda
+(esperado, conta nova). Falta ajustar os valores `(AJUSTAR)` do `CLAUDE.md`
+com os dados reais do negócio antes do primeiro `--dry-run`.
