@@ -52,7 +52,21 @@ Esqueleto criado em `agente-ga4/` (mesmo padrão do `agente-gtm`).
 
 ## 3. Search Console
 
-- (a preencher)
+Propriedade correta (confirmado 22/07/2026): `https://integrafoods.ind.br/` (URL-prefix property),
+verificada, `eduardo.rezende@integrafoods.ind.br` é Proprietário. Sitemap `/sitemap.xml` enviado,
+processado, 404 páginas encontradas, sem erros.
+
+**⚠️ Existe também a propriedade do domínio antigo/staging `https://if-ssr.conge.digital/`**
+(de antes da migração de domínio em 16/07/2026, ver `.trae/plans/migracao-dominio-integrafoods.md`
+no repo do site) — não confundir, não mexer.
+
+Esqueleto criado em `agente-search-console/` (mesmo padrão dos outros).
+
+- [x] Acesso confirmado (22/07/2026, via navegador guiado)
+- [x] Search Console API ativada no projeto `agente-cmo-ads-interno`, refresh_token gerado (22/07/2026)
+- [x] **Primeira auditoria real rodada (22/07/2026)** — `agente-search-console/main.py --auditar`:
+      sitemap com 0 erros/0 avisos, tráfego orgânico ativo nos últimos 28 dias (top query "integrafoods",
+      9 cliques, posição média 1.8)
 
 ## 4. Google Ads
 
