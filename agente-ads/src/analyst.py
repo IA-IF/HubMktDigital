@@ -6,8 +6,6 @@ JSON válido no formato:
 """
 import json
 
-import anthropic
-
 from src import config
 
 SCHEMA_ACOES = {
@@ -71,11 +69,9 @@ SCHEMA_ACOES = {
 }
 
 
-def analisar(dados: dict) -> dict:
+def _montar_prompt(dados: dict) -> str:
     regras = config.CLAUDE_MD.read_text(encoding="utf-8")
-    client = anthropic.Anthropic(api_key=config.anthropic_api_key())
-
-    prompt = (
+    return (
         "Voce e o CMO responsavel pelas campanhas de Google Ads descritas abaixo. "
         "Analise as metricas dos ultimos 30 dias e recomende acoes seguindo "
         "ESTRITAMENTE as regras de decisao e os guardrails do briefing. "
@@ -85,6 +81,11 @@ def analisar(dados: dict) -> dict:
         f"=== DADOS COLETADOS ===\n{json.dumps(dados, ensure_ascii=False)}"
     )
 
+
+def _analisar_anthropic(prompt: str) -> dict:
+    import anthropic
+
+    client = anthropic.Anthropic(api_key=config.anthropic_api_key())
     with client.messages.stream(
         model=config.claude_model(),
         max_tokens=16000,
@@ -98,7 +99,41 @@ def analisar(dados: dict) -> dict:
         raise RuntimeError("O modelo recusou a analise — verifique os dados enviados.")
 
     texto = next(b.text for b in response.content if b.type == "text")
-    analise = json.loads(texto)
+    return json.loads(texto)
+
+
+def _analisar_openai(prompt: str) -> dict:
+    import openai
+
+    client = openai.OpenAI(api_key=config.openai_api_key())
+    response = client.chat.completions.create(
+        model=config.openai_model(),
+        messages=[{"role": "user", "content": prompt}],
+        response_format={
+            "type": "json_schema",
+            "json_schema": {"name": "acoes_ads", "schema": SCHEMA_ACOES, "strict": True},
+        },
+    )
+
+    escolha = response.choices[0]
+    if escolha.finish_reason == "content_filter":
+        raise RuntimeError("O modelo recusou a analise — verifique os dados enviados.")
+
+    return json.loads(escolha.message.content)
+
+
+def analisar(dados: dict) -> dict:
+    prompt = _montar_prompt(dados)
+
+    provedor = config.llm_provider()
+    if provedor == "anthropic":
+        analise = _analisar_anthropic(prompt)
+    elif provedor == "openai":
+        analise = _analisar_openai(prompt)
+    else:
+        raise SystemExit(
+            f"LLM_PROVIDER='{provedor}' invalido — use 'anthropic' ou 'openai' no .env.<site>."
+        )
 
     caminho = config.DATA_DIR / f"analise_{dados['data_coleta']}.json"
     caminho.write_text(json.dumps(analise, ensure_ascii=False, indent=2), encoding="utf-8")

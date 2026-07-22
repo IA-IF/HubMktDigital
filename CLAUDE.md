@@ -82,3 +82,9 @@ Loja Adoro
 
 searchconsole
 https://search.google.com/search-console?resource_id=https%3A%2F%2Floja.adoro.com.br%2F
+
+
+proxima tarefa (feito 2026-07-22): agente-ads agora suporta Anthropic e OpenAI
+via LLM_PROVIDER (default "openai", ja que era o credito disponivel). Chaves
+reais ficam so nos `.env.<site>` (gitignored), nunca aqui no CLAUDE.md.
+

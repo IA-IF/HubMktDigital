@@ -48,12 +48,27 @@ def customer_id() -> str:
     return _obrigatoria("GOOGLE_ADS_CUSTOMER_ID").replace("-", "")
 
 
+def llm_provider() -> str:
+    """'anthropic' ou 'openai' — qual API o analyst.py usa. Default openai
+    porque no momento (jul/2026) so ha credito na OpenAI; troque para
+    'anthropic' no .env.<site> quando quiser comparar performance."""
+    return os.getenv("LLM_PROVIDER", "openai").strip().lower()
+
+
 def anthropic_api_key() -> str:
     return _obrigatoria("ANTHROPIC_API_KEY")
 
 
 def claude_model() -> str:
     return os.getenv("CLAUDE_MODEL", "claude-sonnet-4-6")
+
+
+def openai_api_key() -> str:
+    return _obrigatoria("OPENAI_API_KEY")
+
+
+def openai_model() -> str:
+    return os.getenv("OPENAI_MODEL", "gpt-5-mini")
 
 
 def telegram_bot_token() -> str:
