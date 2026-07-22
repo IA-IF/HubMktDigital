@@ -73,7 +73,22 @@ Esqueleto criado em `agente-search-console/` (mesmo padrão dos outros).
 Já temos referência (`C:\INTEGRAFOODS\teste\GADS\agente-cmo`), hoje configurada pra 3G Foods.
 Como o laboratório agora é o Integra Foods, o que falta criar:
 
-- Credenciais Google Ads da conta do Integra Foods (o agente hoje só conhece a conta da 3G Foods)
-- Ajustar os placeholders "(AJUSTAR)" no `CLAUDE.md` do agente com os dados reais do Integra Foods
-- Rodar `--dry-run` por 2 semanas antes de liberar `--executar` de verdade
-- Depois de validado no Integra Foods, replicar (credenciais + guardrails) para 3G Foods e Adoro
+**Decisão (22/07/2026): 1 conta Google Ads por site, todas dentro da mesma MCC** (`890-192-5637`,
+"IF Apoio") — não uma conta unificada. Motivo: ROAS mínimo, margem e ticket médio são diferentes
+por marca, e misturar sinais de produtos/públicos distintos numa conta só piora o smart bidding.
+
+- **Contas existentes:** 3G Foods (`758-019-9564`) — já é cliente da MCC, já configurada no `agente-cmo`
+- **⚠️ Achado ao investigar:** já existiam 2 contas Ads da Adoro na MCC/conta Google (não do Integra
+  Foods como se pensava) — `510-339-3778` (Loja Adoro, completa) e `174-845-0313` (Loja Adoro,
+  configuração incompleta/duplicada, decidimos ignorar por ora). Integra Foods realmente não tinha conta.
+
+- [x] **Conta Google Ads do Integra Foods criada (22/07/2026)** — nome **"Integra Foods V2"**
+      (mesmo padrão de nome do GTM/GA4, pra não confundir com legado), ID `332-316-6484`, vinculada
+      à MCC `890-192-5637` (IF Apoio), faturamento configurado (perfil CONGE FOODS TECNOLOGIA E
+      DISTRIBUICAO LTDA, Pix). Verificação de anunciante pendente (opcional, 1-10 dias, não bloqueia
+      o setup de API) — ver tarefas em Admin da conta.
+- [ ] Credenciais Google Ads da conta do Integra Foods no `agente-cmo` (hoje só conhece a 3G Foods)
+- [ ] Ajustar os placeholders "(AJUSTAR)" no `CLAUDE.md` do agente com os dados reais do Integra Foods
+- [ ] Rodar `--dry-run` por 2 semanas antes de liberar `--executar` de verdade
+- [ ] Depois de validado no Integra Foods, decidir o que fazer com as 2 contas Adoro existentes, e
+      replicar (credenciais + guardrails) para 3G Foods
