@@ -43,6 +43,32 @@ def criar_campanha_ads(proposta: dict, site: str) -> dict:
     return resposta
 
 
+def consultar_trafego_ga4(site: str, dias: int = 7) -> dict:
+    """Pede ao agente-ga4 um resumo de trafego + ecommerce por canal (so leitura).
+
+    Levanta RuntimeError se o agente-ga4 falhar (credenciais, propriedade
+    sem dado no periodo, etc.) — quem chama decide o que fazer (normalmente:
+    contar isso pro LLM como resultado da tool, nao derrubar a conversa).
+    """
+    resultado = subprocess.run(
+        [sys.executable, str(config.AGENTE_GA4_MAIN), "--trafego", "--dias", str(dias)],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        env={"SITE": site, **_env_sem_site()},
+    )
+
+    saida = (resultado.stdout or "").strip().splitlines()
+    ultima_linha = saida[-1] if saida else ""
+    try:
+        return json.loads(ultima_linha)
+    except json.JSONDecodeError:
+        raise RuntimeError(
+            f"agente-ga4 nao retornou JSON valido (codigo {resultado.returncode}): "
+            f"{resultado.stdout}\n{resultado.stderr}"
+        )
+
+
 def _env_sem_site() -> dict:
     import os
     return {k: v for k, v in os.environ.items() if k != "SITE"}

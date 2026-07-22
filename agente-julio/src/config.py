@@ -19,8 +19,14 @@ load_dotenv(ENV_FILE)
 DATA_DIR = PROJECT_ROOT / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-# main.py deste agente que sabe criar campanhas de fato.
+# main.py dos agentes que sabem executar/consultar de fato.
 AGENTE_ADS_MAIN = HUB_ROOT / "agente-ads" / "main.py"
+AGENTE_GA4_MAIN = HUB_ROOT / "agente-ga4" / "main.py"
+
+# Backlog de pedidos que o Julio ainda nao sabe atender (ver src/pedidos.py).
+# Fica versionado no git de proposito (nao e data/ efemero de conversa) —
+# e um documento de trabalho pra revisar junto, nao estado descartavel.
+PEDIDOS_FUTUROS = PROJECT_ROOT / "pedidos-futuros.md"
 
 # Sites conhecidos: slug (usado no SITE dos outros agentes e no nome do
 # CLAUDE.<slug>.md) -> apelidos que o humano pode usar pra escolher no chat.

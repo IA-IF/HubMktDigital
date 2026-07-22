@@ -24,7 +24,17 @@ ga4_auditor.py (Admin API + Data API v1beta, read-only)
    -> conta eventos do funil de ecommerce nos ultimos 7 dias (Data API)
    -> alerta se "purchase" nao esta marcado como conversao, ou se algum
       evento do funil esta zerado
+
+trafego.py (Data API v1beta, read-only)
+   -> resumo de sessoes/engajamento/compras/receita, total e por canal
+   -> chamado pelo ../agente-julio (tool consultar_trafego) pra responder
+      perguntas de trafego com dado real em vez de interrogatorio
 ```
+
+Ver `referencia-api.md` (catálogo completo da API, extraído do discovery
+document ao vivo) e `referencia-analise-ecommerce.md` (recorte curado de
+~30 campos relevantes pra tráfego/ecommerce, dos ~470 disponíveis) —
+documentos de apoio pra decidir o que mais vale virar capacidade do Julio.
 
 ## Multi-site
 
@@ -51,6 +61,7 @@ em vez de repetir o setup manualmente.
 | Comando | O que faz |
 |---|---|
 | `python main.py --auditar` | Roda a auditoria e imprime/salva o resultado em `data/` |
+| `python main.py --trafego --dias 7` | Resumo de trafego + ecommerce por canal (JSON numa linha, pensado pra consumo por outro processo — ver `../agente-julio`) |
 
 ## Status
 

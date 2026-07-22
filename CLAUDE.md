@@ -98,3 +98,16 @@ agentes via subprocess (main.py --criar-campanha do agente-ads, sem
 importar codigo entre modulos). agente-ads perdeu o telegram_bot.py e o
 --telegram-bot; so expoe a capacidade de criar campanha. Chaves reais
 (Telegram, LLM) ficam so nos `.env.<site>` (gitignored), nunca aqui.
+
+
+
+
+skill para instalar e usar no ga4
+
+npx skills add https://github.com/jdrhyne/agent-skills --skill ga4
+
+npx skills add https://github.com/cognyai/claude-code-marketing-skills --skill ga4-measurement-plan
+
+npx skills add https://github.com/cognyai/claude-code-marketing-skills --skill ga4-bigquery-schema
+
+npx skills add https://github.com/jdrhyne/agent-skills --skill ga4

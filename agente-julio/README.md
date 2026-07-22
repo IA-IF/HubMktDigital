@@ -16,16 +16,33 @@ transporte + conversa + execucao tudo junto) em 2026-07-22 — ver
 ```
 telegram_transport.py   -> so fala com a API do Telegram (poll + envio)
 orchestrator.py          -> conversa (LLM + tool-calling), pergunta o site,
-                             decide quando propor uma campanha e pede
-                             confirmacao humana
+                             executa leituras na hora, pede confirmacao
+                             humana so pra acoes com efeito real
 agentes.py                -> chama os outros agentes via subprocess
+pedidos.py                 -> registra em pedidos-futuros.md o que o Julio
+                             ainda nao sabe fazer (nunca inventa resposta)
 config.py                 -> .env unico (nao e multi-site — ver abaixo)
 ```
 
-Hoje o unico agente acionavel e o `agente-ads` (criar campanha nova). O
-plano e crescer `agentes.py` com mais chamadas (rodar auditoria do
-agente-gtm/ga4/search-console sob pedido, por exemplo) sem mexer no
-`orchestrator.py`.
+### As 3 ferramentas do LLM hoje
+
+| Tool | Efeito | Confirmacao humana? |
+|---|---|---|
+| `consultar_trafego` | So leitura — chama `agente-ga4 --trafego` | Nao, executa na hora |
+| `propor_campanha` | Cria campanha nova (PAUSADA) no `agente-ads` | **Sim** — para e pede sim/nao antes de acionar |
+| `registrar_pedido_futuro` | Anota em `pedidos-futuros.md` | Nao (so escreve um arquivo) |
+
+`registrar_pedido_futuro` existe pra cobrir qualquer pedido fora das outras
+duas — o prompt tem uma regra inegociável contra inventar resposta ou
+fingir ter executado algo (foi um problema real observado em teste: o LLM
+quase confirmou "posso pausar essa keyword" sem ter nenhum tool pra isso,
+confundindo os guardrails do `CLAUDE.<site>.md` — que descrevem o que o
+pipeline automático `agente-ads` faz sozinho — com capacidades do próprio
+Julio). `pedidos-futuros.md` é revisado manualmente, não vira implementação
+sozinho.
+
+O plano é crescer `agentes.py`/`orchestrator.py` com mais tools de leitura
+conforme a lista de `pedidos-futuros.md` for sendo priorizada.
 
 ## Por que o Julio NAO e multi-site como os outros agentes
 
@@ -67,8 +84,11 @@ o usuario so precisa repetir a ultima frase.
 
 ## Status
 
-Criado em 2026-07-22. Selecao de site e o loop de LLM (`orchestrator.py`)
-testados isoladamente contra o provider OpenAI configurado — faz as
-perguntas certas quando falta informacao, chama a tool `propor_campanha`
-com o schema correto quando a proposta esta completa. Bot do Telegram em
-si ainda nao testado com token real (falta rodar `main.py` de verdade).
+Criado em 2026-07-22. Testado ao vivo no Telegram (bot @IFMarketingAgentBot)
+— achado e corrigido um bug real de rede (rota IPv6 ate api.telegram.org
+degradada neste ambiente, ver `src/telegram_transport.py`). Loop de LLM
+testado com os 3 providers/cenarios: `consultar_trafego` responde com dado
+real sem interrogatorio, `propor_campanha` monta o schema certo e para pra
+confirmacao, `registrar_pedido_futuro` recusa alucinar capacidade que nao
+tem. Ainda nao testado: `propor_campanha` -> confirmacao -> criacao real de
+campanha ponta a ponta (parou na simulacao/schema).
