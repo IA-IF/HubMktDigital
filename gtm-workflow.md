@@ -18,13 +18,21 @@ usuário fala o nome do site, o agente resolve o resto sozinho.
 ## 2. Resolver o site → dados do container
 
 Cada site precisa de um registro com os dados que o agente usa pra saber onde olhar. Para o
-Integra Foods, hoje já sabemos (achado ao preencher o `pratico.md`):
+Integra Foods, hoje já sabemos (achado ao preencher o `pratico.md` e confirmado navegando
+tagmanager.google.com em 22/07/2026):
 
-| Dado | Valor (Integra Foods) | Onde achamos |
+**⚠️ Existem 2 containers GTM na conta Google ligados ao Integra Foods — não confundir:**
+
+| Conta no GTM | Container | GTM ID | Status |
+|---|---|---|---|
+| **IF V2** | `ifv2.conge.digital` | `GTM-PJWJJHXR` | ✅ **É este que usamos** — o correto/ativo |
+| Integra Foods | `www.integrafoods.ind.br` | `GTM-W6GWZX5` | 🗑️ **LEGADO — ignorar, não auditar** (confirmado pelo usuário) |
+
+| Dado | Valor (Integra Foods — container correto `GTM-PJWJJHXR`) | Onde achamos |
 |---|---|---|
 | Container GTM | `GTM-PJWJJHXR` | `ssr-poc/src/config.js` |
-| GTM accountId | `6363669174` | export do workspace |
-| GTM containerId | `257024578` | export do workspace |
+| GTM accountId | `6363669174` | export do workspace / confirmado no GTM |
+| GTM containerId | `257024578` | export do workspace / confirmado no GTM |
 | Measurement ID GA4 | `G-CC4D18ST42` | tag "Google tag - GA4" no export do workspace |
 | Export local de referência | `C:\INTEGRAFOODS\www\web2\IA\GTM-PJWJJHXR_workspace7.json` | achado no repo |
 

@@ -13,12 +13,22 @@ Plataformas (ordem de trabalho):
 Não é do zero — já existe container instalado no código do Integra Foods (`GTM-PJWJJHXR`, ver
 `ssr-poc/src/config.js`), com tag do GA4 (`G-CC4D18ST42`), uma tag de e-commerce e variáveis de
 dataLayer (`client_id`, `transaction_id`, `user_id`, `payment_type`) exportadas em
-`C:\INTEGRAFOODS\www\web2\IA\GTM-PJWJJHXR_workspace7.json`. O que falta criar/verificar:
+`C:\INTEGRAFOODS\www\web2\IA\GTM-PJWJJHXR_workspace7.json`.
 
-- Acesso à conta Google (via API do GTM) para ler o container direto do Google, não só pelo export local
-- Confirmar se a versão publicada (live) bate com o que está nesse export, ou se é só rascunho (workspace)
-- Confirmar que a tag GA4 está disparando de verdade no site em produção (o `config.js` só ativa GTM em `PROD`)
-- Verificar se a tag de e-commerce cobre o funil todo (view_item, add_to_cart, purchase) com os parâmetros certos
+**⚠️ Cuidado ao mexer no GTM do Integra Foods: existem 2 contas/containers na conta Google.**
+`GTM-W6GWZX5` (conta "Integra Foods", domínio `www.integrafoods.ind.br`) é **LEGADO — ignorar,
+não auditar, não mexer**. O container correto/ativo é `GTM-PJWJJHXR` (conta "IF V2", domínio
+`ifv2.conge.digital`) — é esse que o `agente-gtm` usa.
+
+O que falta criar/verificar:
+
+- [x] Acesso ao container confirmado (22/07/2026, via navegador guiado) — `eduardo.rezende@integrafoods.ind.br`
+      já tem nível "Publicação" no `GTM-PJWJJHXR`; workspace com 0 mudanças pendentes (sincronizado com o live)
+- [x] Tag Manager API ativada no projeto `agente-cmo-ads-interno` e refresh_token gerado (22/07/2026)
+- [x] **Primeira auditoria real rodada (22/07/2026)** — `agente-gtm/main.py --auditar`: 2 tags, 1 trigger,
+      5 variáveis, tudo publicado, 0 tags sem trigger, 0 triggers órfãos, tag GA4 confere com `G-CC4D18ST42`
+- [ ] Confirmar que a tag GA4 está disparando de verdade no site em produção (o `config.js` só ativa GTM em `PROD`)
+- [ ] Verificar se a tag de e-commerce cobre o funil todo (view_item, add_to_cart, purchase) com os parâmetros certos
 
 ## 2. Google Analytics (GA4)
 

@@ -7,6 +7,11 @@ projeto.
 
 Site coberto hoje: **Integra Foods** (laboratório — ver `../pratico.md`).
 
+**⚠️ Existem 2 containers GTM ligados ao Integra Foods na conta Google — não confundir:**
+o correto/ativo é a conta **"IF V2"**, container `GTM-PJWJJHXR` (`ifv2.conge.digital`), que é o
+que este projeto usa. A conta **"Integra Foods"**, container `GTM-W6GWZX5`
+(`www.integrafoods.ind.br`), é **LEGADO** — ignorar, não auditar, não mexer.
+
 ## Fluxo
 
 ```
@@ -20,15 +25,14 @@ gtm_auditor.py (Tag Manager API v2, read-only)
 
 1. `pip install -r requirements.txt`
 2. Copie `.env.example` para `.env`.
-3. Confirme em https://tagmanager.google.com que a conta que vai autorizar
-   tem acesso de leitura ao container (`accounts/6363669174/containers/257024578`
-   — Integra Foods, `GTM-PJWJJHXR`).
-4. Ative a **Tag Manager API** no projeto Cloud interno já usado pelo Ads
-   (`agente-cmo-ads-interno` — ver
-   `..\agente-cmo\docs\setup-do-zero-checklist.md`). Pode reaproveitar o
-   mesmo `client_id`/`client_secret` desse projeto.
-5. Gere o refresh token: `python generate_refresh_token_gtm.py` (copie a
-   saída para o `.env`).
+3. ✅ **Feito (22/07/2026)** — confirmado em tagmanager.google.com que
+   `eduardo.rezende@integrafoods.ind.br` já tem acesso nível "Publicação" ao
+   container `GTM-PJWJJHXR` (conta IF V2, `accounts/6363669174/containers/257024578`).
+   Cobre com folga o scope `tagmanager.readonly` que este projeto usa.
+4. ✅ **Feito (22/07/2026)** — Tag Manager API ativada no projeto
+   `agente-cmo-ads-interno` (mesmo `client_id`/`client_secret` do Ads).
+5. ✅ **Feito (22/07/2026)** — refresh token gerado com
+   `generate_refresh_token_gtm.py` e salvo no `.env`.
 
 ## Uso
 
@@ -38,6 +42,11 @@ gtm_auditor.py (Tag Manager API v2, read-only)
 
 ## Status
 
-Código escrito, mas ainda não rodado — falta o passo 3-5 do setup (acesso ao
-container confirmado + refresh token gerado). Ver `../pratico.md` (item 1)
-para o checklist do que falta.
+**Rodando.** Primeira auditoria real em 22/07/2026: container saudável — 2
+tags, 1 trigger, 5 variáveis, tudo publicado (0 mudanças pendentes), 0 tags
+sem trigger, 0 triggers órfãos, tag GA4 confere com `G-CC4D18ST42`.
+
+Próximos passos (fora do escopo desta auditoria estática): confirmar que a
+tag GA4 dispara de verdade em produção e que a tag de e-commerce cobre todo
+o funil (view_item, add_to_cart, purchase) — ver decisão em aberto no
+`../gtm-workflow.md` sobre auditoria dinâmica (navegar o site de verdade).
