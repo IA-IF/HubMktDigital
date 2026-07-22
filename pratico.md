@@ -2,9 +2,12 @@
 
 Sites:
 
-- https://integrafoods.ind.br/ — `C:\INTEGRAFOODS\www\web2` — **laboratório, começamos por aqui**
-- https://loja.3gfoods.com.br/ — `C:\INTEGRAFOODS\www\c3g-web` — depois, replicando o que funcionar no Integra Foods
-- https://webadoro.conge.digital/ — `C:\INTEGRAFOODS\www\adoro-web` — depois, replicando o que funcionar no Integra Foods
+- https://integrafoods.ind.br/ — `C:\INTEGRAFOODS\www\web2` — **laboratório, começamos por aqui** — `SITE=integrafoods` — ✅ onboarded
+- https://loja.3gfoods.com.br/ — `C:\INTEGRAFOODS\www\c3g-web` — `SITE=3gfoods` — ✅ onboarded (22/07/2026)
+- https://loja.adoro.com.br/ — `C:\INTEGRAFOODS\www\adoro-web` — `SITE=adoro` — ✅ onboarded (22/07/2026).
+  ⚠️ o código local está em pasta chamada `adoro-web` e o domínio antigo mencionado no `CLAUDE.md`
+  original era `webadoro.conge.digital` — o domínio de produção real (confirmado via GTM/GA4/Search
+  Console) é `loja.adoro.com.br`. Não confundir os dois.
 
 Plataformas (ordem de trabalho):
 
@@ -129,3 +132,27 @@ Integra Foods.
   do Integra Foods (conta nova sem campanhas), aqui já tem histórico real pra analisar.
 - **Cuidado ao reaplicar o `.gitignore`:** o padrão `.env.*` usado pra ignorar `.env.<site>` também
   bate em `.env.example` — precisa do `!.env.example` explícito pra não parar de versionar o template.
+
+**Ajuste de nomenclatura (22/07/2026):** eliminado o `.env` "sem nome" — até o Integra Foods virou
+`.env.integrafoods` explícito (`SITE` default é `integrafoods` em vez de string vazia). Nenhum site
+é mais tratado como caso especial.
+
+**Onboarding da Adoro (22/07/2026)**, usando os IDs que o usuário colou no `CLAUDE.md`
+(`GTM-W7577965`, GA4 `544418642`, Ads `510-339-3778`, Search Console `loja.adoro.com.br`):
+
+- Refresh tokens reaproveitados de novo, sem gerar nada novo — confirma que não é coincidência do
+  3G Foods, é o comportamento normal (token por conta+escopo).
+- **GTM:** limpo — 2 tags, 1 trigger, 4 variáveis, tudo publicado, tag GA4 confere exatamente com
+  `G-5QBHKPD8BW`. Diferente da 3G Foods, aqui bateu 100%.
+- **GA4:** funil muito saudável — 666 page_view → 85 view_item → 62 add_to_cart → 32 begin_checkout
+  → 21 purchase (7 dias). "purchase" marcado como conversão.
+- **Search Console — achado importante:** `sitemaps: []` (nenhum sitemap enviado) e as 10 principais
+  queries orgânicas são todas sobre **uma empresa diferente** ("Ad'oro", fábrica de ração animal em
+  São Carlos), todas com **0 cliques**. Contraste com GTM/GA4 mostrando tráfego pago/direto saudável
+  (21 compras em 7 dias) — sugere que o SEO da Adoro está praticamente abandonado/nunca trabalhado,
+  não é erro de configuração da nossa auditoria. Vale investigar com o usuário antes de agir.
+- **Ads:** conexão confirmada (mesmo `GOOGLE_ADS_LOGIN_CUSTOMER_ID` da MCC IF Apoio funcionou, apesar
+  de a conta aparecer como item separado no seletor visual do Ads), sem campanhas ativas no momento.
+
+**3 sites onboarded no total agora: integrafoods, 3gfoods, adoro** — todos os 4 módulos rodando
+auditoria real pros três.
