@@ -1,23 +1,31 @@
 """O Julio: conversa com o humano no Telegram e aciona os outros agentes.
 
 Fluxo (hoje, so criacao de campanha nova):
-  1. Usuario descreve o que quer (produto, publico, orcamento...).
+  0. Toda conversa nova comeca sem site definido — o Julio pergunta qual dos
+     3 sites (Integra Foods, 3G Foods, Adoro) e o assunto antes de mais nada.
+     Ele NUNCA assume um site por padrao: um unico bot atende aos 3, e
+     confundir a conta errada tem custo real (campanha criada no cliente
+     errado). Pra trocar de site no meio da conversa, mande "/site".
+  1. Com o site definido, o usuario descreve o que quer (produto, publico,
+     orcamento...).
   2. O LLM (Anthropic ou OpenAI, ver config.llm_provider()) conversa e, quando
      tiver informacao suficiente, chama a tool `propor_campanha` em vez de
-     responder em texto livre.
+     responder em texto livre. O briefing usado (guardrails, ticket medio,
+     margem) e o `CLAUDE.<site>.md` do site escolhido no passo 0.
   3. O bot formata um resumo da proposta e pergunta "confirma? (sim/nao)".
-  4. Resposta "sim" -> aciona agentes.criar_campanha_ads (sempre PAUSADA no
-     Google Ads). Qualquer outra coisa cancela a proposta.
+  4. Resposta "sim" -> aciona agentes.criar_campanha_ads NO SITE ESCOLHIDO
+     (sempre PAUSADA no Google Ads). Qualquer outra coisa cancela a proposta.
 
-Estado da conversa (historico + proposta pendente) e persistido em
-data/<SITE>/telegram_conversas/<chat_id>.json para sobreviver a reinicios.
-O historico guarda o formato nativo do provider (blocos da Anthropic ou
+Estado da conversa (site + historico + proposta pendente) e persistido em
+data/telegram_conversas/<chat_id>.json para sobreviver a reinicios. O
+historico guarda o formato nativo do provider (blocos da Anthropic ou
 mensagens da OpenAI) porque cada API espera sua propria estrutura de volta;
 se o LLM_PROVIDER mudar no meio de uma conversa, o historico e descartado em
 vez de tentar traduzir entre formatos — mais simples e o pior caso e só
 o usuario repetir a última frase.
 """
 import json
+import re
 
 from src import agentes, config, telegram_transport
 
@@ -74,25 +82,50 @@ DESCRICAO_TOOL = (
     "URL de destino — pergunte ao usuario o que faltar."
 )
 
-SISTEMA = (
-    "Voce e o Julio, agente de marketing da Integra Foods, conversando pelo "
-    "Telegram com o responsavel de marketing para criar uma campanha nova "
-    "de Google Ads Pesquisa. Faca perguntas objetivas ate ter tudo que "
-    "precisa, use o contexto de negocio abaixo para sugerir valores "
-    "razoaveis (orcamento, lances, publico), e so chame a ferramenta "
-    "propor_campanha quando a proposta estiver completa."
-)
+
+def _sistema(site: str) -> str:
+    nome = config.SITE_NOMES.get(site, site)
+    return (
+        f"Voce e o Julio, agente de marketing. Esta conversa e sobre a "
+        f"'{nome}' — nao confunda com os outros sites/clientes que voce "
+        "tambem atende. Conversando pelo Telegram com o responsavel de marketing para criar "
+        "uma campanha nova de Google Ads Pesquisa. Faca perguntas objetivas "
+        "ate ter tudo que precisa, use o contexto de negocio abaixo para "
+        "sugerir valores razoaveis (orcamento, lances, publico), e so chame "
+        "a ferramenta propor_campanha quando a proposta estiver completa."
+    )
 
 
-def _perguntar_anthropic(historico: list[dict]) -> tuple[str | None, dict | None, dict]:
+def _detectar_site(texto: str) -> str | None:
+    """Casa o texto contra os apelidos conhecidos de cada site (config.SITES).
+
+    Usa borda de palavra pra "if" nao casar dentro de outra palavra qualquer.
+    """
+    alvo = texto.strip().lower()
+    for slug, apelidos in config.SITES.items():
+        for apelido in apelidos:
+            if re.search(rf"\b{re.escape(apelido)}\b", alvo):
+                return slug
+    return None
+
+
+def _perguntar_qual_site(chat_id: str, motivo: str = "") -> None:
+    opcoes = "Integra Foods, 3G Foods ou Adoro"
+    telegram_transport.enviar(
+        chat_id,
+        f"{motivo}Qual site vamos tratar nesta conversa — {opcoes}?",
+    )
+
+
+def _perguntar_anthropic(historico: list[dict], site: str) -> tuple[str | None, dict | None, dict]:
     import anthropic
 
     client = anthropic.Anthropic(api_key=config.anthropic_api_key())
-    regras = config.CLAUDE_MD.read_text(encoding="utf-8")
+    regras = config.claude_md(site).read_text(encoding="utf-8")
     resposta = client.messages.create(
         model=config.claude_model(),
         max_tokens=2000,
-        system=f"{SISTEMA}\n\n=== BRIEFING (CLAUDE.md) ===\n{regras}",
+        system=f"{_sistema(site)}\n\n=== BRIEFING (CLAUDE.{site}.md) ===\n{regras}",
         tools=[{
             "name": "propor_campanha",
             "description": DESCRICAO_TOOL,
@@ -108,14 +141,14 @@ def _perguntar_anthropic(historico: list[dict]) -> tuple[str | None, dict | None
     }
 
 
-def _perguntar_openai(historico: list[dict]) -> tuple[str | None, dict | None, dict]:
+def _perguntar_openai(historico: list[dict], site: str) -> tuple[str | None, dict | None, dict]:
     import openai
 
     client = openai.OpenAI(api_key=config.openai_api_key())
-    regras = config.CLAUDE_MD.read_text(encoding="utf-8")
+    regras = config.claude_md(site).read_text(encoding="utf-8")
     sistema = {
         "role": "system",
-        "content": f"{SISTEMA}\n\n=== BRIEFING (CLAUDE.md) ===\n{regras}",
+        "content": f"{_sistema(site)}\n\n=== BRIEFING (CLAUDE.{site}.md) ===\n{regras}",
     }
     resposta = client.chat.completions.create(
         model=config.openai_model(),
@@ -135,19 +168,20 @@ def _perguntar_openai(historico: list[dict]) -> tuple[str | None, dict | None, d
     return msg.content, tool_input, msg.model_dump()
 
 
-def _perguntar(historico: list[dict]) -> tuple[str | None, dict | None, dict]:
+def _perguntar(historico: list[dict], site: str) -> tuple[str | None, dict | None, dict]:
     provedor = config.llm_provider()
     if provedor == "anthropic":
-        return _perguntar_anthropic(historico)
+        return _perguntar_anthropic(historico, site)
     if provedor == "openai":
-        return _perguntar_openai(historico)
+        return _perguntar_openai(historico, site)
     raise SystemExit(f"LLM_PROVIDER='{provedor}' invalido — use 'anthropic' ou 'openai'.")
 
 
-def _resumo_proposta(p: dict) -> str:
+def _resumo_proposta(site: str, p: dict) -> str:
+    nome_site = config.SITE_NOMES.get(site, site)
     kws = ", ".join(f"{k['texto']} [{k['tipo_correspondencia']}]" for k in p["palavras_chave"])
     linhas = [
-        "PROPOSTA DE CAMPANHA — confirma? (responda sim ou nao)",
+        f"PROPOSTA DE CAMPANHA — site: {nome_site} — confirma? (responda sim ou nao)",
         f"Nome: {p['nome_campanha']}",
         f"Orcamento diario: R$ {p['orcamento_diario_brl']:.2f}",
         f"Lance inicial: R$ {p['lance_inicial_brl']:.2f}",
@@ -168,10 +202,19 @@ def _caminho_estado(chat_id: str):
     return pasta / f"{chat_id}.json"
 
 
+def _estado_vazio() -> dict:
+    return {
+        "site": None,
+        "historico": [],
+        "proposta_pendente": None,
+        "provider": config.llm_provider(),
+    }
+
+
 def _carregar_estado(chat_id: str) -> dict:
     caminho = _caminho_estado(chat_id)
     if not caminho.exists():
-        return {"historico": [], "proposta_pendente": None, "provider": config.llm_provider()}
+        return _estado_vazio()
     estado = json.loads(caminho.read_text(encoding="utf-8"))
     if estado.get("provider") != config.llm_provider():
         estado["historico"] = []
@@ -185,8 +228,29 @@ def _salvar_estado(chat_id: str, estado: dict) -> None:
     )
 
 
-def processar_mensagem(chat_id: str, texto: str, site: str) -> None:
+def processar_mensagem(chat_id: str, texto: str) -> None:
     estado = _carregar_estado(chat_id)
+
+    if texto.strip().lower() in ("/start", "/reiniciar"):
+        estado = _estado_vazio()
+        _salvar_estado(chat_id, estado)
+        telegram_transport.enviar(
+            chat_id,
+            "Oi! Sou o Julio, seu agente de marketing. Atendo a Integra "
+            "Foods, a 3G Foods e a Adoro — pra nao arriscar mexer na conta "
+            "errada, preciso saber com qual estamos trabalhando antes de "
+            "qualquer coisa.",
+        )
+        _perguntar_qual_site(chat_id)
+        return
+
+    if texto.strip().lower() in ("/site", "/trocar-site"):
+        estado["site"] = None
+        estado["historico"] = []
+        estado["proposta_pendente"] = None
+        _salvar_estado(chat_id, estado)
+        _perguntar_qual_site(chat_id)
+        return
 
     if estado["proposta_pendente"] is not None:
         resposta = texto.strip().lower()
@@ -194,7 +258,7 @@ def processar_mensagem(chat_id: str, texto: str, site: str) -> None:
             proposta = estado["proposta_pendente"]
             telegram_transport.enviar(chat_id, "Criando campanha no Google Ads (PAUSADA)...")
             try:
-                resultado = agentes.criar_campanha_ads(proposta, site)
+                resultado = agentes.criar_campanha_ads(proposta, estado["site"])
                 telegram_transport.enviar(
                     chat_id,
                     "Campanha criada com sucesso!\n"
@@ -213,24 +277,29 @@ def processar_mensagem(chat_id: str, texto: str, site: str) -> None:
             _salvar_estado(chat_id, estado)
         return
 
-    if texto.strip().lower() in ("/start", "/reiniciar"):
-        estado = {"historico": [], "proposta_pendente": None, "provider": config.llm_provider()}
+    if estado["site"] is None:
+        site = _detectar_site(texto)
+        if site is None:
+            _perguntar_qual_site(chat_id, motivo="Nao reconheci esse site. ")
+            return
+        estado["site"] = site
         _salvar_estado(chat_id, estado)
+        nome_site = config.SITE_NOMES.get(site, site)
         telegram_transport.enviar(
             chat_id,
-            "Oi! Sou o Julio, agente de marketing da Integra Foods. Me conta "
-            "que campanha de Google Ads voce quer criar (produto, publico, "
-            "orcamento diario, site de destino) que eu monto a proposta.",
+            f"Show, vamos tratar da {nome_site}. Me conta que campanha de "
+            "Google Ads voce quer criar (produto, publico, orcamento diario, "
+            "URL de destino) que eu monto a proposta.",
         )
         return
 
     estado["historico"].append({"role": "user", "content": texto})
-    bloco_texto, tool_input, turno_assistant = _perguntar(estado["historico"])
+    bloco_texto, tool_input, turno_assistant = _perguntar(estado["historico"], estado["site"])
     estado["historico"].append(turno_assistant)
 
     if tool_input is not None:
         estado["proposta_pendente"] = tool_input
-        telegram_transport.enviar(chat_id, _resumo_proposta(tool_input))
+        telegram_transport.enviar(chat_id, _resumo_proposta(estado["site"], tool_input))
     elif bloco_texto:
         telegram_transport.enviar(chat_id, bloco_texto)
 

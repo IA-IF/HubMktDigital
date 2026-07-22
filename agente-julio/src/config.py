@@ -1,4 +1,11 @@
-"""Carrega credenciais do .env — mesmo padrao multi-site dos outros agentes."""
+"""Carrega credenciais do .env.
+
+Diferente dos outros agentes (agente-ads, agente-gtm, ...), o Julio NAO e
+site-scoped por variavel de ambiente: um unico processo atende aos 3 sites,
+e e o proprio Julio quem pergunta ao humano qual site tratar em cada
+conversa (ver orchestrator.py). As credenciais aqui (LLM, Telegram) sao as
+mesmas nos 3 sites mesmo, entao um .env unico basta.
+"""
 import os
 from pathlib import Path
 
@@ -6,29 +13,42 @@ from dotenv import load_dotenv
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 HUB_ROOT = PROJECT_ROOT.parent
-# SITE seleciona qual .env.<site> carregar (ex: SITE=3gfoods). Sem SITE,
-# usa "integrafoods" — nunca um .env sem nome (ver ../agente-ads/src/config.py).
-SITE = os.getenv("SITE", "").strip() or "integrafoods"
-ENV_FILE = PROJECT_ROOT / f".env.{SITE}"
+ENV_FILE = PROJECT_ROOT / ".env"
 load_dotenv(ENV_FILE)
 
-DATA_DIR = PROJECT_ROOT / "data" / SITE
+DATA_DIR = PROJECT_ROOT / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
-
-# O briefing de negocio (ticket medio, margem, guardrails) e o mesmo que o
-# agente-ads usa — nao duplicamos aqui pra nao correr o risco de um agente
-# aprovar algo que o outro rejeitaria.
-CLAUDE_MD = HUB_ROOT / "agente-ads" / f"CLAUDE.{SITE}.md"
 
 # main.py deste agente que sabe criar campanhas de fato.
 AGENTE_ADS_MAIN = HUB_ROOT / "agente-ads" / "main.py"
+
+# Sites conhecidos: slug (usado no SITE dos outros agentes e no nome do
+# CLAUDE.<slug>.md) -> apelidos que o humano pode usar pra escolher no chat.
+SITES = {
+    "integrafoods": ["integrafoods", "integra foods", "integra", "if"],
+    "3gfoods": ["3gfoods", "3g foods", "3g"],
+    "adoro": ["adoro"],
+}
+
+# Nome bonito pra exibir de volta pro humano (slug -> nome).
+SITE_NOMES = {
+    "integrafoods": "Integra Foods",
+    "3gfoods": "3G Foods",
+    "adoro": "Adoro",
+}
+
+
+def claude_md(site: str) -> Path:
+    """Briefing de negocio do site — lido de ../agente-ads, nao duplicado aqui
+    pra nao correr o risco do Julio aprovar algo que o agente-ads rejeitaria."""
+    return HUB_ROOT / "agente-ads" / f"CLAUDE.{site}.md"
 
 
 def _obrigatoria(nome: str) -> str:
     valor = os.getenv(nome, "").strip()
     if not valor:
         raise SystemExit(
-            f"Variavel {nome} nao definida em .env.{SITE} — copie .env.example "
+            f"Variavel {nome} nao definida em .env — copie .env.example "
             "e preencha as credenciais."
         )
     return valor
