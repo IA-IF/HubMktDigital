@@ -27,12 +27,28 @@ O que falta criar/verificar:
 - [x] Tag Manager API ativada no projeto `agente-cmo-ads-interno` e refresh_token gerado (22/07/2026)
 - [x] **Primeira auditoria real rodada (22/07/2026)** — `agente-gtm/main.py --auditar`: 2 tags, 1 trigger,
       5 variáveis, tudo publicado, 0 tags sem trigger, 0 triggers órfãos, tag GA4 confere com `G-CC4D18ST42`
-- [ ] Confirmar que a tag GA4 está disparando de verdade no site em produção (o `config.js` só ativa GTM em `PROD`)
-- [ ] Verificar se a tag de e-commerce cobre o funil todo (view_item, add_to_cart, purchase) com os parâmetros certos
+- [x] Tag GA4 disparando de verdade em produção — confirmado navegando analytics.google.com
+      (22/07/2026): "coleta de dados ativa nas últimas 48 horas", eventos de funil e compras aparecendo
+- [x] Tag de e-commerce cobre o funil todo — confirmado indiretamente pela auditoria GA4 (item 2):
+      view_item, add_to_cart, begin_checkout e purchase todos com dados nos últimos 7 dias
 
 ## 2. Google Analytics (GA4)
 
-- (a preencher)
+Propriedade correta (confirmado 22/07/2026): conta **"Integra Foods"** (`233412801`), propriedade
+**"IntegraFoods V2"** (`543849199`), stream "SSR" → `https://integrafoods.ind.br`. Measurement ID
+`G-CC4D18ST42` — bate com o do GTM. Acesso já confirmado: `eduardo.rezende@integrafoods.ind.br` é
+Administrador da propriedade.
+
+**⚠️ A mesma conta "Integra Foods" tem várias outras propriedades** (3GFOODS, ADORO, CONGE,
+CONGEv2, Devito, Dinamica) — não confundir pelo nome da conta, sempre usar o Property ID `543849199`.
+
+Esqueleto criado em `agente-ga4/` (mesmo padrão do `agente-gtm`).
+
+- [x] Acesso confirmado (22/07/2026, via navegador guiado)
+- [x] Admin API + Data API ativadas no projeto `agente-cmo-ads-interno`, refresh_token gerado (22/07/2026)
+- [x] **Primeira auditoria real rodada (22/07/2026)** — `agente-ga4/main.py --auditar`: "purchase" está
+      marcado como conversão (junto com close_convert_lead, qualify_lead); funil dos últimos 7 dias sem
+      nenhum evento zerado (440 page_view → 66 view_item → 11 add_to_cart → 24 begin_checkout → 2 purchase)
 
 ## 3. Search Console
 
