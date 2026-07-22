@@ -125,6 +125,36 @@ Integra Foods.
   purchase, últimos 7 dias). **Observação:** 18 eventos marcados como conversão (vs. 3 no Integra
   Foods), incluindo `page_view`/`session_start`/`user_engagement` — pode diluir o sinal de conversão
   pro smart bidding do Ads; vale revisar com o usuário, não é um "erro" per se.
+
+**Investigação de tracking de conversões (22/07/2026)**, a pedido registrado em
+`agente-julio/pedidos-futuros.md` (11:44 — "validar e configurar rastreamento de conversões GA4 e
+Ads"). Feita a parte de leitura/diagnóstico (não simulei uma compra de teste real no site em
+produção — criaria pedido de verdade no sistema de fulfillment, risco desproporcional só pra validar
+tracking):
+
+- **GA4 confirma dado real no funil**: purchase/add_to_cart/begin_checkout têm volume real nos
+  últimos 7 dias (2 compras, 9 add_to_cart, 5 begin_checkout) — tracking de ecommerce está
+  funcionando, não é só configuração vazia.
+- **GA4↔Ads: 2 contas linkadas, não 1.** `properties.googleAdsLinks.list` mostra a conta esperada
+  (`7580199564` = 758-019-9564, "3G Foods", criada por `3gfoodsdigital@gmail.com`) **e uma segunda
+  conta desconhecida** (`7466004393`, criada em 2026-01-07 por `eduardo.rezende@integrafoods.ind.br`)
+  — não é nenhuma das 3 contas que o projeto usa (Integra Foods V2, 3G Foods, Adoro). Não
+  investigado a fundo — pode ser vínculo órfão de teste, mas precisa confirmação humana antes de
+  mexer (desvincular uma conta Ads afeta importação de conversão).
+- **Google Ads — achado grave, config incorreta confirmada:** a ação de conversão nomeada
+  **"Adicionar ao carrinho (Evento do Google Analytics remove_from_cart)"** está de fato configurada
+  pra contar o evento `remove_from_cart` — ou seja, **tirar item do carrinho está sendo registrado
+  como "adicionar ao carrinho"**. Está `ENABLED` mas felizmente `include_in_conversions_metric=False`
+  (não conta pra lance ainda) — mesmo assim é dado errado se alguém olhar o relatório de conversões.
+- **Confirma a diluição de smart bidding com números exatos:** das ações de conversão com
+  `include_in_conversions_metric=True` (contam pra lance automático), 9 são eventos que não deveriam
+  ser conversão de negócio (`page_view`, `session_start`, `first_visit`, `user_engagement`,
+  `product_view`, `view_item`, `login`), ao lado das 4 que fazem sentido (`Compra`, `add_to_cart`,
+  `begin_checkout`, `register`/`sign_up`). Isso é o "18 eventos marcados como conversão" acima, agora
+  com o detalhe de quais especificamente entram no cálculo de lance.
+- **Não feito (decisão do usuário, não threshold técnico):** simular compra de teste ponta a ponta,
+  e desativar/corrigir as ações de conversão problemáticas — ambos são ações com efeito real
+  (transação de verdade / mudança de sinal de otimização ativa), não executadas sem confirmação.
 - **Search Console:** 2 sitemaps, 0 erros/avisos, tráfego orgânico ativo. Última leitura de ambos os
   sitemaps é de janeiro/2026 (~6 meses) — não é erro, mas vale confirmar se o sitemap está sendo
   reenviado quando o catálogo muda.
