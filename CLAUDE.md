@@ -41,3 +41,44 @@ o ads tem as converssoes corretas , etc
 
 
 quero q vc materializa em um brainstorm.md , algumas ideias para construir esse agente
+
+
+
+
+
+3g
+
+gtm 
+GTM-PNBB7STW
+
+analitcs
+ID DA PROPRIEDADE: 514973832 
+
+ads
+3G Foods
+758-019-9564
+
+searchconsole
+https://search.google.com/search-console?resource_id=https%3A%2F%2Floja.3gfoods.com.br%2F
+
+
+
+
+
+
+
+adoro
+
+gtm 
+GTM-W7577965
+
+analitcs
+ID DA PROPRIEDADE: 544418642 
+
+
+ads
+Loja Adoro
+510-339-3778
+
+searchconsole
+https://search.google.com/search-console?resource_id=https%3A%2F%2Floja.adoro.com.br%2F

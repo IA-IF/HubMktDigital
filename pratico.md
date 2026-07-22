@@ -97,3 +97,35 @@ por marca, e misturar sinais de produtos/públicos distintos numa conta só pior
 - [ ] Rodar `--dry-run` por 2 semanas antes de liberar `--executar` de verdade
 - [ ] Depois de validado no Integra Foods, decidir o que fazer com as 2 contas Adoro existentes, e
       replicar (credenciais + guardrails) para 3G Foods
+
+## 5. Multi-site: skill de onboarding + teste com 3G Foods
+
+Os 4 módulos agora suportam multi-site via variável `SITE` — `SITE=<slug> python main.py --auditar`
+carrega `.env.<slug>` (em vez de `.env`) e grava em `data/<slug>/`. Sem `SITE`, continua funcionando
+pro Integra Foods como antes (compatibilidade). Ver `.claude/skills/onboard-site/SKILL.md` pro
+processo completo — criada com a `skill-creator` a partir do padrão que vínhamos repetindo pro
+Integra Foods.
+
+**Teste real: onboarding da 3G Foods (22/07/2026)**, usando os IDs que o usuário já tinha
+(`GTM-PNBB7STW`, GA4 `514973832`, Ads `758-019-9564`, Search Console `loja.3gfoods.com.br`):
+
+- **Descoberta importante:** os refresh tokens OAuth gerados pro Integra Foods (GTM/GA4/Search
+  Console/Ads) **funcionaram direto pra 3G Foods, sem gerar token novo** — o token é por
+  conta+escopo, não por site/propriedade. Isso torna o onboarding de um site novo bem mais rápido
+  quando é a mesma conta Google administrando tudo.
+- **GTM:** 3 tags, 11 triggers, 16 variáveis, tudo publicado. **Achado real:** a tag "Google tag"
+  chamada "MERCADO" aponta pra `GT-PZMTMNKK` (formato unificado novo), não pro measurement ID
+  `G-7CQV85CBHN` esperado — pode ser container "Google tag" unificado roteando pro GA4 por trás
+  (não necessariamente erro), mas fica registrado como divergência pra investigar, não resolvido
+  sozinho.
+- **GA4:** funil saudável (6205 page_view → 218 view_item → 7 add_to_cart → 5 begin_checkout → 1
+  purchase, últimos 7 dias). **Observação:** 18 eventos marcados como conversão (vs. 3 no Integra
+  Foods), incluindo `page_view`/`session_start`/`user_engagement` — pode diluir o sinal de conversão
+  pro smart bidding do Ads; vale revisar com o usuário, não é um "erro" per se.
+- **Search Console:** 2 sitemaps, 0 erros/avisos, tráfego orgânico ativo. Última leitura de ambos os
+  sitemaps é de janeiro/2026 (~6 meses) — não é erro, mas vale confirmar se o sitemap está sendo
+  reenviado quando o catálogo muda.
+- **Ads:** conexão confirmada, 1 campanha ativa já rodando (`23700278085`, "Campaign #1") — diferente
+  do Integra Foods (conta nova sem campanhas), aqui já tem histórico real pra analisar.
+- **Cuidado ao reaplicar o `.gitignore`:** o padrão `.env.*` usado pra ignorar `.env.<site>` também
+  bate em `.env.example` — precisa do `!.env.example` explícito pra não parar de versionar o template.

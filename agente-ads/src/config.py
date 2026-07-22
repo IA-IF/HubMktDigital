@@ -5,15 +5,19 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-load_dotenv(PROJECT_ROOT / ".env")
+# SITE seleciona qual .env.<site>/CLAUDE.<site>.md carregar (ex: SITE=3gfoods).
+# Sem SITE, usa .env/CLAUDE.md (compatibilidade com o setup original, Integra Foods).
+SITE = os.getenv("SITE", "").strip()
+ENV_FILE = PROJECT_ROOT / (f".env.{SITE}" if SITE else ".env")
+load_dotenv(ENV_FILE)
 
-DATA_DIR = PROJECT_ROOT / "data"
-LOGS_DIR = PROJECT_ROOT / "logs"
-CLAUDE_MD = PROJECT_ROOT / "CLAUDE.md"
-FILA_APROVACAO = PROJECT_ROOT / "aprovacoes_pendentes.json"
+DATA_DIR = PROJECT_ROOT / "data" / (SITE or "integrafoods")
+LOGS_DIR = PROJECT_ROOT / "logs" / (SITE or "integrafoods")
+CLAUDE_MD = PROJECT_ROOT / (f"CLAUDE.{SITE}.md" if SITE else "CLAUDE.md")
+FILA_APROVACAO = DATA_DIR / "aprovacoes_pendentes.json"
 
-DATA_DIR.mkdir(exist_ok=True)
-LOGS_DIR.mkdir(exist_ok=True)
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def _obrigatoria(nome: str) -> str:
