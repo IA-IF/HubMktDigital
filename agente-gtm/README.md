@@ -19,7 +19,19 @@ gtm_auditor.py (Tag Manager API v2, read-only)
    -> compara versao live vs. workspace
    -> tags sem trigger, triggers orfaos
    -> confere a tag do GA4 contra o measurement ID esperado
+
+dataLayer_auditor.py (Playwright headless, abre o site DE VERDADE)
+   -> le window.dataLayer real da pagina
+   -> confere que o container GTM esperado carregou (nao qualquer GTM)
+   -> confere que o hit do GA4 realmente saiu com o measurement ID esperado
+   -> flags: dataLayer vazio, quantidade fixa suspeita nos itens de ecommerce
 ```
+
+Os dois são complementares: `--auditar` confirma que a *configuração* está
+certa; `--auditar-dinamico` confirma que o *comportamento em produção*
+bate com essa configuração (um site pode passar na auditoria estática e
+mesmo assim não disparar nada de verdade). Ver `../brainstorm.md` §2.1
+para a decisão de arquitetura por trás disso.
 
 Ver `referencia-api.md` (catálogo completo da API, extraído do discovery
 document ao vivo — ~50 métodos, maioria escrita) pra contexto de quais
@@ -49,15 +61,22 @@ em vez de repetir o setup manualmente.
 
 | Comando | O que faz |
 |---|---|
-| `python main.py --auditar` | Roda a auditoria e imprime/salva o resultado em `data/` |
+| `python main.py --auditar` | Auditoria estática (config do container via API) |
+| `python main.py --auditar-dinamico` | Abre o `SITE_URL` de verdade e confere dataLayer + hits reais (precisa `pip install playwright && playwright install chromium`) |
 
 ## Status
 
-**Rodando.** Primeira auditoria real em 22/07/2026: container saudável — 2
-tags, 1 trigger, 5 variáveis, tudo publicado (0 mudanças pendentes), 0 tags
-sem trigger, 0 triggers órfãos, tag GA4 confere com `G-CC4D18ST42`.
+**Rodando (estático + dinâmico, 22/07/2026).** Estático: container
+saudável — 2 tags, 1 trigger, 5 variáveis, tudo publicado, tag GA4 confere
+com `G-CC4D18ST42`. Dinâmico, rodado nos 3 sites:
 
-Próximos passos (fora do escopo desta auditoria estática): confirmar que a
-tag GA4 dispara de verdade em produção e que a tag de e-commerce cobre todo
-o funil (view_item, add_to_cart, purchase) — ver decisão em aberto no
-`../gtm-workflow.md` sobre auditoria dinâmica (navegar o site de verdade).
+| Site | Container/measurement carregou | Achado |
+|---|---|---|
+| Integra Foods | ✅ | `quantity: 100` fixo em 100% dos itens de `view_item_list` (4 vitrines, 48 itens) — parece placeholder |
+| 3G Foods | ✅ (precisou de espera extra, ver nota abaixo) | **Home não dispara nenhum `view_item_list`** — diferente dos outros 2 sites, vale confirmar se é intencional |
+| Adoro | ✅ | Mesmo padrão de `quantity` fixo suspeito do Integra Foods |
+
+Nota de implementação: `wait_until="networkidle"` sozinho deu falso
+negativo pro 3G Foods (site com mais scripts de terceiros — Merchant
+Center, várias tags de Ads — GTM carrega alguns segundos depois do idle).
+`dataLayer_auditor.py` já inclui uma espera extra de 8s pra evitar isso.

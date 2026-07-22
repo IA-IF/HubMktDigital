@@ -53,12 +53,18 @@ relatório de saúde do container:
 - Variáveis de datalayer usadas nas tags realmente existem no `dataLayer.push` do site
 - Comparação entre workspace/draft e container publicado (mudanças pendentes de publicar)
 
-**Ponto de decisão do usuário:** o GTM não tem "GAQL" — a auditoria de datalayer real exige rodar o
-site (headless browser) e capturar os eventos disparados, ou confiar só na configuração estática do
-container. Isso é uma escolha de arquitetura:
-- Estático (só ler config do GTM) → mais simples, mas não pega bugs de implementação no site
-- Dinâmico (Playwright/Chrome DevTools navegando o site e capturando `dataLayer`) → mais fiel à
-  realidade, mas mais caro/lento e exige manutenção por site
+**Resolvido (2026-07-22):** implementados os dois. Estático continua em
+`gtm_auditor.py` (config via API). Dinâmico virou `dataLayer_auditor.py`
+(Playwright headless, `main.py --auditar-dinamico`) — abre o site de
+verdade, lê `window.dataLayer`, confere que o container/measurement ID
+certos carregaram e que o hit chegou no Google. Achado de implementação
+real que só a auditoria dinâmica pegaria: **Integra Foods e Adoro têm
+`quantity` fixo (100) em todo item de `view_item_list`** — parece
+placeholder, não quantidade real — e **3G Foods não dispara nenhum
+`view_item_list` na home**, diferente dos outros 2 sites. Lição de
+implementação: `wait_until="networkidle"` sozinho dá falso negativo em
+sites com mais scripts de terceiros (GTM ainda carrega alguns segundos
+depois do idle) — precisou de uma espera extra de 8s antes de capturar.
 
 ### 2.2 Auditor de GA4 (`src/ga4_auditor.py` — novo módulo)
 

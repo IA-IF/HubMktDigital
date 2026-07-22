@@ -42,3 +42,7 @@ def gtm_container_path() -> str:
 
 def ga4_measurement_id() -> str:
     return _obrigatoria("GA4_MEASUREMENT_ID")
+
+
+def site_url() -> str:
+    return _obrigatoria("SITE_URL")
