@@ -50,10 +50,25 @@ class ConversationalAgent:
             name=session_name,
             redis_client=self.redis_client,
         )
+        # Looser than redisvl's own default (0.3): we'd rather pull in
+        # some borderline-relevant history than miss a useful match, since
+        # this is a small prototype where recall matters more than
+        # precision. Set once here instead of on every chat() call.
+        self.session_manager.set_distance_threshold(0.9)
 
     def chat(self, user_input: str) -> str:
-        self.session_manager.set_distance_threshold(0.9)
-        context = self.session_manager.get_relevant(user_input, top_k=8)
+        # get_relevant() ranks by semantic distance, not chronological
+        # order, so its results could otherwise start with role="assistant"
+        # (e.g. if a past assistant reply is the closest match). The
+        # Anthropic Messages API requires messages[0].role == "user", so an
+        # assistant-first context would make the call below raise and fall
+        # through to the generic except below (silent loss of memory, no
+        # signal that memory was the cause). role="user" restricts context
+        # to past user turns only, guaranteeing this can't happen: context
+        # is user-only, and we append a fresh user message next.
+        context = self.session_manager.get_relevant(
+            user_input, top_k=8, role="user"
+        )
 
         messages = list(context)
         messages.append({"role": "user", "content": user_input})
