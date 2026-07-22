@@ -26,10 +26,17 @@ search_console_auditor.py (Search Console API v1, read-only)
       registrado no periodo
 ```
 
-## Setup
+## Multi-site
+
+`config.py` carrega `.env.<SITE>` (variável de ambiente `SITE`, ex:
+`SITE=3gfoods python main.py --auditar`). Sem `SITE`, usa `integrafoods`.
+Pra conectar um site novo, siga `../.claude/skills/onboard-site/SKILL.md`
+em vez de repetir o setup manualmente.
+
+## Setup (Integra Foods, `.env.integrafoods`)
 
 1. `pip install -r requirements.txt`
-2. Copie `.env.example` para `.env`.
+2. Copie `.env.example` para `.env.integrafoods`.
 3. ✅ Acesso já confirmado (22/07/2026) — `eduardo.rezende@integrafoods.ind.br`
    é Proprietário de `https://integrafoods.ind.br/`.
 4. ✅ **Feito (22/07/2026)** — Search Console API ativada no projeto
@@ -37,7 +44,7 @@ search_console_auditor.py (Search Console API v1, read-only)
 5. ✅ **Feito (22/07/2026)** — `SC_CLIENT_ID`/`SC_CLIENT_SECRET` reaproveitados
    do mesmo cliente OAuth dos outros agentes.
 6. ✅ **Feito (22/07/2026)** — refresh token gerado com
-   `generate_refresh_token_sc.py` e salvo no `.env`.
+   `generate_refresh_token_sc.py` e salvo no `.env.integrafoods`.
 
 ## Uso
 

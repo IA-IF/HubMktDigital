@@ -6,12 +6,12 @@ from dotenv import load_dotenv
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 # SITE seleciona qual .env.<site> carregar (ex: SITE=3gfoods). Sem SITE,
-# usa .env (compatibilidade com o setup original, Integra Foods).
-SITE = os.getenv("SITE", "").strip()
-ENV_FILE = PROJECT_ROOT / (f".env.{SITE}" if SITE else ".env")
+# usa "integrafoods" (o site original) — nunca um .env sem nome.
+SITE = os.getenv("SITE", "").strip() or "integrafoods"
+ENV_FILE = PROJECT_ROOT / f".env.{SITE}"
 load_dotenv(ENV_FILE)
 
-DATA_DIR = PROJECT_ROOT / "data" / (SITE or "integrafoods")
+DATA_DIR = PROJECT_ROOT / "data" / SITE
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 

@@ -26,10 +26,17 @@ ga4_auditor.py (Admin API + Data API v1beta, read-only)
       evento do funil esta zerado
 ```
 
-## Setup
+## Multi-site
+
+`config.py` carrega `.env.<SITE>` (variável de ambiente `SITE`, ex:
+`SITE=3gfoods python main.py --auditar`). Sem `SITE`, usa `integrafoods`.
+Pra conectar um site novo, siga `../.claude/skills/onboard-site/SKILL.md`
+em vez de repetir o setup manualmente.
+
+## Setup (Integra Foods, `.env.integrafoods`)
 
 1. `pip install -r requirements.txt`
-2. Copie `.env.example` para `.env`.
+2. Copie `.env.example` para `.env.integrafoods`.
 3. ✅ Acesso já confirmado (22/07/2026) — `eduardo.rezende@integrafoods.ind.br`
    tem papel "Administrador" na propriedade `543849199`.
 4. ✅ **Feito (22/07/2026)** — Admin API e Data API ativadas no projeto
@@ -37,7 +44,7 @@ ga4_auditor.py (Admin API + Data API v1beta, read-only)
 5. ✅ **Feito (22/07/2026)** — `GA4_CLIENT_ID`/`GA4_CLIENT_SECRET` reaproveitados
    do mesmo cliente OAuth do `agente-gtm`.
 6. ✅ **Feito (22/07/2026)** — refresh token gerado com
-   `generate_refresh_token_ga4.py` e salvo no `.env`.
+   `generate_refresh_token_ga4.py` e salvo no `.env.integrafoods`.
 
 ## Uso
 

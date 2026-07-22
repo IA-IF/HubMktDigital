@@ -6,14 +6,14 @@ from dotenv import load_dotenv
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 # SITE seleciona qual .env.<site>/CLAUDE.<site>.md carregar (ex: SITE=3gfoods).
-# Sem SITE, usa .env/CLAUDE.md (compatibilidade com o setup original, Integra Foods).
-SITE = os.getenv("SITE", "").strip()
-ENV_FILE = PROJECT_ROOT / (f".env.{SITE}" if SITE else ".env")
+# Sem SITE, usa "integrafoods" (o site original) — nunca um .env/CLAUDE.md sem nome.
+SITE = os.getenv("SITE", "").strip() or "integrafoods"
+ENV_FILE = PROJECT_ROOT / f".env.{SITE}"
 load_dotenv(ENV_FILE)
 
-DATA_DIR = PROJECT_ROOT / "data" / (SITE or "integrafoods")
-LOGS_DIR = PROJECT_ROOT / "logs" / (SITE or "integrafoods")
-CLAUDE_MD = PROJECT_ROOT / (f"CLAUDE.{SITE}.md" if SITE else "CLAUDE.md")
+DATA_DIR = PROJECT_ROOT / "data" / SITE
+LOGS_DIR = PROJECT_ROOT / "logs" / SITE
+CLAUDE_MD = PROJECT_ROOT / f"CLAUDE.{SITE}.md"
 FILA_APROVACAO = DATA_DIR / "aprovacoes_pendentes.json"
 
 DATA_DIR.mkdir(parents=True, exist_ok=True)

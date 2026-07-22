@@ -26,13 +26,13 @@ site novo sem reinventar a arquitetura a cada vez.
 
 Os quatro módulos (`agente-gtm`, `agente-ga4`, `agente-search-console`,
 `agente-ads`) são código genérico — nenhuma linha Python é específica de um
-site. O que muda por site é só o `.env`. Por isso cada módulo aceita uma
-variável de ambiente `SITE`: com `SITE=<slug>`, o `config.py` carrega
-`.env.<slug>` em vez de `.env`, e grava dados em `data/<slug>/` (Integra
-Foods, o site original, continua funcionando sem `SITE` definido — usa
-`.env` puro, por compatibilidade). Isso evita duplicar as ~9 arquivos
-Python de cada agente a cada site novo — só se duplica configuração, nunca
-lógica.
+site. O que muda por site é só o `.env.<slug>`. Por isso cada módulo aceita
+uma variável de ambiente `SITE`: `config.py` sempre carrega `.env.<SITE>`
+(nunca um `.env` sem nome — mesmo o Integra Foods, o site original, é
+`.env.integrafoods`; sem `SITE` definido o padrão cai em `integrafoods`,
+não num arquivo especial). Dados de cada auditoria vão pra `data/<SITE>/`.
+Isso evita duplicar os ~9 arquivos Python de cada agente a cada site novo —
+só se duplica configuração, nunca lógica.
 
 **Não crie pastas `agente-gtm-<site>/` novas.** Isso reintroduz o problema
 que essa arquitetura resolve. Sempre passe `SITE=<slug>` para o módulo
@@ -83,13 +83,14 @@ assumir que precisa pedir acesso novo.
 ### 3. Gerar o `.env.<slug>` de cada módulo
 
 Para cada um dos 4 módulos, copie o `.env.example` correspondente para
-`.env.<slug>` (não `.env` — isso sobrescreveria o Integra Foods) e preencha:
+`.env.<slug>` (nunca sobrescreva o `.env.<outro-site>` de um site que já
+funciona) e preencha:
 
 - Os 4 IDs resolvidos no passo 1 (um indo em cada módulo)
 - `CLIENT_ID`/`CLIENT_SECRET` — normalmente os **mesmos** dos outros sites
   já configurados (mesmo projeto Google Cloud, ex: `agente-cmo-ads-interno`)
-  se a mesma organização/MCC administra tudo. Olhe o `.env.<outro-site>` ou
-  `.env` já existente no mesmo módulo para confirmar se pode reaproveitar —
+  se a mesma organização/MCC administra tudo. Olhe o `.env.<outro-site>` já
+  existente no mesmo módulo para confirmar se pode reaproveitar —
   não precisa ler o valor pra copiar, só pedir pro usuário confirmar que é
   o mesmo client, e escrever direto se você já souber o valor de uma sessão
   anterior.

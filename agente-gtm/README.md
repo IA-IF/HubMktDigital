@@ -21,10 +21,17 @@ gtm_auditor.py (Tag Manager API v2, read-only)
    -> confere a tag do GA4 contra o measurement ID esperado
 ```
 
-## Setup
+## Multi-site
+
+`config.py` carrega `.env.<SITE>` (variável de ambiente `SITE`, ex:
+`SITE=3gfoods python main.py --auditar`). Sem `SITE`, usa `integrafoods`.
+Pra conectar um site novo, siga `../.claude/skills/onboard-site/SKILL.md`
+em vez de repetir o setup manualmente.
+
+## Setup (Integra Foods, `.env.integrafoods`)
 
 1. `pip install -r requirements.txt`
-2. Copie `.env.example` para `.env`.
+2. Copie `.env.example` para `.env.integrafoods`.
 3. ✅ **Feito (22/07/2026)** — confirmado em tagmanager.google.com que
    `eduardo.rezende@integrafoods.ind.br` já tem acesso nível "Publicação" ao
    container `GTM-PJWJJHXR` (conta IF V2, `accounts/6363669174/containers/257024578`).
@@ -32,7 +39,7 @@ gtm_auditor.py (Tag Manager API v2, read-only)
 4. ✅ **Feito (22/07/2026)** — Tag Manager API ativada no projeto
    `agente-cmo-ads-interno` (mesmo `client_id`/`client_secret` do Ads).
 5. ✅ **Feito (22/07/2026)** — refresh token gerado com
-   `generate_refresh_token_gtm.py` e salvo no `.env`.
+   `generate_refresh_token_gtm.py` e salvo no `.env.integrafoods`.
 
 ## Uso
 
