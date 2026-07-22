@@ -52,7 +52,11 @@ collector.py (Google Ads API, GAQL, 30 dias)
 | `SITE=<site> python main.py --dry-run` | Analisa e recomenda, **não altera nada** (padrão) |
 | `SITE=<site> python main.py --executar` | Executa ações aprovadas pelos guardrails |
 | `SITE=<site> python main.py --testar-conexao` | Lista campanhas ativas para validar credenciais |
-| `SITE=<site> python main.py --telegram-bot` | Bot conversacional p/ criar campanhas novas via Telegram |
+| `SITE=<site> python main.py --criar-campanha` | Cria campanha a partir de um JSON no stdin (chamado pelo `../agente-julio`, nao interativo) |
+
+O bot conversacional (Telegram, LLM perguntando o que falta pra montar a
+campanha) mora em `../agente-julio` — este modulo so expõe a capacidade de
+criar a campanha via `--criar-campanha`, sem saber quem está do outro lado.
 
 Ações bloqueadas pelos guardrails vão para `data/<SITE>/aprovacoes_pendentes.json` —
 revise e aplique manualmente (ou aprove e reexecute).

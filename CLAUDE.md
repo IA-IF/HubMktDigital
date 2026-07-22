@@ -88,3 +88,13 @@ proxima tarefa (feito 2026-07-22): agente-ads agora suporta Anthropic e OpenAI
 via LLM_PROVIDER (default "openai", ja que era o credito disponivel). Chaves
 reais ficam so nos `.env.<site>` (gitignored), nunca aqui no CLAUDE.md.
 
+
+
+
+
+desmembrar o agente-julio (feito 2026-07-22): criado ../agente-julio, o
+orquestrador que conversa com o humano no Telegram e aciona os outros
+agentes via subprocess (main.py --criar-campanha do agente-ads, sem
+importar codigo entre modulos). agente-ads perdeu o telegram_bot.py e o
+--telegram-bot; so expoe a capacidade de criar campanha. Chaves reais
+(Telegram, LLM) ficam so nos `.env.<site>` (gitignored), nunca aqui.

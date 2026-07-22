@@ -4,13 +4,18 @@ Uso:
     python main.py --dry-run     # modo observador (Fase 5, semanas 1-2)
     python main.py --executar    # aplica mudanças aprovadas pelos guardrails
     python main.py --testar-conexao   # só lista campanhas ativas (Prompt 1)
-    python main.py --telegram-bot     # bot conversacional p/ criar campanhas novas
+    python main.py --criar-campanha   # cria campanha a partir de um JSON no stdin
+                                       # (chamado pelo ../agente-julio, nao interativo)
+
+A parte conversacional (Telegram, LLM perguntando o que falta pra montar a
+campanha) vive em ../agente-julio — este modulo so expõe a capacidade de
+"executar", sem saber quem está do outro lado pedindo.
 """
 import argparse
 import json
 import sys
 
-from src import collector, analyst, executor, reporter, config, telegram_bot
+from src import collector, analyst, executor, reporter, config, campaign_builder
 
 
 def testar_conexao() -> None:
@@ -51,6 +56,23 @@ def rodar(dry_run: bool) -> None:
     print("\n" + texto)
 
 
+def criar_campanha_via_stdin() -> None:
+    """Le uma proposta de campanha (JSON) do stdin e cria no Google Ads.
+
+    Fronteira de processo para quem orquestra a conversa com o humano
+    (../agente-julio) pedir a execucao sem precisar importar codigo deste
+    modulo. Sempre imprime um unico JSON no stdout — sucesso ou erro — para
+    quem chamou processar de forma previsivel.
+    """
+    proposta = json.load(sys.stdin)
+    try:
+        resultado = campaign_builder.criar_campanha(proposta)
+        print(json.dumps({"ok": True, **resultado}, ensure_ascii=False))
+    except Exception as exc:  # noqa: BLE001 — reportar ao chamador, nao derrubar
+        print(json.dumps({"ok": False, "erro": str(exc)}, ensure_ascii=False))
+        sys.exit(1)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Agente CMO para Google Ads")
     grupo = parser.add_mutually_exclusive_group()
@@ -60,16 +82,16 @@ def main() -> None:
                        help="Executa as acoes aprovadas pelos guardrails")
     grupo.add_argument("--testar-conexao", action="store_true",
                        help="Testa credenciais listando campanhas ativas")
-    grupo.add_argument("--telegram-bot", action="store_true",
-                       help="Roda o bot conversacional para criar campanhas novas via Telegram")
+    grupo.add_argument("--criar-campanha", action="store_true",
+                       help="Le uma proposta de campanha (JSON) do stdin e cria no Google Ads")
     args = parser.parse_args()
 
     if args.testar_conexao:
         testar_conexao()
         return
 
-    if args.telegram_bot:
-        telegram_bot.rodar_loop()
+    if args.criar_campanha:
+        criar_campanha_via_stdin()
         return
 
     # Seguranca: sem flag explicita, roda em dry-run
