@@ -28,7 +28,7 @@ class Coder:
         caminho = (REPO_ROOT / arquivo_relativo).resolve()
 
         try:
-            caminho.relative_to(REPO_ROOT)
+            caminho_relativo_resolvido = caminho.relative_to(REPO_ROOT)
         except ValueError:
             return {
                 "arquivo": arquivo_relativo,
@@ -36,19 +36,34 @@ class Coder:
                 "erro": f"arquivo fora da raiz do projeto: {arquivo_relativo}",
             }
 
-        codigo = self._gerar_codigo(tarefa["descricao"])
-        valido, erro = self._validar_sintaxe(codigo)
+        partes = caminho_relativo_resolvido.parts
+        if ".git" in partes or ".env" in partes or caminho.name.startswith("."):
+            return {
+                "arquivo": arquivo_relativo,
+                "escrito": False,
+                "erro": (
+                    f"escrita bloqueada por seguranca: {arquivo_relativo} "
+                    "toca arquivo/pasta sensivel"
+                ),
+            }
 
-        if not valido:
-            codigo = self._gerar_codigo(
-                f"{tarefa['descricao']}\n\nSeu codigo anterior tinha um "
-                f"erro de sintaxe: {erro}\nGere o arquivo completo de "
-                "novo, corrigido."
-            )
+        if caminho.suffix == ".py":
+            codigo = self._gerar_codigo(tarefa["descricao"])
             valido, erro = self._validar_sintaxe(codigo)
 
-        if not valido:
-            return {"arquivo": arquivo_relativo, "escrito": False, "erro": erro}
+            if not valido:
+                codigo = self._gerar_codigo(
+                    f"{tarefa['descricao']}\n\nSeu codigo anterior tinha um "
+                    f"erro de sintaxe: {erro}\nGere o arquivo completo de "
+                    "novo, corrigido."
+                )
+                valido, erro = self._validar_sintaxe(codigo)
+
+            if not valido:
+                return {"arquivo": arquivo_relativo, "escrito": False, "erro": erro}
+        else:
+            # Nao-Python: pula validacao de sintaxe, sem retry.
+            codigo = self._gerar_codigo(tarefa["descricao"])
 
         caminho.parent.mkdir(parents=True, exist_ok=True)
         caminho.write_text(codigo, encoding="utf-8")
