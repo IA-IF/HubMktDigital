@@ -3,19 +3,48 @@
 Separado do resto do orchestrator.py de proposito: o dia que o Julio ganhar
 outro canal (WhatsApp, Slack, etc.), so esse arquivo muda — o resto (loop de
 conversa, chamada aos outros agentes) e agnostico de canal.
+
+A rota IPv6 ate api.telegram.org neste ambiente e instavel (medido: ~50%
+das chamadas de sendMessage travavam no handshake TLS e davam ReadTimeout
+por IPv6, enquanto 4/4 tentativas forcando IPv4 respondiam em ~1s) — por
+isso forcamos IPv4 pra qualquer chamada deste modulo. Mantemos tambem
+retry: mesmo IPv4 nao e garantia de rede perfeita, e uma falha aqui nao
+pode simplesmente engolir a mensagem do usuario.
 """
+import socket
+import time
+
 import requests
+import urllib3.util.connection as urllib3_conexao
 
 from src import config
 
 API_BASE = "https://api.telegram.org/bot{token}/{metodo}"
+TENTATIVAS = 3
+
+urllib3_conexao.allowed_gai_family = lambda: socket.AF_INET
 
 
 def _telegram(metodo: str, **params) -> dict:
     token = config.telegram_bot_token()
-    resp = requests.post(API_BASE.format(token=token, metodo=metodo), json=params, timeout=35)
-    resp.raise_for_status()
-    return resp.json()
+    url = API_BASE.format(token=token, metodo=metodo)
+    # getUpdates faz long poll (fica esperando no servidor ate `timeout`
+    # segundos) — o timeout do lado do cliente precisa ser maior que isso.
+    # Os demais metodos (sendMessage etc.) sao rapidos; timeout curto so
+    # pra nao ficar 35s preso numa chamada que devia levar 1s.
+    timeout_http = params.get("timeout", 0) + 10 if metodo == "getUpdates" else 15
+
+    ultimo_erro: Exception | None = None
+    for tentativa in range(TENTATIVAS):
+        try:
+            resp = requests.post(url, json=params, timeout=timeout_http)
+            resp.raise_for_status()
+            return resp.json()
+        except requests.RequestException as exc:
+            ultimo_erro = exc
+            if tentativa < TENTATIVAS - 1:
+                time.sleep(1.5)
+    raise ultimo_erro
 
 
 def enviar(chat_id: str, texto: str) -> None:
