@@ -87,8 +87,12 @@ por marca, e misturar sinais de produtos/públicos distintos numa conta só pior
       à MCC `890-192-5637` (IF Apoio), faturamento configurado (perfil CONGE FOODS TECNOLOGIA E
       DISTRIBUICAO LTDA, Pix). Verificação de anunciante pendente (opcional, 1-10 dias, não bloqueia
       o setup de API) — ver tarefas em Admin da conta.
-- [ ] Credenciais Google Ads da conta do Integra Foods no `agente-cmo` (hoje só conhece a 3G Foods)
-- [ ] Ajustar os placeholders "(AJUSTAR)" no `CLAUDE.md` do agente com os dados reais do Integra Foods
+- [x] **Código replicado (22/07/2026)** — `agente-cmo` copiado para `agente-ads/` (mesmo padrão de
+      nome dos outros agentes), sem tocar no original. `.env.example` já com `GOOGLE_ADS_CUSTOMER_ID`
+      (`3323166484`) e `GOOGLE_ADS_LOGIN_CUSTOMER_ID` (`8901925637`) preenchidos.
+- [ ] Preencher `.env` do `agente-ads` (copiar developer_token/client_id/secret/refresh_token do
+      `agente-cmo`, mesma MCC — só `ANTHROPIC_API_KEY` é novo) e rodar `--testar-conexao`
+- [ ] Ajustar os placeholders "(AJUSTAR)" no `CLAUDE.md` do `agente-ads` com os dados reais do Integra Foods
 - [ ] Rodar `--dry-run` por 2 semanas antes de liberar `--executar` de verdade
 - [ ] Depois de validado no Integra Foods, decidir o que fazer com as 2 contas Adoro existentes, e
       replicar (credenciais + guardrails) para 3G Foods
