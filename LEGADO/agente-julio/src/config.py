@@ -4,7 +4,8 @@ Diferente dos outros agentes (agente-ads, agente-gtm, ...), o Julio NAO e
 site-scoped por variavel de ambiente: um unico processo atende aos 3 sites,
 e e o proprio Julio quem pergunta ao humano qual site tratar em cada
 conversa (ver orchestrator.py). As credenciais aqui (LLM, Telegram) sao as
-mesmas nos 3 sites mesmo, entao um .env unico basta.
+mesmas nos 3 sites mesmo, por isso vem direto do .env compartilhado na
+raiz do projeto (../.env) — nao ha um agente-julio/.env proprio.
 """
 import os
 from pathlib import Path
@@ -13,7 +14,7 @@ from dotenv import load_dotenv
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 HUB_ROOT = PROJECT_ROOT.parent
-ENV_FILE = PROJECT_ROOT / ".env"
+ENV_FILE = HUB_ROOT / ".env"
 load_dotenv(ENV_FILE)
 
 DATA_DIR = PROJECT_ROOT / "data"
