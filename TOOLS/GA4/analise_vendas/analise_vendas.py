@@ -16,6 +16,8 @@ from dotenv import dotenv_values
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 from canais import calcular_split_canal
 from coleta import buscar_contagens_funil, buscar_dados_ecommerce, buscar_linhas_canal
 from ecommerce_taxas import calcular_taxas_ecommerce
@@ -28,6 +30,11 @@ SCOPES = ["https://www.googleapis.com/auth/analytics.readonly"]
 def _service_e_property(site: str):
     comum = dotenv_values(REPO_ROOT / ".env")
     do_site = dotenv_values(REPO_ROOT / "SITES" / site / ".env")
+    if "GA4_PROPERTY_ID" not in do_site:
+        raise SystemExit(
+            f"Site '{site}' nao tem GA4_PROPERTY_ID configurado — confirme que "
+            f"SITES/{site}/.env existe e tem essa variavel."
+        )
     creds = Credentials(
         token=None, scopes=SCOPES,
         client_id=comum["GA4_CLIENT_ID"], client_secret=comum["GA4_CLIENT_SECRET"],
