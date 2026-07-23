@@ -1,6 +1,12 @@
 .playwright-mcp/
 mydata.md
+__pycache__/
+.pytest_cache/
 LEGADO/.env
 !LEGADO/.env.example
 LEGADO/SITES/*/.env
 !LEGADO/SITES/_template/.env.example
+.env
+!.env.example
+SITES/*/.env
+!SITES/_template/.env.example
