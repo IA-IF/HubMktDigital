@@ -1,12 +1,12 @@
-"""Fase D do esquema de analise de vendas (PARCIAL) -- ver
+"""Fase D do esquema de analise de vendas (SO INDEXACAO) -- ver
 docs/superpowers/specs/2026-07-22-esquema-analise-vendas-design.md.
 
-So a parte de crawlability/indexacao (Search Console API). Core Web
-Vitals fica BLOQUEADO nesta sessao: depende do plugin chrome-devtools-mcp
-(Lighthouse rodando navegador de verdade) ou Playwright, e nenhum dos
-dois esta conectado agora. Quando reconectar, essa e a proxima peca a
-implementar aqui -- nao inventar numero de performance sem rodar o
-navegador de verdade.
+Core Web Vitals (a outra metade da Fase D) esta DESATIVADA por decisao do
+usuario: depende do plugin chrome-devtools-mcp (Lighthouse rodando
+navegador de verdade) ou Playwright, nenhum dos dois esta conectado
+nesta sessao, e nao ha stub/placeholder na saida por isso -- so
+reativar quando o plugin estiver disponivel de novo, implementando de
+verdade com navegador real (nunca inventar numero de performance).
 
 Uso:
     python analise_tecnica.py [site]
@@ -51,14 +51,6 @@ def rodar_analise_tecnica(site: str) -> dict:
     return {
         "site": site,
         "indexacao": calcular_saude_sitemaps(resposta),
-        "core_web_vitals": {
-            "status": "BLOQUEADO",
-            "motivo": (
-                "chrome-devtools-mcp/Playwright nao conectados nesta sessao — "
-                "Core Web Vitals precisa de navegador real (Lighthouse), nao e "
-                "chamada de API. Rodar quando o plugin estiver disponivel."
-            ),
-        },
     }
 
 
