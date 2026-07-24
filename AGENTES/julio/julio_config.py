@@ -56,6 +56,19 @@ def regras_negocio(site: str) -> Path:
     return HUB_ROOT / "SITES" / site / "RULES.md"
 
 
+def modo_projeto() -> bool:
+    """Se ligado (MODO_PROJETO=1 em REDIS/.env), o bot inteiro desvia pro
+    modo de apresentacao do projeto (ver orchestrator._processar_modo_projeto)
+    em vez do fluxo normal de site/tools de marketing -- usado enquanto o
+    sistema completo ainda nao esta maduro pra uso diario."""
+    return os.getenv("MODO_PROJETO", "").strip() == "1"
+
+
+def status_projeto_md() -> Path:
+    """Contexto fixo do modo projeto -- ver AGENTES/julio/STATUS_PROJETO.md."""
+    return PACKAGE_ROOT / "STATUS_PROJETO.md"
+
+
 def _obrigatoria(nome: str) -> str:
     valor = os.getenv(nome, "").strip()
     if not valor:

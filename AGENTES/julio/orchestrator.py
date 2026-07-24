@@ -1,5 +1,12 @@
 """O Julio: conversa com o humano no Telegram e aciona os outros agentes.
 
+Se MODO_PROJETO=1 (REDIS/.env), processar_mensagem desvia inteiro pra
+_processar_modo_projeto: sem selecao de site, sem tools de marketing --
+so explica o projeto (contexto: STATUS_PROJETO.md) e registra pedidos de
+mudanca via pedidos_projeto.py (que ja dispara Planejador->Coder numa
+branch git isolada). Ver spec
+docs/superpowers/specs/2026-07-24-modo-projeto-pedidos-design.md.
+
 O client Anthropic e instanciado direto (nao via LLMRouter.ask*): o
 router adiciona cache semantico, mas so ajuda em chamadas cujo prompt
 se repete — aqui o historico da conversa muda a cada mensagem, entao
@@ -45,6 +52,7 @@ import agentes
 import discover_tool
 import julio_config as config
 import pedidos
+import pedidos_projeto
 
 MAX_TURNOS_FERRAMENTA = 4
 
@@ -75,6 +83,44 @@ DESCRICAO_PERSONALIDADE = (
     "mudancas em texto livre; nunca chame so por ele ter descrito uma "
     "ideia, sem voce ter mostrado como ficaria e ele ter concordado."
 )
+
+# Tools do modo projeto (ver _processar_modo_projeto) -- nunca pedem
+# confirmacao humana antes de rodar, ao contrario de criar_campanha.
+SCHEMA_PEDIDO_PROJETO = {
+    "type": "object",
+    "properties": {
+        "pedido": {
+            "type": "string",
+            "description": "Resumo objetivo do que o gestor pediu, 1-2 frases.",
+        },
+        "contexto": {
+            "type": "string",
+            "description": "Detalhes adicionais relevantes. Opcional.",
+        },
+    },
+    "required": ["pedido"],
+}
+
+DESCRICAO_PEDIDO_PROJETO = (
+    "Chame quando o gestor descrever algo que quer MUDAR ou ADICIONAR no "
+    "proprio projeto (nao no marketing de um site) -- ex: 'quero que o "
+    "bot tambem avise sobre X'. Nao chame so pra responder uma pergunta "
+    "sobre o que ja existe hoje -- isso voce ja sabe pelo contexto desta "
+    "conversa."
+)
+
+SCHEMA_LISTAR_PEDIDOS = {"type": "object", "properties": {}, "required": []}
+
+DESCRICAO_LISTAR_PEDIDOS = (
+    "Chame quando o gestor perguntar pelo status de pedidos que ele ja "
+    "fez antes (ex: 'como estao meus pedidos', 'o que eu pedi')."
+)
+
+_STATUS_PEDIDO_HUMANO = {
+    "registrado": "na fila",
+    "rascunho_pronto": "rascunho pronto pra revisao",
+    "erro": "registrado, precisa de atencao manual",
+}
 
 
 def _sistema(site: str) -> str:
@@ -310,6 +356,137 @@ def _resumo_proposta(site: str, p: dict) -> str:
     return "\n".join(linhas)
 
 
+def _sistema_projeto() -> str:
+    status = config.status_projeto_md().read_text(encoding="utf-8")
+    global_regras = config.global_md().read_text(encoding="utf-8")
+    return (
+        "Voce e o Julio. O sistema completo de marketing ainda nao esta "
+        "maduro pra uso diario, entao esta conversa e SO pra explicar o "
+        "projeto (o que ja existe, o que falta) e anotar pedidos de "
+        "mudanca/funcionalidade -- nunca finja ter dados reais de "
+        "trafego/campanha aqui, isso volta quando o modo normal for "
+        "religado.\n\n"
+        f"=== GLOBAL.md (personalidade, vale igual) ===\n{global_regras}\n\n"
+        f"=== Status do projeto ===\n{status}"
+    )
+
+
+def _executar_tool_projeto(nome: str, entrada: dict) -> dict:
+    if nome == "registrar_pedido_projeto":
+        return pedidos_projeto.registrar(entrada.get("pedido", ""), entrada.get("contexto", ""))
+    if nome == "listar_pedidos_projeto":
+        return {
+            "pedidos": [
+                {
+                    "pedido": p["pedido"],
+                    "status": _STATUS_PEDIDO_HUMANO.get(p["status"], p["status"]),
+                    "criado_em": p["criado_em"],
+                }
+                for p in pedidos_projeto.listar()
+            ]
+        }
+    return {"erro": f"ferramenta desconhecida: {nome}"}
+
+
+def _perguntar_projeto(
+    historico: list[dict], chat_id: str, telegram_transport
+) -> tuple[str | None, list[dict]]:
+    client = anthropic.Anthropic(api_key=config.anthropic_api_key())
+    sistema = _sistema_projeto()
+    tools = [
+        {
+            "name": "registrar_pedido_projeto",
+            "description": DESCRICAO_PEDIDO_PROJETO,
+            "input_schema": SCHEMA_PEDIDO_PROJETO,
+        },
+        {
+            "name": "listar_pedidos_projeto",
+            "description": DESCRICAO_LISTAR_PEDIDOS,
+            "input_schema": SCHEMA_LISTAR_PEDIDOS,
+        },
+    ]
+
+    mensagens = list(historico)
+    novos_turnos: list[dict] = []
+
+    for _ in range(MAX_TURNOS_FERRAMENTA):
+        resposta = client.messages.create(
+            model=config.claude_model(), max_tokens=2000,
+            system=sistema, tools=tools, messages=mensagens,
+        )
+        bloco_tool = next((b for b in resposta.content if b.type == "tool_use"), None)
+        bloco_texto = next((b.text for b in resposta.content if b.type == "text"), None)
+        turno_assistant = {"role": "assistant", "content": [b.model_dump() for b in resposta.content]}
+        mensagens.append(turno_assistant)
+        novos_turnos.append(turno_assistant)
+
+        if bloco_tool is None:
+            return bloco_texto, novos_turnos
+
+        if bloco_tool.name == "registrar_pedido_projeto":
+            # executar() pode demorar (Planejador + Coder rodando em
+            # sequencia) -- avisa antes de travar a resposta.
+            telegram_transport.enviar(
+                chat_id, "Anotado! Deixa eu preparar um rascunho tecnico disso..."
+            )
+        resultado = _executar_tool_projeto(bloco_tool.name, bloco_tool.input)
+        turno_resultado = {
+            "role": "user",
+            "content": [{
+                "type": "tool_result",
+                "tool_use_id": bloco_tool.id,
+                "content": json.dumps(resultado, ensure_ascii=False),
+            }],
+        }
+        mensagens.append(turno_resultado)
+        novos_turnos.append(turno_resultado)
+
+    return "Desculpa, não consegui concluir isso agora — tenta reformular?", novos_turnos
+
+
+def _caminho_estado_projeto(chat_id: str):
+    pasta = config.DATA_DIR / "conversas_projeto"
+    pasta.mkdir(parents=True, exist_ok=True)
+    return pasta / f"{chat_id}.json"
+
+
+def _carregar_estado_projeto(chat_id: str) -> dict:
+    caminho = _caminho_estado_projeto(chat_id)
+    if not caminho.exists():
+        return {"historico": []}
+    return json.loads(caminho.read_text(encoding="utf-8"))
+
+
+def _salvar_estado_projeto(chat_id: str, estado: dict) -> None:
+    _caminho_estado_projeto(chat_id).write_text(
+        json.dumps(estado, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+
+def _processar_modo_projeto(chat_id: str, texto: str, telegram_transport) -> None:
+    """Modo apresentacao do projeto (MODO_PROJETO=1) -- sem selecao de
+    site, sem tools de marketing. So conversa livre sobre o que existe no
+    projeto + as 2 tools de pedido (ver _perguntar_projeto)."""
+    if texto.strip().lower() in ("/start", "/reiniciar"):
+        _salvar_estado_projeto(chat_id, {"historico": []})
+        telegram_transport.enviar(
+            chat_id,
+            "Oi! Sou o Julio. O sistema completo de marketing ainda esta "
+            "sendo construido, entao por enquanto estou aqui pra explicar "
+            "o que ja foi feito no projeto, tirar duvidas, e anotar "
+            "pedidos de mudanca -- pode perguntar a vontade.",
+        )
+        return
+
+    estado = _carregar_estado_projeto(chat_id)
+    estado["historico"].append({"role": "user", "content": texto})
+    bloco_texto, novos_turnos = _perguntar_projeto(estado["historico"], chat_id, telegram_transport)
+    estado["historico"].extend(novos_turnos)
+    if bloco_texto:
+        telegram_transport.enviar(chat_id, bloco_texto)
+    _salvar_estado_projeto(chat_id, estado)
+
+
 def _caminho_estado(chat_id: str):
     pasta = config.DATA_DIR / "telegram_conversas"
     pasta.mkdir(parents=True, exist_ok=True)
@@ -338,6 +515,10 @@ def _salvar_estado(chat_id: str, estado: dict) -> None:
 
 
 def processar_mensagem(chat_id: str, texto: str, telegram_transport) -> None:
+    if config.modo_projeto():
+        _processar_modo_projeto(chat_id, texto, telegram_transport)
+        return
+
     estado = _carregar_estado(chat_id)
 
     if texto.strip().lower() in ("/start", "/reiniciar"):
