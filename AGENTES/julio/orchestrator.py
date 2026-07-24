@@ -578,6 +578,11 @@ def processar_mensagem(chat_id: str, texto: str, telegram_transport) -> None:
                 "pra aplicar mais tarde.",
             )
         estado["pedido_pendente_aplicar"] = None
+        # O historico salvo termina num tool_use (registrar_pedido_projeto)
+        # sem tool_result correspondente -- a API da Anthropic exige o par
+        # na mensagem seguinte. Mesmo motivo pelo qual a confirmacao de
+        # campanha (abaixo) zera o historico nas duas respostas.
+        estado["historico"] = []
         _salvar_estado(chat_id, estado)
         return
 
