@@ -1,0 +1,1121 @@
+{
+  "AggregateHybridQuery": {
+    "tipo": "classe",
+    "assinatura": "(text: str, text_field_name: str, vector: bytes | list[float], vector_field_name: str, text_scorer: str = 'BM25STD', filter_expression: str | redisvl.query.filter.FilterExpression | None = None, alpha: float = 0.7, dtype: str = 'float32', num_results: int = 10, return_fields: list[str] | None = None, stopwords: str | set[str] | None = 'english', dialect: int = 2, text_weights: dict[str, float] | None = None)",
+    "docstring": "AggregateHybridQuery combines text and vector search in Redis.\nIt allows you to perform a hybrid search using both text and vector similarity.\nIt scores documents based on a weighted combination of text and vector similarity.\n\n.. code-block:: python\n\n    from redisvl.query import AggregateHybridQuery\n    from redisvl.index import SearchIndex\n\n    index = SearchIndex.from_yaml(\"path/to/index.yaml\")\n\n    query = AggregateHybridQuery(\n        text=\"example text\",\n        text_field_name=\"text_field\",\n        vector=[0.1, 0.2, 0.3],\n        vector_field_name=\"vector_field\",\n        text_scorer=\"BM25STD\",\n        filter_expression=None,\n        alpha=0.7,\n        dtype=\"float32\",\n        num_results=10,\n        return_fields=[\"field1\", \"field2\"],\n        stopwords=\"english\",\n        dialect=2,\n    )\n\n    results = index.query(query)",
+    "modulo_origem": "redisvl.query.aggregate",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, text: str, text_field_name: str, vector: bytes | list[float], vector_field_name: str, text_scorer: str = 'BM25STD', filter_expression: str | redisvl.query.filter.FilterExpression | None = None, alpha: float = 0.7, dtype: str = 'float32', num_results: int = 10, return_fields: list[str] | None = None, stopwords: str | set[str] | None = 'english', dialect: int = 2, text_weights: dict[str, float] | None = None)",
+        "docstring": "Instantiates a AggregateHybridQuery object.\n\nArgs:\n    text (str): The text to search for.\n    text_field_name (str): The text field name to search in.\n    vector (Union[bytes, List[float]]): The vector to perform vector similarity search.\n    vector_field_name (str): The vector field name to search in.\n    text_scorer (str, optional): The text scorer to use. Options are {TFIDF, TFIDF.DOCNORM,\n        BM25, DISMAX, DOCSCORE, BM25STD}. Defaults to \"BM25STD\".\n    filter_expression (Optional[FilterExpression], optional): The filter expression to use.\n        Defaults to None.\n    alpha (float, optional): The weight of the vector similarity. Documents will be scored\n        as: hybrid_score = (alpha) * vector_score + (1-alpha) * text_score.\n        Defaults to 0.7.\n    dtype (str, optional): The data type of the vector. Defaults to \"float32\".\n    num_results (int, optional): The number of results to return. Defaults to 10.\n    return_fields (Optional[List[str]], optional): The fields to return. Defaults to None.\n    stopwords (Optional[Union[str, Set[str]]], optional): The stopwords to remove from the\n        provided text prior to search-use. If a string such as \"english\" \"german\" is\n        provided then a default set of stopwords for that language will be used. if a list,\n        set, or tuple of strings is provided then those will be used as stopwords.\n        Defaults to \"english\". if set to \"None\" then no stopwords will be removed.\n\n        Note: This parameter controls query-time stopword filtering (client-side).\n        For index-level stopwords configuration (server-side), see IndexInfo.stopwords.\n        Using query-time stopwords with index-level STOPWORDS 0 is counterproductive.\n    dialect (int, optional): The Redis dialect version. Defaults to 2.\n    text_weights (Optional[Dict[str, float]]): The importance weighting of individual words\n        within the query text. Defaults to None, as no modifications will be made to the\n        text_scorer score.\n\nNote:\n    AggregateHybridQuery uses FT.AGGREGATE commands which do NOT support runtime\n    parameters. For runtime parameter support (ef_runtime, search_window_size, etc.),\n    use VectorQuery or VectorRangeQuery which use FT.SEARCH commands.\n\nRaises:\n    ValueError: If the text string is empty, or if the text string becomes empty after\n        stopwords are removed.\n    TypeError: If the stopwords are not a set, list, or tuple of strings."
+      },
+      "add_scores": {
+        "assinatura": "(self) -> 'AggregateRequest'",
+        "docstring": "If set, includes the score as an ordinary field of the row."
+      },
+      "apply": {
+        "assinatura": "(self, **kwexpr) -> 'AggregateRequest'",
+        "docstring": "Specify one or more projection expressions to add to each result\n\n### Parameters\n\n- **kwexpr**: One or more key-value pairs for a projection. The key is\n    the alias for the projection, and the value is the projection\n    expression itself, for example `apply(square_root=\"sqrt(@foo)\")`"
+      },
+      "build_args": {
+        "assinatura": "(self) -> List[str]",
+        "docstring": null
+      },
+      "cursor": {
+        "assinatura": "(self, count: int = 0, max_idle: float = 0.0) -> 'AggregateRequest'",
+        "docstring": null
+      },
+      "dialect": {
+        "assinatura": "(self, dialect: int) -> 'AggregateRequest'",
+        "docstring": "Add a dialect field to the aggregate command.\n\n- **dialect** - dialect version to execute the query under"
+      },
+      "filter": {
+        "assinatura": "(self, expressions: Union[str, List[str]]) -> 'AggregateRequest'",
+        "docstring": "Specify filter for post-query results using predicates relating to\nvalues in the result set.\n\n### Parameters\n\n- **fields**: Fields to group by. This can either be a single string,\n    or a list of strings."
+      },
+      "group_by": {
+        "assinatura": "(self, fields: Union[str, List[str]], *reducers: redis.commands.search.aggregation.Reducer) -> 'AggregateRequest'",
+        "docstring": "Specify by which fields to group the aggregation.\n\n### Parameters\n\n- **fields**: Fields to group by. This can either be a single string,\n    or a list of strings. both cases, the field should be specified as\n    `@field`.\n- **reducers**: One or more reducers. Reducers may be found in the\n    `aggregation` module."
+      },
+      "limit": {
+        "assinatura": "(self, offset: int, num: int) -> 'AggregateRequest'",
+        "docstring": "Sets the limit for the most recent group or query.\n\nIf no group has been defined yet (via `group_by()`) then this sets\nthe limit for the initial pool of results from the query. Otherwise,\nthis limits the number of items operated on from the previous group.\n\nSetting a limit on the initial search results may be useful when\nattempting to execute an aggregation on a sample of a large data set.\n\n### Parameters\n\n- **offset**: Result offset from which to begin paging\n- **num**: Number of results to return\n\n\nExample of sorting the initial results:\n\n```\nAggregateRequest(\"@sale_amount:[10000, inf]\")            .limit(0, 10)            .group_by(\"@state\", r.count())\n```\n\nWill only group by the states found in the first 10 results of the\nquery `@sale_amount:[10000, inf]`. On the other hand,\n\n```\nAggregateRequest(\"@sale_amount:[10000, inf]\")            .limit(0, 1000)            .group_by(\"@state\", r.count()            .limit(0, 10)\n```\n\nWill group all the results matching the query, but only return the\nfirst 10 groups.\n\nIf you only wish to return a *top-N* style query, consider using\n`sort_by()` instead."
+      },
+      "load": {
+        "assinatura": "(self, *fields: str) -> 'AggregateRequest'",
+        "docstring": "Indicate the fields to be returned in the response. These fields are\nreturned in addition to any others implicitly specified.\n\n### Parameters\n\n- **fields**: If fields not specified, all the fields will be loaded.\nOtherwise, fields should be given in the format of `@field`."
+      },
+      "scorer": {
+        "assinatura": "(self, scorer: str) -> 'AggregateRequest'",
+        "docstring": "Use a different scoring function to evaluate document relevance.\nDefault is `TFIDF`.\n\n:param scorer: The scoring function to use\n               (e.g. `TFIDF.DOCNORM` or `BM25`)"
+      },
+      "set_text_weights": {
+        "assinatura": "(self, weights: dict[str, float])",
+        "docstring": "Set or update the text weights for the query.\n\nArgs:\n    weights: Dictionary of word:weight mappings"
+      },
+      "sort_by": {
+        "assinatura": "(self, *fields: str, **kwargs) -> 'AggregateRequest'",
+        "docstring": "Indicate how the results should be sorted. This can also be used for\n*top-N* style queries\n\n### Parameters\n\n- **fields**: The fields by which to sort. This can be either a single\n    field or a list of fields. If you wish to specify order, you can\n    use the `Asc` or `Desc` wrapper classes.\n- **max**: Maximum number of results to return. This can be\n    used instead of `LIMIT` and is also faster.\n\n\nExample of sorting by `foo` ascending and `bar` descending:\n\n```\nsort_by(Asc(\"@foo\"), Desc(\"@bar\"))\n```\n\nReturn the top 10 customers:\n\n```\nAggregateRequest()            .group_by(\"@customer\", r.sum(\"@paid\").alias(FIELDNAME))            .sort_by(Desc(\"@paid\"), max=10)\n```"
+      },
+      "verbatim": {
+        "assinatura": "(self) -> 'AggregateRequest'",
+        "docstring": null
+      },
+      "with_schema": {
+        "assinatura": "(self) -> 'AggregateRequest'",
+        "docstring": "If set, the `schema` property will contain a list of `[field, type]`\nentries in the result object."
+      }
+    }
+  },
+  "AggregationQuery": {
+    "tipo": "classe",
+    "assinatura": "(query_string)",
+    "docstring": "Base class for aggregation queries used to create aggregation queries for Redis.",
+    "modulo_origem": "redisvl.query.aggregate",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, query_string)",
+        "docstring": "Create an aggregation request. This request may then be passed to\n`client.aggregate()`.\n\nIn order for the request to be usable, it must contain at least one\ngroup.\n\n- **query** Query string for filtering records.\n\nAll member methods (except `build_args()`)\nreturn the object itself, making them useful for chaining."
+      },
+      "add_scores": {
+        "assinatura": "(self) -> 'AggregateRequest'",
+        "docstring": "If set, includes the score as an ordinary field of the row."
+      },
+      "apply": {
+        "assinatura": "(self, **kwexpr) -> 'AggregateRequest'",
+        "docstring": "Specify one or more projection expressions to add to each result\n\n### Parameters\n\n- **kwexpr**: One or more key-value pairs for a projection. The key is\n    the alias for the projection, and the value is the projection\n    expression itself, for example `apply(square_root=\"sqrt(@foo)\")`"
+      },
+      "build_args": {
+        "assinatura": "(self) -> List[str]",
+        "docstring": null
+      },
+      "cursor": {
+        "assinatura": "(self, count: int = 0, max_idle: float = 0.0) -> 'AggregateRequest'",
+        "docstring": null
+      },
+      "dialect": {
+        "assinatura": "(self, dialect: int) -> 'AggregateRequest'",
+        "docstring": "Add a dialect field to the aggregate command.\n\n- **dialect** - dialect version to execute the query under"
+      },
+      "filter": {
+        "assinatura": "(self, expressions: Union[str, List[str]]) -> 'AggregateRequest'",
+        "docstring": "Specify filter for post-query results using predicates relating to\nvalues in the result set.\n\n### Parameters\n\n- **fields**: Fields to group by. This can either be a single string,\n    or a list of strings."
+      },
+      "group_by": {
+        "assinatura": "(self, fields: Union[str, List[str]], *reducers: redis.commands.search.aggregation.Reducer) -> 'AggregateRequest'",
+        "docstring": "Specify by which fields to group the aggregation.\n\n### Parameters\n\n- **fields**: Fields to group by. This can either be a single string,\n    or a list of strings. both cases, the field should be specified as\n    `@field`.\n- **reducers**: One or more reducers. Reducers may be found in the\n    `aggregation` module."
+      },
+      "limit": {
+        "assinatura": "(self, offset: int, num: int) -> 'AggregateRequest'",
+        "docstring": "Sets the limit for the most recent group or query.\n\nIf no group has been defined yet (via `group_by()`) then this sets\nthe limit for the initial pool of results from the query. Otherwise,\nthis limits the number of items operated on from the previous group.\n\nSetting a limit on the initial search results may be useful when\nattempting to execute an aggregation on a sample of a large data set.\n\n### Parameters\n\n- **offset**: Result offset from which to begin paging\n- **num**: Number of results to return\n\n\nExample of sorting the initial results:\n\n```\nAggregateRequest(\"@sale_amount:[10000, inf]\")            .limit(0, 10)            .group_by(\"@state\", r.count())\n```\n\nWill only group by the states found in the first 10 results of the\nquery `@sale_amount:[10000, inf]`. On the other hand,\n\n```\nAggregateRequest(\"@sale_amount:[10000, inf]\")            .limit(0, 1000)            .group_by(\"@state\", r.count()            .limit(0, 10)\n```\n\nWill group all the results matching the query, but only return the\nfirst 10 groups.\n\nIf you only wish to return a *top-N* style query, consider using\n`sort_by()` instead."
+      },
+      "load": {
+        "assinatura": "(self, *fields: str) -> 'AggregateRequest'",
+        "docstring": "Indicate the fields to be returned in the response. These fields are\nreturned in addition to any others implicitly specified.\n\n### Parameters\n\n- **fields**: If fields not specified, all the fields will be loaded.\nOtherwise, fields should be given in the format of `@field`."
+      },
+      "scorer": {
+        "assinatura": "(self, scorer: str) -> 'AggregateRequest'",
+        "docstring": "Use a different scoring function to evaluate document relevance.\nDefault is `TFIDF`.\n\n:param scorer: The scoring function to use\n               (e.g. `TFIDF.DOCNORM` or `BM25`)"
+      },
+      "sort_by": {
+        "assinatura": "(self, *fields: str, **kwargs) -> 'AggregateRequest'",
+        "docstring": "Indicate how the results should be sorted. This can also be used for\n*top-N* style queries\n\n### Parameters\n\n- **fields**: The fields by which to sort. This can be either a single\n    field or a list of fields. If you wish to specify order, you can\n    use the `Asc` or `Desc` wrapper classes.\n- **max**: Maximum number of results to return. This can be\n    used instead of `LIMIT` and is also faster.\n\n\nExample of sorting by `foo` ascending and `bar` descending:\n\n```\nsort_by(Asc(\"@foo\"), Desc(\"@bar\"))\n```\n\nReturn the top 10 customers:\n\n```\nAggregateRequest()            .group_by(\"@customer\", r.sum(\"@paid\").alias(FIELDNAME))            .sort_by(Desc(\"@paid\"), max=10)\n```"
+      },
+      "verbatim": {
+        "assinatura": "(self) -> 'AggregateRequest'",
+        "docstring": null
+      },
+      "with_schema": {
+        "assinatura": "(self) -> 'AggregateRequest'",
+        "docstring": "If set, the `schema` property will contain a list of `[field, type]`\nentries in the result object."
+      }
+    }
+  },
+  "BaseQuery": {
+    "tipo": "classe",
+    "assinatura": "(query_string: str = '*')",
+    "docstring": "Base query class used to subclass many query types.\n\nNOTE: In the base class, the `_query_string` field is set once on\ninitialization, and afterward, redis-py expects to be able to read it. By\ncontrast, our query subclasses allow users to call methods that alter the\nquery string at runtime. To avoid having to rebuild `_query_string` every\ntime one of these methods is called, we lazily build the query string when a\nuser calls `query()` or accesses the property `_query_string`, when the\nunderlying `_built_query_string` field is None. Any method that alters the query\nstring should set `_built_query_string` to None so that the next time the query\nstring is accessed, it is rebuilt.",
+    "modulo_origem": "redisvl.query.query",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, query_string: str = '*')",
+        "docstring": "Initialize the BaseQuery class.\n\nArgs:\n    query_string (str, optional): The query string to use. Defaults to '*'."
+      },
+      "add_filter": {
+        "assinatura": "(self, flt: 'Filter') -> 'Query'",
+        "docstring": "Add a numeric or geo filter to the query.\n**Currently, only one of each filter is supported by the engine**\n\n- **flt**: A NumericFilter or GeoFilter object, used on a\ncorresponding field"
+      },
+      "dialect": {
+        "assinatura": "(self, dialect: int) -> 'Query'",
+        "docstring": "Add a dialect field to the query.\n\n- **dialect** - dialect version to execute the query under"
+      },
+      "expander": {
+        "assinatura": "(self, expander: str) -> 'Query'",
+        "docstring": "Add an expander field to the query.\n\n- **expander** - the name of the expander"
+      },
+      "get_args": {
+        "assinatura": "(self) -> List[Union[str, int, float]]",
+        "docstring": "Format the redis arguments for this query and return them."
+      },
+      "highlight": {
+        "assinatura": "(self, fields: Optional[List[str]] = None, tags: Optional[List[str]] = None) -> 'Query'",
+        "docstring": "Apply specified markup to matched term(s) within the returned field(s).\n\n- **fields** If specified, then only those mentioned fields are\nhighlighted, otherwise all fields are highlighted\n- **tags** A list of two strings to surround the match."
+      },
+      "in_order": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Match only documents where the query terms appear in\nthe same order in the document.\ni.e., for the query \"hello world\", we do not match \"world hello\""
+      },
+      "language": {
+        "assinatura": "(self, language: str) -> 'Query'",
+        "docstring": "Analyze the query as being in the specified language.\n\n:param language: The language (e.g. `chinese` or `english`)"
+      },
+      "limit_fields": {
+        "assinatura": "(self, *fields: str) -> 'Query'",
+        "docstring": "Limit the search to specific TEXT fields only.\n\n- **fields**: Each element should be a string, case sensitive field name\nfrom the defined schema."
+      },
+      "limit_ids": {
+        "assinatura": "(self, *ids) -> 'Query'",
+        "docstring": "Limit the results to a specific set of pre-known document\nids of any length."
+      },
+      "no_content": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Set the query to only return ids and not the document content."
+      },
+      "no_stopwords": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Prevent the query from being filtered for stopwords.\nOnly useful in very big queries that you are certain contain\nno stopwords."
+      },
+      "paging": {
+        "assinatura": "(self, offset: int, num: int) -> 'Query'",
+        "docstring": "Set the paging for the query (defaults to 0..10).\n\n- **offset**: Paging offset for the results. Defaults to 0\n- **num**: How many results do we want"
+      },
+      "query_string": {
+        "assinatura": "(self) -> str",
+        "docstring": "Return the query string of this query only."
+      },
+      "return_field": {
+        "assinatura": "(self, field: str, as_field: Optional[str] = None, decode_field: Optional[bool] = True, encoding: Optional[str] = 'utf8') -> 'Query'",
+        "docstring": "Add a field to the list of fields to return.\n\n- **field**: The field to include in query results\n- **as_field**: The alias for the field\n- **decode_field**: Whether to decode the field from bytes to string\n- **encoding**: The encoding to use when decoding the field"
+      },
+      "return_fields": {
+        "assinatura": "(self, *fields, skip_decode: str | list[str] | None = None)",
+        "docstring": "Set the fields to return with search results.\n\nArgs:\n    *fields: Variable number of field names to return.\n    skip_decode: Optional field name or list of field names that should not be\n        decoded. Useful for binary data like embeddings.\n\nReturns:\n    self: Returns the query object for method chaining.\n\nRaises:\n    TypeError: If skip_decode is not a string, list, or None."
+      },
+      "scorer": {
+        "assinatura": "(self, scorer: str) -> 'Query'",
+        "docstring": "Use a different scoring function to evaluate document relevance.\nDefault is `TFIDF`.\n\nSince Redis 8.0 default was changed to BM25STD.\n\n:param scorer: The scoring function to use\n               (e.g. `TFIDF.DOCNORM` or `BM25`)"
+      },
+      "set_filter": {
+        "assinatura": "(self, filter_expression: str | redisvl.query.filter.FilterExpression | None = None)",
+        "docstring": "Set the filter expression for the query.\n\nArgs:\n    filter_expression (Optional[Union[str, FilterExpression]], optional): The filter\n        expression or query string to use on the query.\n\nRaises:\n    TypeError: If filter_expression is not a valid FilterExpression or string."
+      },
+      "slop": {
+        "assinatura": "(self, slop: int) -> 'Query'",
+        "docstring": "Allow a maximum of N intervening non-matched terms between\nphrase terms (0 means exact phrase)."
+      },
+      "sort_by": {
+        "assinatura": "(self, sort_spec: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, asc: bool = True) -> 'BaseQuery'",
+        "docstring": "Set the sort order for query results.\n\nThis method supports sorting by single or multiple fields. Note that Redis Search\nnatively supports only a single SORTBY field. When multiple fields are specified,\nonly the FIRST field is used for the Redis SORTBY clause.\n\nArgs:\n    sort_spec: Sort specification in various formats:\n        - str: single field name\n        - Tuple[str, str]: (field_name, \"ASC\"|\"DESC\")\n        - List: list of field names or tuples\n    asc: Default sort direction when not specified (only used when sort_spec is a string).\n        Defaults to True (ascending).\n\nReturns:\n    self: Returns the query object for method chaining.\n\nRaises:\n    TypeError: If sort_spec is not a valid type.\n    ValueError: If direction is not \"ASC\" or \"DESC\".\n\nExamples:\n    >>> query.sort_by(\"price\")  # Single field, ascending\n    >>> query.sort_by((\"price\", \"DESC\"))  # Single field, descending\n    >>> query.sort_by([\"price\", \"rating\"])  # Multiple fields (only first used)\n    >>> query.sort_by([(\"price\", \"DESC\"), (\"rating\", \"ASC\")])\n\nNote:\n    When multiple fields are specified, only the first field is used for sorting\n    in Redis. Future versions may support multi-field sorting through post-query\n    sorting in Python."
+      },
+      "summarize": {
+        "assinatura": "(self, fields: Optional[List] = None, context_len: Optional[int] = None, num_frags: Optional[int] = None, sep: Optional[str] = None) -> 'Query'",
+        "docstring": "Return an abridged format of the field, containing only the segments of\nthe field that contain the matching term(s).\n\nIf `fields` is specified, then only the mentioned fields are\nsummarized; otherwise, all results are summarized.\n\nServer-side defaults are used for each option (except `fields`)\nif not specified\n\n- **fields** List of fields to summarize. All fields are summarized\nif not specified\n- **context_len** Amount of context to include with each fragment\n- **num_frags** Number of fragments per document\n- **sep** Separator string to separate fragments"
+      },
+      "timeout": {
+        "assinatura": "(self, timeout: float) -> 'Query'",
+        "docstring": "overrides the timeout parameter of the module"
+      },
+      "verbatim": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Set the query to be verbatim, i.e., use no query expansion\nor stemming."
+      },
+      "with_payloads": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Ask the engine to return document payloads."
+      },
+      "with_scores": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Ask the engine to return document search scores."
+      }
+    }
+  },
+  "BaseVectorQuery": {
+    "tipo": "classe",
+    "assinatura": "()",
+    "docstring": null,
+    "modulo_origem": "redisvl.query.query",
+    "metodos": {}
+  },
+  "CountQuery": {
+    "tipo": "classe",
+    "assinatura": "(filter_expression: str | redisvl.query.filter.FilterExpression | None = None, dialect: int = 2, params: dict[str, typing.Any] | None = None)",
+    "docstring": "Base query class used to subclass many query types.\n\nNOTE: In the base class, the `_query_string` field is set once on\ninitialization, and afterward, redis-py expects to be able to read it. By\ncontrast, our query subclasses allow users to call methods that alter the\nquery string at runtime. To avoid having to rebuild `_query_string` every\ntime one of these methods is called, we lazily build the query string when a\nuser calls `query()` or accesses the property `_query_string`, when the\nunderlying `_built_query_string` field is None. Any method that alters the query\nstring should set `_built_query_string` to None so that the next time the query\nstring is accessed, it is rebuilt.",
+    "modulo_origem": "redisvl.query.query",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, filter_expression: str | redisvl.query.filter.FilterExpression | None = None, dialect: int = 2, params: dict[str, typing.Any] | None = None)",
+        "docstring": "A query for a simple count operation provided some filter expression.\n\nArgs:\n    filter_expression (Optional[Union[str, FilterExpression]]): The filter expression to\n        query with. Defaults to None.\n    params (Optional[Dict[str, Any]], optional): The parameters for the query. Defaults to None.\n\nRaises:\n    TypeError: If filter_expression is not of type redisvl.query.FilterExpression\n\n.. code-block:: python\n\n    from redisvl.query import CountQuery\n    from redisvl.query.filter import Tag\n\n    t = Tag(\"brand\") == \"Nike\"\n    query = CountQuery(filter_expression=t)\n\n    count = index.query(query)"
+      },
+      "add_filter": {
+        "assinatura": "(self, flt: 'Filter') -> 'Query'",
+        "docstring": "Add a numeric or geo filter to the query.\n**Currently, only one of each filter is supported by the engine**\n\n- **flt**: A NumericFilter or GeoFilter object, used on a\ncorresponding field"
+      },
+      "dialect": {
+        "assinatura": "(self, dialect: int) -> 'Query'",
+        "docstring": "Add a dialect field to the query.\n\n- **dialect** - dialect version to execute the query under"
+      },
+      "expander": {
+        "assinatura": "(self, expander: str) -> 'Query'",
+        "docstring": "Add an expander field to the query.\n\n- **expander** - the name of the expander"
+      },
+      "get_args": {
+        "assinatura": "(self) -> List[Union[str, int, float]]",
+        "docstring": "Format the redis arguments for this query and return them."
+      },
+      "highlight": {
+        "assinatura": "(self, fields: Optional[List[str]] = None, tags: Optional[List[str]] = None) -> 'Query'",
+        "docstring": "Apply specified markup to matched term(s) within the returned field(s).\n\n- **fields** If specified, then only those mentioned fields are\nhighlighted, otherwise all fields are highlighted\n- **tags** A list of two strings to surround the match."
+      },
+      "in_order": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Match only documents where the query terms appear in\nthe same order in the document.\ni.e., for the query \"hello world\", we do not match \"world hello\""
+      },
+      "language": {
+        "assinatura": "(self, language: str) -> 'Query'",
+        "docstring": "Analyze the query as being in the specified language.\n\n:param language: The language (e.g. `chinese` or `english`)"
+      },
+      "limit_fields": {
+        "assinatura": "(self, *fields: str) -> 'Query'",
+        "docstring": "Limit the search to specific TEXT fields only.\n\n- **fields**: Each element should be a string, case sensitive field name\nfrom the defined schema."
+      },
+      "limit_ids": {
+        "assinatura": "(self, *ids) -> 'Query'",
+        "docstring": "Limit the results to a specific set of pre-known document\nids of any length."
+      },
+      "no_content": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Set the query to only return ids and not the document content."
+      },
+      "no_stopwords": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Prevent the query from being filtered for stopwords.\nOnly useful in very big queries that you are certain contain\nno stopwords."
+      },
+      "paging": {
+        "assinatura": "(self, offset: int, num: int) -> 'Query'",
+        "docstring": "Set the paging for the query (defaults to 0..10).\n\n- **offset**: Paging offset for the results. Defaults to 0\n- **num**: How many results do we want"
+      },
+      "query_string": {
+        "assinatura": "(self) -> str",
+        "docstring": "Return the query string of this query only."
+      },
+      "return_field": {
+        "assinatura": "(self, field: str, as_field: Optional[str] = None, decode_field: Optional[bool] = True, encoding: Optional[str] = 'utf8') -> 'Query'",
+        "docstring": "Add a field to the list of fields to return.\n\n- **field**: The field to include in query results\n- **as_field**: The alias for the field\n- **decode_field**: Whether to decode the field from bytes to string\n- **encoding**: The encoding to use when decoding the field"
+      },
+      "return_fields": {
+        "assinatura": "(self, *fields, skip_decode: str | list[str] | None = None)",
+        "docstring": "Set the fields to return with search results.\n\nArgs:\n    *fields: Variable number of field names to return.\n    skip_decode: Optional field name or list of field names that should not be\n        decoded. Useful for binary data like embeddings.\n\nReturns:\n    self: Returns the query object for method chaining.\n\nRaises:\n    TypeError: If skip_decode is not a string, list, or None."
+      },
+      "scorer": {
+        "assinatura": "(self, scorer: str) -> 'Query'",
+        "docstring": "Use a different scoring function to evaluate document relevance.\nDefault is `TFIDF`.\n\nSince Redis 8.0 default was changed to BM25STD.\n\n:param scorer: The scoring function to use\n               (e.g. `TFIDF.DOCNORM` or `BM25`)"
+      },
+      "set_filter": {
+        "assinatura": "(self, filter_expression: str | redisvl.query.filter.FilterExpression | None = None)",
+        "docstring": "Set the filter expression for the query.\n\nArgs:\n    filter_expression (Optional[Union[str, FilterExpression]], optional): The filter\n        expression or query string to use on the query.\n\nRaises:\n    TypeError: If filter_expression is not a valid FilterExpression or string."
+      },
+      "slop": {
+        "assinatura": "(self, slop: int) -> 'Query'",
+        "docstring": "Allow a maximum of N intervening non-matched terms between\nphrase terms (0 means exact phrase)."
+      },
+      "sort_by": {
+        "assinatura": "(self, sort_spec: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, asc: bool = True) -> 'BaseQuery'",
+        "docstring": "Set the sort order for query results.\n\nThis method supports sorting by single or multiple fields. Note that Redis Search\nnatively supports only a single SORTBY field. When multiple fields are specified,\nonly the FIRST field is used for the Redis SORTBY clause.\n\nArgs:\n    sort_spec: Sort specification in various formats:\n        - str: single field name\n        - Tuple[str, str]: (field_name, \"ASC\"|\"DESC\")\n        - List: list of field names or tuples\n    asc: Default sort direction when not specified (only used when sort_spec is a string).\n        Defaults to True (ascending).\n\nReturns:\n    self: Returns the query object for method chaining.\n\nRaises:\n    TypeError: If sort_spec is not a valid type.\n    ValueError: If direction is not \"ASC\" or \"DESC\".\n\nExamples:\n    >>> query.sort_by(\"price\")  # Single field, ascending\n    >>> query.sort_by((\"price\", \"DESC\"))  # Single field, descending\n    >>> query.sort_by([\"price\", \"rating\"])  # Multiple fields (only first used)\n    >>> query.sort_by([(\"price\", \"DESC\"), (\"rating\", \"ASC\")])\n\nNote:\n    When multiple fields are specified, only the first field is used for sorting\n    in Redis. Future versions may support multi-field sorting through post-query\n    sorting in Python."
+      },
+      "summarize": {
+        "assinatura": "(self, fields: Optional[List] = None, context_len: Optional[int] = None, num_frags: Optional[int] = None, sep: Optional[str] = None) -> 'Query'",
+        "docstring": "Return an abridged format of the field, containing only the segments of\nthe field that contain the matching term(s).\n\nIf `fields` is specified, then only the mentioned fields are\nsummarized; otherwise, all results are summarized.\n\nServer-side defaults are used for each option (except `fields`)\nif not specified\n\n- **fields** List of fields to summarize. All fields are summarized\nif not specified\n- **context_len** Amount of context to include with each fragment\n- **num_frags** Number of fragments per document\n- **sep** Separator string to separate fragments"
+      },
+      "timeout": {
+        "assinatura": "(self, timeout: float) -> 'Query'",
+        "docstring": "overrides the timeout parameter of the module"
+      },
+      "verbatim": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Set the query to be verbatim, i.e., use no query expansion\nor stemming."
+      },
+      "with_payloads": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Ask the engine to return document payloads."
+      },
+      "with_scores": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Ask the engine to return document search scores."
+      }
+    }
+  },
+  "FilterQuery": {
+    "tipo": "classe",
+    "assinatura": "(filter_expression: str | redisvl.query.filter.FilterExpression | None = None, return_fields: list[str] | None = None, num_results: int = 10, dialect: int = 2, sort_by: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, in_order: bool = False, params: dict[str, typing.Any] | None = None)",
+    "docstring": "Base query class used to subclass many query types.\n\nNOTE: In the base class, the `_query_string` field is set once on\ninitialization, and afterward, redis-py expects to be able to read it. By\ncontrast, our query subclasses allow users to call methods that alter the\nquery string at runtime. To avoid having to rebuild `_query_string` every\ntime one of these methods is called, we lazily build the query string when a\nuser calls `query()` or accesses the property `_query_string`, when the\nunderlying `_built_query_string` field is None. Any method that alters the query\nstring should set `_built_query_string` to None so that the next time the query\nstring is accessed, it is rebuilt.",
+    "modulo_origem": "redisvl.query.query",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, filter_expression: str | redisvl.query.filter.FilterExpression | None = None, return_fields: list[str] | None = None, num_results: int = 10, dialect: int = 2, sort_by: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, in_order: bool = False, params: dict[str, typing.Any] | None = None)",
+        "docstring": "A query for running a filtered search with a filter expression.\n\nArgs:\n    filter_expression (Optional[Union[str, FilterExpression]]): The optional filter\n        expression to query with. Defaults to '*'.\n    return_fields (Optional[List[str]], optional): The fields to return.\n    num_results (Optional[int], optional): The number of results to return. Defaults to 10.\n    dialect (int, optional): The query dialect. Defaults to 2.\n    sort_by (Optional[SortSpec], optional): The field(s) to order the results by. Can be:\n        - str: single field name (e.g., \"price\")\n        - Tuple[str, str]: (field_name, \"ASC\"|\"DESC\") (e.g., (\"price\", \"DESC\"))\n        - List: list of fields or tuples (e.g., [\"price\", (\"rating\", \"DESC\")])\n        Note: Redis Search only supports single-field sorting, so only the first field is used.\n        Defaults to None.\n    in_order (bool, optional): Requires the terms in the field to have the same order as the\n        terms in the query filter. Defaults to False.\n    params (Optional[Dict[str, Any]], optional): The parameters for the query. Defaults to None.\n\nRaises:\n    TypeError: If filter_expression is not of type redisvl.query.FilterExpression"
+      },
+      "add_filter": {
+        "assinatura": "(self, flt: 'Filter') -> 'Query'",
+        "docstring": "Add a numeric or geo filter to the query.\n**Currently, only one of each filter is supported by the engine**\n\n- **flt**: A NumericFilter or GeoFilter object, used on a\ncorresponding field"
+      },
+      "dialect": {
+        "assinatura": "(self, dialect: int) -> 'Query'",
+        "docstring": "Add a dialect field to the query.\n\n- **dialect** - dialect version to execute the query under"
+      },
+      "expander": {
+        "assinatura": "(self, expander: str) -> 'Query'",
+        "docstring": "Add an expander field to the query.\n\n- **expander** - the name of the expander"
+      },
+      "get_args": {
+        "assinatura": "(self) -> List[Union[str, int, float]]",
+        "docstring": "Format the redis arguments for this query and return them."
+      },
+      "highlight": {
+        "assinatura": "(self, fields: Optional[List[str]] = None, tags: Optional[List[str]] = None) -> 'Query'",
+        "docstring": "Apply specified markup to matched term(s) within the returned field(s).\n\n- **fields** If specified, then only those mentioned fields are\nhighlighted, otherwise all fields are highlighted\n- **tags** A list of two strings to surround the match."
+      },
+      "in_order": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Match only documents where the query terms appear in\nthe same order in the document.\ni.e., for the query \"hello world\", we do not match \"world hello\""
+      },
+      "language": {
+        "assinatura": "(self, language: str) -> 'Query'",
+        "docstring": "Analyze the query as being in the specified language.\n\n:param language: The language (e.g. `chinese` or `english`)"
+      },
+      "limit_fields": {
+        "assinatura": "(self, *fields: str) -> 'Query'",
+        "docstring": "Limit the search to specific TEXT fields only.\n\n- **fields**: Each element should be a string, case sensitive field name\nfrom the defined schema."
+      },
+      "limit_ids": {
+        "assinatura": "(self, *ids) -> 'Query'",
+        "docstring": "Limit the results to a specific set of pre-known document\nids of any length."
+      },
+      "no_content": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Set the query to only return ids and not the document content."
+      },
+      "no_stopwords": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Prevent the query from being filtered for stopwords.\nOnly useful in very big queries that you are certain contain\nno stopwords."
+      },
+      "paging": {
+        "assinatura": "(self, offset: int, num: int) -> 'Query'",
+        "docstring": "Set the paging for the query (defaults to 0..10).\n\n- **offset**: Paging offset for the results. Defaults to 0\n- **num**: How many results do we want"
+      },
+      "query_string": {
+        "assinatura": "(self) -> str",
+        "docstring": "Return the query string of this query only."
+      },
+      "return_field": {
+        "assinatura": "(self, field: str, as_field: Optional[str] = None, decode_field: Optional[bool] = True, encoding: Optional[str] = 'utf8') -> 'Query'",
+        "docstring": "Add a field to the list of fields to return.\n\n- **field**: The field to include in query results\n- **as_field**: The alias for the field\n- **decode_field**: Whether to decode the field from bytes to string\n- **encoding**: The encoding to use when decoding the field"
+      },
+      "return_fields": {
+        "assinatura": "(self, *fields, skip_decode: str | list[str] | None = None)",
+        "docstring": "Set the fields to return with search results.\n\nArgs:\n    *fields: Variable number of field names to return.\n    skip_decode: Optional field name or list of field names that should not be\n        decoded. Useful for binary data like embeddings.\n\nReturns:\n    self: Returns the query object for method chaining.\n\nRaises:\n    TypeError: If skip_decode is not a string, list, or None."
+      },
+      "scorer": {
+        "assinatura": "(self, scorer: str) -> 'Query'",
+        "docstring": "Use a different scoring function to evaluate document relevance.\nDefault is `TFIDF`.\n\nSince Redis 8.0 default was changed to BM25STD.\n\n:param scorer: The scoring function to use\n               (e.g. `TFIDF.DOCNORM` or `BM25`)"
+      },
+      "set_filter": {
+        "assinatura": "(self, filter_expression: str | redisvl.query.filter.FilterExpression | None = None)",
+        "docstring": "Set the filter expression for the query.\n\nArgs:\n    filter_expression (Optional[Union[str, FilterExpression]], optional): The filter\n        expression or query string to use on the query.\n\nRaises:\n    TypeError: If filter_expression is not a valid FilterExpression or string."
+      },
+      "slop": {
+        "assinatura": "(self, slop: int) -> 'Query'",
+        "docstring": "Allow a maximum of N intervening non-matched terms between\nphrase terms (0 means exact phrase)."
+      },
+      "sort_by": {
+        "assinatura": "(self, sort_spec: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, asc: bool = True) -> 'BaseQuery'",
+        "docstring": "Set the sort order for query results.\n\nThis method supports sorting by single or multiple fields. Note that Redis Search\nnatively supports only a single SORTBY field. When multiple fields are specified,\nonly the FIRST field is used for the Redis SORTBY clause.\n\nArgs:\n    sort_spec: Sort specification in various formats:\n        - str: single field name\n        - Tuple[str, str]: (field_name, \"ASC\"|\"DESC\")\n        - List: list of field names or tuples\n    asc: Default sort direction when not specified (only used when sort_spec is a string).\n        Defaults to True (ascending).\n\nReturns:\n    self: Returns the query object for method chaining.\n\nRaises:\n    TypeError: If sort_spec is not a valid type.\n    ValueError: If direction is not \"ASC\" or \"DESC\".\n\nExamples:\n    >>> query.sort_by(\"price\")  # Single field, ascending\n    >>> query.sort_by((\"price\", \"DESC\"))  # Single field, descending\n    >>> query.sort_by([\"price\", \"rating\"])  # Multiple fields (only first used)\n    >>> query.sort_by([(\"price\", \"DESC\"), (\"rating\", \"ASC\")])\n\nNote:\n    When multiple fields are specified, only the first field is used for sorting\n    in Redis. Future versions may support multi-field sorting through post-query\n    sorting in Python."
+      },
+      "summarize": {
+        "assinatura": "(self, fields: Optional[List] = None, context_len: Optional[int] = None, num_frags: Optional[int] = None, sep: Optional[str] = None) -> 'Query'",
+        "docstring": "Return an abridged format of the field, containing only the segments of\nthe field that contain the matching term(s).\n\nIf `fields` is specified, then only the mentioned fields are\nsummarized; otherwise, all results are summarized.\n\nServer-side defaults are used for each option (except `fields`)\nif not specified\n\n- **fields** List of fields to summarize. All fields are summarized\nif not specified\n- **context_len** Amount of context to include with each fragment\n- **num_frags** Number of fragments per document\n- **sep** Separator string to separate fragments"
+      },
+      "timeout": {
+        "assinatura": "(self, timeout: float) -> 'Query'",
+        "docstring": "overrides the timeout parameter of the module"
+      },
+      "verbatim": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Set the query to be verbatim, i.e., use no query expansion\nor stemming."
+      },
+      "with_payloads": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Ask the engine to return document payloads."
+      },
+      "with_scores": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Ask the engine to return document search scores."
+      }
+    }
+  },
+  "HybridQuery": {
+    "tipo": "classe",
+    "assinatura": "(text: str, text_field_name: str, vector: bytes | list[float], vector_field_name: str, vector_param_name: str = 'vector', text_scorer: str = 'BM25STD', yield_text_score_as: str | None = None, vector_search_method: Optional[Literal['KNN', 'RANGE']] = None, knn_ef_runtime: int = 10, range_radius: float | None = None, range_epsilon: float = 0.01, yield_vsim_score_as: str | None = None, filter_expression: str | redisvl.query.filter.FilterExpression | None = None, combination_method: Optional[Literal['RRF', 'LINEAR']] = None, rrf_window: int = 20, rrf_constant: int = 60, linear_alpha: float = 0.3, yield_combined_score_as: str | None = None, dtype: str = 'float32', num_results: int | None = 10, return_fields: list[str] | None = None, stopwords: str | set[str] | None = 'english', text_weights: dict[str, float] | None = None)",
+    "docstring": "A hybrid search query that combines text search and vector similarity, with configurable fusion methods.\n\n.. code-block:: python\n\n    from redisvl.query import HybridQuery\n    from redisvl.index import SearchIndex\n\n    index = SearchIndex.from_yaml(\"path/to/index.yaml\")\n\n    query = HybridQuery(\n        text=\"example text\",\n        text_field_name=\"text_field\",\n        vector=[0.1, 0.2, 0.3],\n        vector_field_name=\"vector_field\",\n        text_scorer=\"BM25STD\",\n        yield_text_score_as=\"text_score\",\n        yield_vsim_score_as=\"vector_similarity\",\n        combination_method=\"LINEAR\",\n        linear_alpha=0.3,\n        yield_combined_score_as=\"hybrid_score\",\n        num_results=10,\n        return_fields=[\"field1\", \"field2\"],\n        stopwords=\"english\",\n    )\n\n    results = index.query(query)\n\nSee Also:\n    - `FT.HYBRID command documentation <https://redis.io/docs/latest/commands/ft.hybrid>`_\n    - `redis-py hybrid_search documentation <https://redis.readthedocs.io/en/stable/redismodules.html#redis.commands.search.commands.SearchCommands.hybrid_search>`_",
+    "modulo_origem": "redisvl.query.hybrid",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, text: str, text_field_name: str, vector: bytes | list[float], vector_field_name: str, vector_param_name: str = 'vector', text_scorer: str = 'BM25STD', yield_text_score_as: str | None = None, vector_search_method: Optional[Literal['KNN', 'RANGE']] = None, knn_ef_runtime: int = 10, range_radius: float | None = None, range_epsilon: float = 0.01, yield_vsim_score_as: str | None = None, filter_expression: str | redisvl.query.filter.FilterExpression | None = None, combination_method: Optional[Literal['RRF', 'LINEAR']] = None, rrf_window: int = 20, rrf_constant: int = 60, linear_alpha: float = 0.3, yield_combined_score_as: str | None = None, dtype: str = 'float32', num_results: int | None = 10, return_fields: list[str] | None = None, stopwords: str | set[str] | None = 'english', text_weights: dict[str, float] | None = None)",
+        "docstring": "Instantiates a HybridQuery object.\n\nArgs:\n    text: The text to search for.\n    text_field_name: The text field name to search in.\n    vector: The vector to perform vector similarity search.\n    vector_field_name: The vector field name to search in.\n    vector_param_name: The name of the parameter substitution containing the vector blob.\n    text_scorer: The text scorer to use. Options are {TFIDF, TFIDF.DOCNORM,\n        BM25STD, BM25STD.NORM, BM25STD.TANH, DISMAX, DOCSCORE, HAMMING}. Defaults to \"BM25STD\". For more\n        information about supported scoring algorithms,\n        see https://redis.io/docs/latest/develop/ai/search-and-query/advanced-concepts/scoring/\n    yield_text_score_as: The name of the field to yield the text score as.\n    vector_search_method: The vector search method to use. Options are {KNN, RANGE}. Defaults to None.\n    knn_ef_runtime: The exploration factor parameter for HNSW, optional if `vector_search_method` is \"KNN\".\n    range_radius: The search radius to use, required if `vector_search_method` is \"RANGE\".\n    range_epsilon: The epsilon value to use, optional if `vector_search_method` is \"RANGE\"; defines the\n        accuracy of the search.\n    yield_vsim_score_as: The name of the field to yield the vector similarity score as.\n    filter_expression: The filter expression to use for both the text and vector searches. Defaults to None.\n    combination_method: The combination method to use. Options are {RRF, LINEAR}. If not specified, the server\n        defaults to RRF. If \"RRF\" is specified, then at least one of `rrf_window` or `rrf_constant` must be\n        provided. If \"LINEAR\" is specified, then at least one of `linear_alpha` or `linear_beta` must be\n        provided.\n    rrf_window: The window size to use for the reciprocal rank fusion (RRF) combination method. Limits\n        fusion scope.\n    rrf_constant: The constant to use for the reciprocal rank fusion (RRF) combination method. Controls decay\n        of rank influence.\n    linear_alpha: The weight of the text query for the linear combination method (LINEAR).\n    yield_combined_score_as: The name of the field to yield the combined score as.\n    dtype: The data type of the vector. Defaults to \"float32\".\n    num_results: The number of results to return.\n    return_fields: The fields to return. Defaults to None.\n    stopwords (Optional[Union[str, Set[str]]], optional): The stopwords to remove from the\n        provided text prior to search-use. If a string such as \"english\" \"german\" is\n        provided then a default set of stopwords for that language will be used. if a list,\n        set, or tuple of strings is provided then those will be used as stopwords.\n        Defaults to \"english\". if set to \"None\" then no stopwords will be removed.\n\n        Note: This parameter controls query-time stopword filtering (client-side).\n        For index-level stopwords configuration (server-side), see IndexInfo.stopwords.\n        Using query-time stopwords with index-level STOPWORDS 0 is counterproductive.\n    text_weights (Optional[Dict[str, float]]): The importance weighting of individual words\n        within the query text. Defaults to None, as no modifications will be made to the\n        text_scorer score.\n\nRaises:\n    ImportError: If redis-py>=7.1.0 is not installed.\n    TypeError: If the stopwords are not a set, list, or tuple of strings.\n    ValueError: If the text string is empty, or if the text string becomes empty after\n        stopwords are removed.\n    ValueError: If `vector_search_method` is defined and isn't one of {KNN, RANGE}.\n    ValueError: If `vector_search_method` is \"KNN\" and `knn_k` is not provided.\n    ValueError: If `vector_search_method` is \"RANGE\" and `range_radius` is not provided."
+      }
+    }
+  },
+  "MultiVectorQuery": {
+    "tipo": "classe",
+    "assinatura": "(vectors: redisvl.query.aggregate.Vector | list[redisvl.query.aggregate.Vector], return_fields: list[str] | None = None, filter_expression: str | redisvl.query.filter.FilterExpression | None = None, num_results: int = 10, dialect: int = 2)",
+    "docstring": "MultiVectorQuery allows for search over multiple vector fields in a document simultaneously.\nThe final score will be a weighted combination of the individual vector similarity scores\nfollowing the formula:\n\nscore = (w_1 * score_1 + w_2 * score_2 + w_3 * score_3 + ... )\n\nVectors may be of different size and datatype, but must be indexed using the 'cosine' distance_metric.\n\n.. code-block:: python\n\n    from redisvl.query import MultiVectorQuery, Vector\n    from redisvl.index import SearchIndex\n\n    index = SearchIndex.from_yaml(\"path/to/index.yaml\")\n\n    vector_1 = Vector(\n        vector=[0.1, 0.2, 0.3],\n        field_name=\"text_vector\",\n        dtype=\"float32\",\n        weight=0.7,\n    )\n    vector_2 = Vector(\n        vector=[0.5, 0.5],\n        field_name=\"image_vector\",\n        dtype=\"bfloat16\",\n        weight=0.2,\n    )\n    vector_3 = Vector(\n        vector=[0.1, 0.2, 0.3],\n        field_name=\"text_vector\",\n        dtype=\"float64\",\n        weight=0.5,\n    )\n\n    query = MultiVectorQuery(\n        vectors=[vector_1, vector_2, vector_3],\n        filter_expression=None,\n        num_results=10,\n        return_fields=[\"field1\", \"field2\"],\n        dialect=2,\n    )\n\n    results = index.query(query)",
+    "modulo_origem": "redisvl.query.aggregate",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, vectors: redisvl.query.aggregate.Vector | list[redisvl.query.aggregate.Vector], return_fields: list[str] | None = None, filter_expression: str | redisvl.query.filter.FilterExpression | None = None, num_results: int = 10, dialect: int = 2)",
+        "docstring": "Instantiates a MultiVectorQuery object.\n\nArgs:\n    vectors (Union[Vector, List[Vector]]): The Vectors to perform vector similarity search.\n    return_fields (Optional[List[str]], optional): The fields to return. Defaults to None.\n    filter_expression (Optional[Union[str, FilterExpression]]): The filter expression to use.\n        Defaults to None.\n    num_results (int, optional): The number of results to return. Defaults to 10.\n    dialect (int, optional): The Redis dialect version. Defaults to 2."
+      },
+      "add_scores": {
+        "assinatura": "(self) -> 'AggregateRequest'",
+        "docstring": "If set, includes the score as an ordinary field of the row."
+      },
+      "apply": {
+        "assinatura": "(self, **kwexpr) -> 'AggregateRequest'",
+        "docstring": "Specify one or more projection expressions to add to each result\n\n### Parameters\n\n- **kwexpr**: One or more key-value pairs for a projection. The key is\n    the alias for the projection, and the value is the projection\n    expression itself, for example `apply(square_root=\"sqrt(@foo)\")`"
+      },
+      "build_args": {
+        "assinatura": "(self) -> List[str]",
+        "docstring": null
+      },
+      "cursor": {
+        "assinatura": "(self, count: int = 0, max_idle: float = 0.0) -> 'AggregateRequest'",
+        "docstring": null
+      },
+      "dialect": {
+        "assinatura": "(self, dialect: int) -> 'AggregateRequest'",
+        "docstring": "Add a dialect field to the aggregate command.\n\n- **dialect** - dialect version to execute the query under"
+      },
+      "filter": {
+        "assinatura": "(self, expressions: Union[str, List[str]]) -> 'AggregateRequest'",
+        "docstring": "Specify filter for post-query results using predicates relating to\nvalues in the result set.\n\n### Parameters\n\n- **fields**: Fields to group by. This can either be a single string,\n    or a list of strings."
+      },
+      "group_by": {
+        "assinatura": "(self, fields: Union[str, List[str]], *reducers: redis.commands.search.aggregation.Reducer) -> 'AggregateRequest'",
+        "docstring": "Specify by which fields to group the aggregation.\n\n### Parameters\n\n- **fields**: Fields to group by. This can either be a single string,\n    or a list of strings. both cases, the field should be specified as\n    `@field`.\n- **reducers**: One or more reducers. Reducers may be found in the\n    `aggregation` module."
+      },
+      "limit": {
+        "assinatura": "(self, offset: int, num: int) -> 'AggregateRequest'",
+        "docstring": "Sets the limit for the most recent group or query.\n\nIf no group has been defined yet (via `group_by()`) then this sets\nthe limit for the initial pool of results from the query. Otherwise,\nthis limits the number of items operated on from the previous group.\n\nSetting a limit on the initial search results may be useful when\nattempting to execute an aggregation on a sample of a large data set.\n\n### Parameters\n\n- **offset**: Result offset from which to begin paging\n- **num**: Number of results to return\n\n\nExample of sorting the initial results:\n\n```\nAggregateRequest(\"@sale_amount:[10000, inf]\")            .limit(0, 10)            .group_by(\"@state\", r.count())\n```\n\nWill only group by the states found in the first 10 results of the\nquery `@sale_amount:[10000, inf]`. On the other hand,\n\n```\nAggregateRequest(\"@sale_amount:[10000, inf]\")            .limit(0, 1000)            .group_by(\"@state\", r.count()            .limit(0, 10)\n```\n\nWill group all the results matching the query, but only return the\nfirst 10 groups.\n\nIf you only wish to return a *top-N* style query, consider using\n`sort_by()` instead."
+      },
+      "load": {
+        "assinatura": "(self, *fields: str) -> 'AggregateRequest'",
+        "docstring": "Indicate the fields to be returned in the response. These fields are\nreturned in addition to any others implicitly specified.\n\n### Parameters\n\n- **fields**: If fields not specified, all the fields will be loaded.\nOtherwise, fields should be given in the format of `@field`."
+      },
+      "scorer": {
+        "assinatura": "(self, scorer: str) -> 'AggregateRequest'",
+        "docstring": "Use a different scoring function to evaluate document relevance.\nDefault is `TFIDF`.\n\n:param scorer: The scoring function to use\n               (e.g. `TFIDF.DOCNORM` or `BM25`)"
+      },
+      "sort_by": {
+        "assinatura": "(self, *fields: str, **kwargs) -> 'AggregateRequest'",
+        "docstring": "Indicate how the results should be sorted. This can also be used for\n*top-N* style queries\n\n### Parameters\n\n- **fields**: The fields by which to sort. This can be either a single\n    field or a list of fields. If you wish to specify order, you can\n    use the `Asc` or `Desc` wrapper classes.\n- **max**: Maximum number of results to return. This can be\n    used instead of `LIMIT` and is also faster.\n\n\nExample of sorting by `foo` ascending and `bar` descending:\n\n```\nsort_by(Asc(\"@foo\"), Desc(\"@bar\"))\n```\n\nReturn the top 10 customers:\n\n```\nAggregateRequest()            .group_by(\"@customer\", r.sum(\"@paid\").alias(FIELDNAME))            .sort_by(Desc(\"@paid\"), max=10)\n```"
+      },
+      "verbatim": {
+        "assinatura": "(self) -> 'AggregateRequest'",
+        "docstring": null
+      },
+      "with_schema": {
+        "assinatura": "(self) -> 'AggregateRequest'",
+        "docstring": "If set, the `schema` property will contain a list of `[field, type]`\nentries in the result object."
+      }
+    }
+  },
+  "RangeQuery": {
+    "tipo": "classe",
+    "assinatura": "(vector: list[float] | bytes, vector_field_name: str, return_fields: list[str] | None = None, filter_expression: str | redisvl.query.filter.FilterExpression | None = None, dtype: str = 'float32', distance_threshold: float = 0.2, epsilon: float | None = None, search_window_size: int | None = None, use_search_history: str | None = None, search_buffer_capacity: int | None = None, num_results: int = 10, return_score: bool = True, dialect: int = 2, sort_by: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, in_order: bool = False, hybrid_policy: str | None = None, batch_size: int | None = None, normalize_vector_distance: bool = False)",
+    "docstring": "Base query class used to subclass many query types.\n\nNOTE: In the base class, the `_query_string` field is set once on\ninitialization, and afterward, redis-py expects to be able to read it. By\ncontrast, our query subclasses allow users to call methods that alter the\nquery string at runtime. To avoid having to rebuild `_query_string` every\ntime one of these methods is called, we lazily build the query string when a\nuser calls `query()` or accesses the property `_query_string`, when the\nunderlying `_built_query_string` field is None. Any method that alters the query\nstring should set `_built_query_string` to None so that the next time the query\nstring is accessed, it is rebuilt.",
+    "modulo_origem": "redisvl.query.query",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, vector: list[float] | bytes, vector_field_name: str, return_fields: list[str] | None = None, filter_expression: str | redisvl.query.filter.FilterExpression | None = None, dtype: str = 'float32', distance_threshold: float = 0.2, epsilon: float | None = None, search_window_size: int | None = None, use_search_history: str | None = None, search_buffer_capacity: int | None = None, num_results: int = 10, return_score: bool = True, dialect: int = 2, sort_by: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, in_order: bool = False, hybrid_policy: str | None = None, batch_size: int | None = None, normalize_vector_distance: bool = False)",
+        "docstring": "A query for running a filtered vector search based on semantic\ndistance threshold.\n\nArgs:\n    vector (List[float]): The vector to perform the range query with.\n    vector_field_name (str): The name of the vector field to search\n        against in the database.\n    return_fields (List[str]): The declared fields to return with search\n        results.\n    filter_expression (Union[str, FilterExpression], optional): A filter to apply\n        along with the range query. Defaults to None.\n    dtype (str, optional): The dtype of the vector. Defaults to\n        \"float32\".\n    distance_threshold (float): The threshold for vector distance.\n        A smaller threshold indicates a stricter semantic search.\n        Defaults to 0.2.\n    epsilon (Optional[float]): The relative factor for vector range queries,\n        setting boundaries for candidates within radius * (1 + epsilon).\n        This controls how extensive the search is beyond the specified radius.\n        Higher values increase recall at the expense of performance.\n        Defaults to None, which uses the index-defined epsilon (typically 0.01).\n    search_window_size (Optional[int]): The size of the search window for SVS-VAMANA range searches.\n        Increasing this value generally yields more accurate but slower search results.\n        Defaults to None, which uses the index-defined value (typically 10).\n    use_search_history (Optional[str]): For SVS-VAMANA indexes, controls whether to use the\n        search buffer or entire search history. Options are \"OFF\", \"ON\", or \"AUTO\".\n        \"AUTO\" is always evaluated internally as \"ON\". Using the entire history may yield\n        a slightly better graph at the cost of more search time.\n        Defaults to None, which uses the index-defined value (typically \"AUTO\").\n    search_buffer_capacity (Optional[int]): Tuning parameter for SVS-VAMANA indexes using\n        two-level compression (LVQ<X>x<Y> or LeanVec types). Determines the number of vector\n        candidates to collect in the first level of search before the re-ranking level.\n        Defaults to None, which uses the index-defined value (typically SEARCH_WINDOW_SIZE).\n    num_results (int): The MAX number of results to return.\n        Defaults to 10.\n    return_score (bool, optional): Whether to return the vector\n        distance. Defaults to True.\n    dialect (int, optional): The Redis Search query dialect.\n        Defaults to 2.\n    sort_by (Optional[SortSpec]): The field(s) to order the results by. Can be:\n        - str: single field name\n        - Tuple[str, str]: (field_name, \"ASC\"|\"DESC\")\n        - List: list of fields or tuples\n        Note: Only the first field is used for Redis sorting.\n        Defaults to None. Results will be ordered by vector distance.\n    in_order (bool): Requires the terms in the field to have\n        the same order as the terms in the query filter, regardless of\n        the offsets between them. Defaults to False.\n    hybrid_policy (Optional[str]): Controls how filters are applied during vector search.\n        Options are \"BATCHES\" (paginates through small batches of nearest neighbors) or\n        \"ADHOC_BF\" (computes scores for all vectors passing the filter).\n        \"BATCHES\" mode is typically faster for queries with selective filters.\n        \"ADHOC_BF\" mode is better when filters match a large portion of the dataset.\n        Defaults to None, which lets Redis auto-select the optimal policy.\n    batch_size (Optional[int]): When hybrid_policy is \"BATCHES\", controls the number\n        of vectors to fetch in each batch. Larger values may improve performance\n        at the cost of memory usage. Only applies when hybrid_policy=\"BATCHES\".\n        Defaults to None, which lets Redis auto-select an appropriate batch size.\n    normalize_vector_distance (bool): Redis supports 3 distance metrics: L2 (euclidean),\n        IP (inner product), and COSINE. By default, L2 distance returns an unbounded value.\n        COSINE distance returns a value between 0 and 2. IP returns a value determined by\n        the magnitude of the vector. Setting this flag to true converts COSINE and L2 distance\n        to a similarity score between 0 and 1. Note: setting this flag to true for IP will\n        throw a warning since by definition COSINE similarity is normalized IP.\n\nRaises:\n    TypeError: If filter_expression is not of type redisvl.query.FilterExpression\n\nNote:\n    Learn more about vector range queries: https://redis.io/docs/interact/search-and-query/search/vectors/#range-query"
+      },
+      "add_filter": {
+        "assinatura": "(self, flt: 'Filter') -> 'Query'",
+        "docstring": "Add a numeric or geo filter to the query.\n**Currently, only one of each filter is supported by the engine**\n\n- **flt**: A NumericFilter or GeoFilter object, used on a\ncorresponding field"
+      },
+      "dialect": {
+        "assinatura": "(self, dialect: int) -> 'Query'",
+        "docstring": "Add a dialect field to the query.\n\n- **dialect** - dialect version to execute the query under"
+      },
+      "expander": {
+        "assinatura": "(self, expander: str) -> 'Query'",
+        "docstring": "Add an expander field to the query.\n\n- **expander** - the name of the expander"
+      },
+      "get_args": {
+        "assinatura": "(self) -> List[Union[str, int, float]]",
+        "docstring": "Format the redis arguments for this query and return them."
+      },
+      "highlight": {
+        "assinatura": "(self, fields: Optional[List[str]] = None, tags: Optional[List[str]] = None) -> 'Query'",
+        "docstring": "Apply specified markup to matched term(s) within the returned field(s).\n\n- **fields** If specified, then only those mentioned fields are\nhighlighted, otherwise all fields are highlighted\n- **tags** A list of two strings to surround the match."
+      },
+      "in_order": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Match only documents where the query terms appear in\nthe same order in the document.\ni.e., for the query \"hello world\", we do not match \"world hello\""
+      },
+      "language": {
+        "assinatura": "(self, language: str) -> 'Query'",
+        "docstring": "Analyze the query as being in the specified language.\n\n:param language: The language (e.g. `chinese` or `english`)"
+      },
+      "limit_fields": {
+        "assinatura": "(self, *fields: str) -> 'Query'",
+        "docstring": "Limit the search to specific TEXT fields only.\n\n- **fields**: Each element should be a string, case sensitive field name\nfrom the defined schema."
+      },
+      "limit_ids": {
+        "assinatura": "(self, *ids) -> 'Query'",
+        "docstring": "Limit the results to a specific set of pre-known document\nids of any length."
+      },
+      "no_content": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Set the query to only return ids and not the document content."
+      },
+      "no_stopwords": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Prevent the query from being filtered for stopwords.\nOnly useful in very big queries that you are certain contain\nno stopwords."
+      },
+      "paging": {
+        "assinatura": "(self, offset: int, num: int) -> 'Query'",
+        "docstring": "Set the paging for the query (defaults to 0..10).\n\n- **offset**: Paging offset for the results. Defaults to 0\n- **num**: How many results do we want"
+      },
+      "query_string": {
+        "assinatura": "(self) -> str",
+        "docstring": "Return the query string of this query only."
+      },
+      "return_field": {
+        "assinatura": "(self, field: str, as_field: Optional[str] = None, decode_field: Optional[bool] = True, encoding: Optional[str] = 'utf8') -> 'Query'",
+        "docstring": "Add a field to the list of fields to return.\n\n- **field**: The field to include in query results\n- **as_field**: The alias for the field\n- **decode_field**: Whether to decode the field from bytes to string\n- **encoding**: The encoding to use when decoding the field"
+      },
+      "return_fields": {
+        "assinatura": "(self, *fields, skip_decode: str | list[str] | None = None)",
+        "docstring": "Set the fields to return with search results.\n\nArgs:\n    *fields: Variable number of field names to return.\n    skip_decode: Optional field name or list of field names that should not be\n        decoded. Useful for binary data like embeddings.\n\nReturns:\n    self: Returns the query object for method chaining.\n\nRaises:\n    TypeError: If skip_decode is not a string, list, or None."
+      },
+      "scorer": {
+        "assinatura": "(self, scorer: str) -> 'Query'",
+        "docstring": "Use a different scoring function to evaluate document relevance.\nDefault is `TFIDF`.\n\nSince Redis 8.0 default was changed to BM25STD.\n\n:param scorer: The scoring function to use\n               (e.g. `TFIDF.DOCNORM` or `BM25`)"
+      },
+      "set_batch_size": {
+        "assinatura": "(self, batch_size: int)",
+        "docstring": "Set the batch size for the query.\n\nArgs:\n    batch_size (int): The batch size to use when hybrid_policy is \"BATCHES\".\n\nRaises:\n    TypeError: If batch_size is not an integer\n    ValueError: If batch_size is not positive"
+      },
+      "set_distance_threshold": {
+        "assinatura": "(self, distance_threshold: float)",
+        "docstring": "Set the distance threshold for the query.\n\nArgs:\n    distance_threshold (float): Vector distance threshold.\n\nRaises:\n    TypeError: If distance_threshold is not a float or int\n    ValueError: If distance_threshold is negative"
+      },
+      "set_epsilon": {
+        "assinatura": "(self, epsilon: float)",
+        "docstring": "Set the epsilon parameter for the range query.\n\nArgs:\n    epsilon (float): The relative factor for vector range queries,\n        setting boundaries for candidates within radius * (1 + epsilon).\n\nRaises:\n    TypeError: If epsilon is not a float or int\n    ValueError: If epsilon is negative"
+      },
+      "set_filter": {
+        "assinatura": "(self, filter_expression: str | redisvl.query.filter.FilterExpression | None = None)",
+        "docstring": "Set the filter expression for the query.\n\nArgs:\n    filter_expression (Optional[Union[str, FilterExpression]], optional): The filter\n        expression or query string to use on the query.\n\nRaises:\n    TypeError: If filter_expression is not a valid FilterExpression or string."
+      },
+      "set_hybrid_policy": {
+        "assinatura": "(self, hybrid_policy: str)",
+        "docstring": "Set the hybrid policy for the query.\n\nArgs:\n    hybrid_policy (str): The hybrid policy to use. Options are \"BATCHES\"\n                        or \"ADHOC_BF\".\n\nRaises:\n    ValueError: If hybrid_policy is not one of the valid options"
+      },
+      "set_search_buffer_capacity": {
+        "assinatura": "(self, search_buffer_capacity: int)",
+        "docstring": "Set the SEARCH_BUFFER_CAPACITY parameter for the range query.\n\nArgs:\n    search_buffer_capacity (int): Tuning parameter for SVS-VAMANA indexes using\n        two-level compression.\n\nRaises:\n    TypeError: If search_buffer_capacity is not an integer\n    ValueError: If search_buffer_capacity is not positive"
+      },
+      "set_search_window_size": {
+        "assinatura": "(self, search_window_size: int)",
+        "docstring": "Set the SEARCH_WINDOW_SIZE parameter for the range query.\n\nArgs:\n    search_window_size (int): The size of the search window for SVS-VAMANA range searches.\n\nRaises:\n    TypeError: If search_window_size is not an integer\n    ValueError: If search_window_size is not positive"
+      },
+      "set_use_search_history": {
+        "assinatura": "(self, use_search_history: str)",
+        "docstring": "Set the USE_SEARCH_HISTORY parameter for the range query.\n\nArgs:\n    use_search_history (str): Controls whether to use the search buffer or entire history.\n        Must be one of \"OFF\", \"ON\", or \"AUTO\".\n\nRaises:\n    TypeError: If use_search_history is not a string\n    ValueError: If use_search_history is not one of the valid options"
+      },
+      "slop": {
+        "assinatura": "(self, slop: int) -> 'Query'",
+        "docstring": "Allow a maximum of N intervening non-matched terms between\nphrase terms (0 means exact phrase)."
+      },
+      "sort_by": {
+        "assinatura": "(self, sort_spec: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, asc: bool = True) -> 'BaseQuery'",
+        "docstring": "Set the sort order for query results.\n\nThis method supports sorting by single or multiple fields. Note that Redis Search\nnatively supports only a single SORTBY field. When multiple fields are specified,\nonly the FIRST field is used for the Redis SORTBY clause.\n\nArgs:\n    sort_spec: Sort specification in various formats:\n        - str: single field name\n        - Tuple[str, str]: (field_name, \"ASC\"|\"DESC\")\n        - List: list of field names or tuples\n    asc: Default sort direction when not specified (only used when sort_spec is a string).\n        Defaults to True (ascending).\n\nReturns:\n    self: Returns the query object for method chaining.\n\nRaises:\n    TypeError: If sort_spec is not a valid type.\n    ValueError: If direction is not \"ASC\" or \"DESC\".\n\nExamples:\n    >>> query.sort_by(\"price\")  # Single field, ascending\n    >>> query.sort_by((\"price\", \"DESC\"))  # Single field, descending\n    >>> query.sort_by([\"price\", \"rating\"])  # Multiple fields (only first used)\n    >>> query.sort_by([(\"price\", \"DESC\"), (\"rating\", \"ASC\")])\n\nNote:\n    When multiple fields are specified, only the first field is used for sorting\n    in Redis. Future versions may support multi-field sorting through post-query\n    sorting in Python."
+      },
+      "summarize": {
+        "assinatura": "(self, fields: Optional[List] = None, context_len: Optional[int] = None, num_frags: Optional[int] = None, sep: Optional[str] = None) -> 'Query'",
+        "docstring": "Return an abridged format of the field, containing only the segments of\nthe field that contain the matching term(s).\n\nIf `fields` is specified, then only the mentioned fields are\nsummarized; otherwise, all results are summarized.\n\nServer-side defaults are used for each option (except `fields`)\nif not specified\n\n- **fields** List of fields to summarize. All fields are summarized\nif not specified\n- **context_len** Amount of context to include with each fragment\n- **num_frags** Number of fragments per document\n- **sep** Separator string to separate fragments"
+      },
+      "timeout": {
+        "assinatura": "(self, timeout: float) -> 'Query'",
+        "docstring": "overrides the timeout parameter of the module"
+      },
+      "verbatim": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Set the query to be verbatim, i.e., use no query expansion\nor stemming."
+      },
+      "with_payloads": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Ask the engine to return document payloads."
+      },
+      "with_scores": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Ask the engine to return document search scores."
+      }
+    }
+  },
+  "SQLQuery": {
+    "tipo": "classe",
+    "assinatura": "(sql: str, params: dict[str, typing.Any] | None = None, *, sql_redis_options: dict[str, typing.Any] | None = None)",
+    "docstring": "A query class that translates SQL-like syntax into Redis queries.\n\nThis class allows users to write SQL SELECT statements that are\nautomatically translated into Redis FT.SEARCH or FT.AGGREGATE commands.\n\nFor TEXT fields with ``sql-redis >= 0.4.0``:\n\n- ``=`` performs exact phrase or exact-term matching\n- ``LIKE`` performs wildcard/pattern matching using SQL ``%`` wildcards\n- ``fuzzy(field, 'term')`` performs typo-tolerant matching\n- ``fulltext(field, 'query')`` performs tokenized text search\n\nVector and hybrid search:\n\n- ``vector_distance(field, :vec)`` / ``cosine_distance(field, :vec)`` perform\n  KNN vector similarity search (pass the query vector via ``params``)\n- ``hybrid_vector_search(cosine_distance(field, :vec), fulltext(field, 'query'), rrf())`` fuses a text and a vector query server-side via Redis ``FT.HYBRID``\n  (requires ``sql-redis >= 0.7.0``, Redis 8.4+, and redis-py >= 7.1.0). Use\n  ``rrf()`` or ``linear()`` to select the fusion method\n\n.. code-block:: python\n\n    from redisvl.query import SQLQuery\n    from redisvl.index import SearchIndex\n\n    index = SearchIndex.from_existing(\"products\", redis_url=\"redis://localhost:6379\")\n\n    sql_query = SQLQuery('''\n        SELECT title, price, category\n        FROM products\n        WHERE category = 'electronics' AND price < 100\n    ''')\n\n    results = index.query(sql_query)\n\nNote:\n    Requires the optional `sql-redis` package. Install with:\n    ``pip install redisvl[sql-redis]``",
+    "modulo_origem": "redisvl.query.sql",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, sql: str, params: dict[str, typing.Any] | None = None, *, sql_redis_options: dict[str, typing.Any] | None = None)",
+        "docstring": "Initialize a SQLQuery.\n\nArgs:\n    sql: The SQL SELECT statement to execute.\n    params: Optional dictionary of parameters for parameterized queries.\n           Useful for passing vector data for similarity searches.\n    sql_redis_options: Optional passthrough options forwarded to\n        ``sql-redis`` executor creation. Use this to tune how SQL\n        query translation loads and caches index schema metadata.\n        For example, ``{\"schema_cache_strategy\": \"lazy\"}`` loads\n        schemas on demand (the RedisVL default), while\n        ``{\"schema_cache_strategy\": \"load_all\"}`` eagerly loads\n        all schemas up front. These options exist to balance startup\n        cost vs repeated-query performance across many indexes.\n\nNote:\n    ``sql-redis >= 0.4.0`` uses explicit TEXT search operators.\n    Use ``=`` for exact phrase matching, ``LIKE`` for wildcard\n    matching, ``fuzzy()`` for typo-tolerant matching, and\n    ``fulltext()`` for tokenized search."
+      },
+      "redis_query_string": {
+        "assinatura": "(self, redis_client: typing.Any | None = None, redis_url: str = 'redis://localhost:6379') -> str",
+        "docstring": "Translate the SQL query to a Redis command string.\n\nThis method uses the sql-redis translator to convert the SQL statement\ninto the equivalent Redis FT.SEARCH or FT.AGGREGATE command.\n\nArgs:\n    redis_client: A Redis client connection used to load index schemas.\n        If not provided, a connection will be created using redis_url.\n    redis_url: The Redis URL to connect to if redis_client is not provided.\n        Defaults to \"redis://localhost:6379\".\n\nReturns:\n    The Redis command string (e.g., 'FT.SEARCH products \"@category:{electronics}\"').\n\nRaises:\n    ImportError: If sql-redis package is not installed.\n\nExample:\n    .. code-block:: python\n\n        from redisvl.query import SQLQuery\n\n        sql_query = SQLQuery(\"SELECT * FROM products WHERE category = 'electronics'\")\n\n        # Using redis_url\n        redis_cmd = sql_query.redis_query_string(redis_url=\"redis://localhost:6379\")\n\n        # Or using an existing client\n        from redis import Redis\n        client = Redis()\n        redis_cmd = sql_query.redis_query_string(redis_client=client)\n\n        print(redis_cmd)\n        # Output: FT.SEARCH products \"@category:{electronics}\""
+      }
+    }
+  },
+  "TextQuery": {
+    "tipo": "classe",
+    "assinatura": "(text: str, text_field_name: str | dict[str, float], text_scorer: str = 'BM25STD', filter_expression: str | redisvl.query.filter.FilterExpression | None = None, return_fields: list[str] | None = None, num_results: int = 10, return_score: bool = True, dialect: int = 2, sort_by: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, in_order: bool = False, params: dict[str, typing.Any] | None = None, stopwords: str | set[str] | None = 'english', text_weights: dict[str, float] | None = None)",
+    "docstring": "TextQuery is a query for running a full text search, along with an optional filter expression.\n\n.. code-block:: python\n\n    from redisvl.query import TextQuery\n    from redisvl.index import SearchIndex\n\n    index = SearchIndex.from_yaml(\"index.yaml\")\n\n    query = TextQuery(\n        text=\"example text\",\n        text_field_name=\"text_field\",\n        text_scorer=\"BM25STD\",\n        filter_expression=None,\n        num_results=10,\n        return_fields=[\"field1\", \"field2\"],\n        stopwords=\"english\",\n        dialect=2,\n    )\n\n    results = index.query(query)",
+    "modulo_origem": "redisvl.query.query",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, text: str, text_field_name: str | dict[str, float], text_scorer: str = 'BM25STD', filter_expression: str | redisvl.query.filter.FilterExpression | None = None, return_fields: list[str] | None = None, num_results: int = 10, return_score: bool = True, dialect: int = 2, sort_by: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, in_order: bool = False, params: dict[str, typing.Any] | None = None, stopwords: str | set[str] | None = 'english', text_weights: dict[str, float] | None = None)",
+        "docstring": "A query for running a full text search, along with an optional filter expression.\n\nArgs:\n    text (str): The text string to perform the text search with.\n    text_field_name (Union[str, Dict[str, float]]): The name of the document field to perform\n        text search on, or a dictionary mapping field names to their weights.\n    text_scorer (str, optional): The text scoring algorithm to use.\n        Defaults to BM25STD. Options are {TFIDF, BM25STD, BM25, TFIDF.DOCNORM, DISMAX, DOCSCORE}.\n        See https://redis.io/docs/latest/develop/interact/search-and-query/advanced-concepts/scoring/\n    filter_expression (Union[str, FilterExpression], optional): A filter to apply\n        along with the text search. Defaults to None.\n    return_fields (List[str]): The declared fields to return with search\n        results.\n    num_results (int, optional): The top k results to return from the\n        search. Defaults to 10.\n    return_score (bool, optional): Whether to return the text score.\n        Defaults to True.\n    dialect (int, optional): The Redis Search query dialect.\n        Defaults to 2.\n    sort_by (Optional[SortSpec]): The field(s) to order the results by. Can be:\n        - str: single field name\n        - Tuple[str, str]: (field_name, \"ASC\"|\"DESC\")\n        - List: list of fields or tuples\n        Note: Only the first field is used for Redis sorting.\n        Defaults to None. Results will be ordered by text score.\n    in_order (bool): Requires the terms in the field to have\n        the same order as the terms in the query filter, regardless of\n        the offsets between them. Defaults to False.\n    params (Optional[Dict[str, Any]], optional): The parameters for the query.\n        Defaults to None.\n    stopwords (Optional[Union[str, Set[str]]): The set of stop words to remove\n        from the query text (client-side filtering). If a language like 'english' or 'spanish' is provided\n        a default set of stopwords for that language will be used. Users may specify\n        their own stop words by providing a List or Set of words. if set to None,\n        then no words will be removed. Defaults to 'english'.\n\n        Note: This parameter controls query-time stopword filtering (client-side).\n        For index-level stopwords configuration (server-side), see IndexInfo.stopwords.\n        Using query-time stopwords with index-level STOPWORDS 0 is counterproductive.\n    text_weights (Optional[Dict[str, float]]): The importance weighting of individual words\n        within the query text. Defaults to None, as no modifications will be made to the\n        text_scorer score.\nRaises:\n    ValueError: if stopwords language string cannot be loaded.\n    TypeError: If stopwords is not a valid iterable set of strings."
+      },
+      "add_filter": {
+        "assinatura": "(self, flt: 'Filter') -> 'Query'",
+        "docstring": "Add a numeric or geo filter to the query.\n**Currently, only one of each filter is supported by the engine**\n\n- **flt**: A NumericFilter or GeoFilter object, used on a\ncorresponding field"
+      },
+      "dialect": {
+        "assinatura": "(self, dialect: int) -> 'Query'",
+        "docstring": "Add a dialect field to the query.\n\n- **dialect** - dialect version to execute the query under"
+      },
+      "expander": {
+        "assinatura": "(self, expander: str) -> 'Query'",
+        "docstring": "Add an expander field to the query.\n\n- **expander** - the name of the expander"
+      },
+      "get_args": {
+        "assinatura": "(self) -> List[Union[str, int, float]]",
+        "docstring": "Format the redis arguments for this query and return them."
+      },
+      "highlight": {
+        "assinatura": "(self, fields: Optional[List[str]] = None, tags: Optional[List[str]] = None) -> 'Query'",
+        "docstring": "Apply specified markup to matched term(s) within the returned field(s).\n\n- **fields** If specified, then only those mentioned fields are\nhighlighted, otherwise all fields are highlighted\n- **tags** A list of two strings to surround the match."
+      },
+      "in_order": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Match only documents where the query terms appear in\nthe same order in the document.\ni.e., for the query \"hello world\", we do not match \"world hello\""
+      },
+      "language": {
+        "assinatura": "(self, language: str) -> 'Query'",
+        "docstring": "Analyze the query as being in the specified language.\n\n:param language: The language (e.g. `chinese` or `english`)"
+      },
+      "limit_fields": {
+        "assinatura": "(self, *fields: str) -> 'Query'",
+        "docstring": "Limit the search to specific TEXT fields only.\n\n- **fields**: Each element should be a string, case sensitive field name\nfrom the defined schema."
+      },
+      "limit_ids": {
+        "assinatura": "(self, *ids) -> 'Query'",
+        "docstring": "Limit the results to a specific set of pre-known document\nids of any length."
+      },
+      "no_content": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Set the query to only return ids and not the document content."
+      },
+      "no_stopwords": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Prevent the query from being filtered for stopwords.\nOnly useful in very big queries that you are certain contain\nno stopwords."
+      },
+      "paging": {
+        "assinatura": "(self, offset: int, num: int) -> 'Query'",
+        "docstring": "Set the paging for the query (defaults to 0..10).\n\n- **offset**: Paging offset for the results. Defaults to 0\n- **num**: How many results do we want"
+      },
+      "query_string": {
+        "assinatura": "(self) -> str",
+        "docstring": "Return the query string of this query only."
+      },
+      "return_field": {
+        "assinatura": "(self, field: str, as_field: Optional[str] = None, decode_field: Optional[bool] = True, encoding: Optional[str] = 'utf8') -> 'Query'",
+        "docstring": "Add a field to the list of fields to return.\n\n- **field**: The field to include in query results\n- **as_field**: The alias for the field\n- **decode_field**: Whether to decode the field from bytes to string\n- **encoding**: The encoding to use when decoding the field"
+      },
+      "return_fields": {
+        "assinatura": "(self, *fields, skip_decode: str | list[str] | None = None)",
+        "docstring": "Set the fields to return with search results.\n\nArgs:\n    *fields: Variable number of field names to return.\n    skip_decode: Optional field name or list of field names that should not be\n        decoded. Useful for binary data like embeddings.\n\nReturns:\n    self: Returns the query object for method chaining.\n\nRaises:\n    TypeError: If skip_decode is not a string, list, or None."
+      },
+      "scorer": {
+        "assinatura": "(self, scorer: str) -> 'Query'",
+        "docstring": "Use a different scoring function to evaluate document relevance.\nDefault is `TFIDF`.\n\nSince Redis 8.0 default was changed to BM25STD.\n\n:param scorer: The scoring function to use\n               (e.g. `TFIDF.DOCNORM` or `BM25`)"
+      },
+      "set_field_weights": {
+        "assinatura": "(self, field_weights: str | dict[str, float])",
+        "docstring": "Set or update the field weights for the query.\n\nArgs:\n    field_weights: Either a single field name or dictionary of field:weight mappings"
+      },
+      "set_filter": {
+        "assinatura": "(self, filter_expression: str | redisvl.query.filter.FilterExpression | None = None)",
+        "docstring": "Set the filter expression for the query.\n\nArgs:\n    filter_expression (Optional[Union[str, FilterExpression]], optional): The filter\n        expression or query string to use on the query.\n\nRaises:\n    TypeError: If filter_expression is not a valid FilterExpression or string."
+      },
+      "set_text_weights": {
+        "assinatura": "(self, weights: dict[str, float])",
+        "docstring": "Set or update the text weights for the query.\n\nArgs:\n    text_weights: Dictionary of word:weight mappings"
+      },
+      "slop": {
+        "assinatura": "(self, slop: int) -> 'Query'",
+        "docstring": "Allow a maximum of N intervening non-matched terms between\nphrase terms (0 means exact phrase)."
+      },
+      "sort_by": {
+        "assinatura": "(self, sort_spec: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, asc: bool = True) -> 'BaseQuery'",
+        "docstring": "Set the sort order for query results.\n\nThis method supports sorting by single or multiple fields. Note that Redis Search\nnatively supports only a single SORTBY field. When multiple fields are specified,\nonly the FIRST field is used for the Redis SORTBY clause.\n\nArgs:\n    sort_spec: Sort specification in various formats:\n        - str: single field name\n        - Tuple[str, str]: (field_name, \"ASC\"|\"DESC\")\n        - List: list of field names or tuples\n    asc: Default sort direction when not specified (only used when sort_spec is a string).\n        Defaults to True (ascending).\n\nReturns:\n    self: Returns the query object for method chaining.\n\nRaises:\n    TypeError: If sort_spec is not a valid type.\n    ValueError: If direction is not \"ASC\" or \"DESC\".\n\nExamples:\n    >>> query.sort_by(\"price\")  # Single field, ascending\n    >>> query.sort_by((\"price\", \"DESC\"))  # Single field, descending\n    >>> query.sort_by([\"price\", \"rating\"])  # Multiple fields (only first used)\n    >>> query.sort_by([(\"price\", \"DESC\"), (\"rating\", \"ASC\")])\n\nNote:\n    When multiple fields are specified, only the first field is used for sorting\n    in Redis. Future versions may support multi-field sorting through post-query\n    sorting in Python."
+      },
+      "summarize": {
+        "assinatura": "(self, fields: Optional[List] = None, context_len: Optional[int] = None, num_frags: Optional[int] = None, sep: Optional[str] = None) -> 'Query'",
+        "docstring": "Return an abridged format of the field, containing only the segments of\nthe field that contain the matching term(s).\n\nIf `fields` is specified, then only the mentioned fields are\nsummarized; otherwise, all results are summarized.\n\nServer-side defaults are used for each option (except `fields`)\nif not specified\n\n- **fields** List of fields to summarize. All fields are summarized\nif not specified\n- **context_len** Amount of context to include with each fragment\n- **num_frags** Number of fragments per document\n- **sep** Separator string to separate fragments"
+      },
+      "timeout": {
+        "assinatura": "(self, timeout: float) -> 'Query'",
+        "docstring": "overrides the timeout parameter of the module"
+      },
+      "verbatim": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Set the query to be verbatim, i.e., use no query expansion\nor stemming."
+      },
+      "with_payloads": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Ask the engine to return document payloads."
+      },
+      "with_scores": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Ask the engine to return document search scores."
+      }
+    }
+  },
+  "Vector": {
+    "tipo": "classe",
+    "assinatura": "(*, vector: list[float] | bytes, field_name: str, dtype: str = 'float32', weight: float = 1.0, max_distance: Annotated[float, Ge(ge=0.0), Le(le=2.0)] = 2.0) -> None",
+    "docstring": "Simple object containing the necessary arguments to perform a multi vector query.\n\nArgs:\nvector: The vector values as a list of floats or bytes\nfield_name: The name of the vector field to search\ndtype: The data type of the vector (default: \"float32\")\nweight: The weight for this vector in the combined score (default: 1.0)\nmax_distance: The maximum distance for vector range search (default: 2.0, range: [0.0, 2.0])",
+    "modulo_origem": "redisvl.query.aggregate",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, /, **data: 'Any') -> 'None'",
+        "docstring": "Create a new model by parsing and validating input data from keyword arguments.\n\nRaises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be\nvalidated to form a valid model.\n\n`self` is explicitly positional-only to allow `self` as a field name."
+      },
+      "copy": {
+        "assinatura": "(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "Returns a copy of the model.\n\n!!! warning \"Deprecated\"\n    This method is now deprecated; use `model_copy` instead.\n\nIf you need `include` or `exclude`, use:\n\n```python {test=\"skip\" lint=\"skip\"}\ndata = self.model_dump(include=include, exclude=exclude, round_trip=True)\ndata = {**data, **(update or {})}\ncopied = self.model_validate(data)\n```\n\nArgs:\n    include: Optional set or mapping specifying which fields to include in the copied model.\n    exclude: Optional set or mapping specifying which fields to exclude in the copied model.\n    update: Optional dictionary of field-value pairs to override field values in the copied model.\n    deep: If True, the values of fields that are Pydantic models will be deep-copied.\n\nReturns:\n    A copy of the model with included, excluded and updated fields as specified."
+      },
+      "dict": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'",
+        "docstring": null
+      },
+      "json": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'",
+        "docstring": null
+      },
+      "model_copy": {
+        "assinatura": "(self, *, update: 'Mapping[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_copy`](../concepts/serialization.md#model_copy)\n\nReturns a copy of the model.\n\n!!! note\n    The underlying instance's [`__dict__`][object.__dict__] attribute is copied. This\n    might have unexpected side effects if you store anything in it, on top of the model\n    fields (e.g. the value of [cached properties][functools.cached_property]).\n\nArgs:\n    update: Values to change/add in the new model. Note: the data is not validated\n        before creating the new model. You should trust this data.\n    deep: Set to `True` to make a deep copy of the model.\n\nReturns:\n    New model instance."
+      },
+      "model_dump": {
+        "assinatura": "(self, *, mode: \"Literal['json', 'python'] | str\" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump`](../concepts/serialization.md#modelmodel_dump)\n\nGenerate a dictionary representation of the model, optionally specifying which fields to include or exclude.\n\nArgs:\n    mode: The mode in which `to_python` should run.\n        If mode is 'json', the output will only contain JSON serializable types.\n        If mode is 'python', the output may contain non-JSON-serializable Python objects.\n    include: A set of fields to include in the output.\n    exclude: A set of fields to exclude from the output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to use the field's alias in the dictionary key if defined.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A dictionary representation of the model."
+      },
+      "model_dump_json": {
+        "assinatura": "(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'str'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump_json`](../concepts/serialization.md#modelmodel_dump_json)\n\nGenerates a JSON representation of the model using Pydantic's `to_json` method.\n\nArgs:\n    indent: Indentation to use in the JSON output. If None is passed, the output will be compact.\n    include: Field(s) to include in the JSON output.\n    exclude: Field(s) to exclude from the JSON output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to serialize using field aliases.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A JSON string representation of the model."
+      },
+      "model_post_init": {
+        "assinatura": "(self, context: 'Any', /) -> 'None'",
+        "docstring": "Override this method to perform additional initialization after `__init__` and `model_construct`.\nThis is useful if you want to do some validation that requires the entire model to be initialized."
+      },
+      "validate_vector": {
+        "assinatura": "(self) -> Self",
+        "docstring": "If the vector passed in is an array of float convert it to a byte string."
+      }
+    }
+  },
+  "VectorQuery": {
+    "tipo": "classe",
+    "assinatura": "(vector: list[float] | bytes, vector_field_name: str, return_fields: list[str] | None = None, filter_expression: str | redisvl.query.filter.FilterExpression | None = None, dtype: str = 'float32', num_results: int = 10, return_score: bool = True, dialect: int = 2, sort_by: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, in_order: bool = False, hybrid_policy: str | None = None, batch_size: int | None = None, ef_runtime: int | None = None, search_window_size: int | None = None, use_search_history: str | None = None, search_buffer_capacity: int | None = None, normalize_vector_distance: bool = False)",
+    "docstring": "Base query class used to subclass many query types.\n\nNOTE: In the base class, the `_query_string` field is set once on\ninitialization, and afterward, redis-py expects to be able to read it. By\ncontrast, our query subclasses allow users to call methods that alter the\nquery string at runtime. To avoid having to rebuild `_query_string` every\ntime one of these methods is called, we lazily build the query string when a\nuser calls `query()` or accesses the property `_query_string`, when the\nunderlying `_built_query_string` field is None. Any method that alters the query\nstring should set `_built_query_string` to None so that the next time the query\nstring is accessed, it is rebuilt.",
+    "modulo_origem": "redisvl.query.query",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, vector: list[float] | bytes, vector_field_name: str, return_fields: list[str] | None = None, filter_expression: str | redisvl.query.filter.FilterExpression | None = None, dtype: str = 'float32', num_results: int = 10, return_score: bool = True, dialect: int = 2, sort_by: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, in_order: bool = False, hybrid_policy: str | None = None, batch_size: int | None = None, ef_runtime: int | None = None, search_window_size: int | None = None, use_search_history: str | None = None, search_buffer_capacity: int | None = None, normalize_vector_distance: bool = False)",
+        "docstring": "A query for running a vector search along with an optional filter\nexpression.\n\nArgs:\n    vector (List[float]): The vector to perform the vector search with.\n    vector_field_name (str): The name of the vector field to search\n        against in the database.\n    return_fields (List[str]): The declared fields to return with search\n        results.\n    filter_expression (Union[str, FilterExpression], optional): A filter to apply\n        along with the vector search. Defaults to None.\n    dtype (str, optional): The dtype of the vector. Defaults to\n        \"float32\".\n    num_results (int, optional): The top k results to return from the\n        vector search. Defaults to 10.\n\n    return_score (bool, optional): Whether to return the vector\n        distance. Defaults to True.\n    dialect (int, optional): The Redis Search query dialect.\n        Defaults to 2.\n    sort_by (Optional[SortSpec]): The field(s) to order the results by. Can be:\n        - str: single field name\n        - Tuple[str, str]: (field_name, \"ASC\"|\"DESC\")\n        - List: list of fields or tuples\n        Note: Only the first field is used for Redis sorting.\n        Defaults to None. Results will be ordered by vector distance.\n    in_order (bool): Requires the terms in the field to have\n        the same order as the terms in the query filter, regardless of\n        the offsets between them. Defaults to False.\n    hybrid_policy (Optional[str]): Controls how filters are applied during vector search.\n        Options are \"BATCHES\" (paginates through small batches of nearest neighbors) or\n        \"ADHOC_BF\" (computes scores for all vectors passing the filter).\n        \"BATCHES\" mode is typically faster for queries with selective filters.\n        \"ADHOC_BF\" mode is better when filters match a large portion of the dataset.\n        Defaults to None, which lets Redis auto-select the optimal policy.\n    batch_size (Optional[int]): When hybrid_policy is \"BATCHES\", controls the number\n        of vectors to fetch in each batch. Larger values may improve performance\n        at the cost of memory usage. Only applies when hybrid_policy=\"BATCHES\".\n        Defaults to None, which lets Redis auto-select an appropriate batch size.\n    ef_runtime (Optional[int]): Controls the size of the dynamic candidate list for HNSW\n        algorithm at query time. Higher values improve recall at the expense of\n        slower search performance. Defaults to None, which uses the index-defined value.\n    search_window_size (Optional[int]): The size of the search window for SVS-VAMANA KNN searches.\n        Increasing this value generally yields more accurate but slower search results.\n        Defaults to None, which uses the index-defined value (typically 10).\n    use_search_history (Optional[str]): For SVS-VAMANA indexes, controls whether to use the\n        search buffer or entire search history. Options are \"OFF\", \"ON\", or \"AUTO\".\n        \"AUTO\" is always evaluated internally as \"ON\". Using the entire history may yield\n        a slightly better graph at the cost of more search time.\n        Defaults to None, which uses the index-defined value (typically \"AUTO\").\n    search_buffer_capacity (Optional[int]): Tuning parameter for SVS-VAMANA indexes using\n        two-level compression (LVQ<X>x<Y> or LeanVec types). Determines the number of vector\n        candidates to collect in the first level of search before the re-ranking level.\n        Defaults to None, which uses the index-defined value (typically SEARCH_WINDOW_SIZE).\n    normalize_vector_distance (bool): Redis supports 3 distance metrics: L2 (euclidean),\n        IP (inner product), and COSINE. By default, L2 distance returns an unbounded value.\n        COSINE distance returns a value between 0 and 2. IP returns a value determined by\n        the magnitude of the vector. Setting this flag to true converts COSINE and L2 distance\n        to a similarity score between 0 and 1. Note: setting this flag to true for IP will\n        throw a warning since by definition COSINE similarity is normalized IP.\n\nRaises:\n    TypeError: If filter_expression is not of type redisvl.query.FilterExpression\n\nNote:\n    Learn more about vector queries in Redis: https://redis.io/docs/latest/develop/ai/search-and-query/vectors/#knn-vector-search"
+      },
+      "add_filter": {
+        "assinatura": "(self, flt: 'Filter') -> 'Query'",
+        "docstring": "Add a numeric or geo filter to the query.\n**Currently, only one of each filter is supported by the engine**\n\n- **flt**: A NumericFilter or GeoFilter object, used on a\ncorresponding field"
+      },
+      "dialect": {
+        "assinatura": "(self, dialect: int) -> 'Query'",
+        "docstring": "Add a dialect field to the query.\n\n- **dialect** - dialect version to execute the query under"
+      },
+      "expander": {
+        "assinatura": "(self, expander: str) -> 'Query'",
+        "docstring": "Add an expander field to the query.\n\n- **expander** - the name of the expander"
+      },
+      "get_args": {
+        "assinatura": "(self) -> List[Union[str, int, float]]",
+        "docstring": "Format the redis arguments for this query and return them."
+      },
+      "highlight": {
+        "assinatura": "(self, fields: Optional[List[str]] = None, tags: Optional[List[str]] = None) -> 'Query'",
+        "docstring": "Apply specified markup to matched term(s) within the returned field(s).\n\n- **fields** If specified, then only those mentioned fields are\nhighlighted, otherwise all fields are highlighted\n- **tags** A list of two strings to surround the match."
+      },
+      "in_order": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Match only documents where the query terms appear in\nthe same order in the document.\ni.e., for the query \"hello world\", we do not match \"world hello\""
+      },
+      "language": {
+        "assinatura": "(self, language: str) -> 'Query'",
+        "docstring": "Analyze the query as being in the specified language.\n\n:param language: The language (e.g. `chinese` or `english`)"
+      },
+      "limit_fields": {
+        "assinatura": "(self, *fields: str) -> 'Query'",
+        "docstring": "Limit the search to specific TEXT fields only.\n\n- **fields**: Each element should be a string, case sensitive field name\nfrom the defined schema."
+      },
+      "limit_ids": {
+        "assinatura": "(self, *ids) -> 'Query'",
+        "docstring": "Limit the results to a specific set of pre-known document\nids of any length."
+      },
+      "no_content": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Set the query to only return ids and not the document content."
+      },
+      "no_stopwords": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Prevent the query from being filtered for stopwords.\nOnly useful in very big queries that you are certain contain\nno stopwords."
+      },
+      "paging": {
+        "assinatura": "(self, offset: int, num: int) -> 'Query'",
+        "docstring": "Set the paging for the query (defaults to 0..10).\n\n- **offset**: Paging offset for the results. Defaults to 0\n- **num**: How many results do we want"
+      },
+      "query_string": {
+        "assinatura": "(self) -> str",
+        "docstring": "Return the query string of this query only."
+      },
+      "return_field": {
+        "assinatura": "(self, field: str, as_field: Optional[str] = None, decode_field: Optional[bool] = True, encoding: Optional[str] = 'utf8') -> 'Query'",
+        "docstring": "Add a field to the list of fields to return.\n\n- **field**: The field to include in query results\n- **as_field**: The alias for the field\n- **decode_field**: Whether to decode the field from bytes to string\n- **encoding**: The encoding to use when decoding the field"
+      },
+      "return_fields": {
+        "assinatura": "(self, *fields, skip_decode: str | list[str] | None = None)",
+        "docstring": "Set the fields to return with search results.\n\nArgs:\n    *fields: Variable number of field names to return.\n    skip_decode: Optional field name or list of field names that should not be\n        decoded. Useful for binary data like embeddings.\n\nReturns:\n    self: Returns the query object for method chaining.\n\nRaises:\n    TypeError: If skip_decode is not a string, list, or None."
+      },
+      "scorer": {
+        "assinatura": "(self, scorer: str) -> 'Query'",
+        "docstring": "Use a different scoring function to evaluate document relevance.\nDefault is `TFIDF`.\n\nSince Redis 8.0 default was changed to BM25STD.\n\n:param scorer: The scoring function to use\n               (e.g. `TFIDF.DOCNORM` or `BM25`)"
+      },
+      "set_batch_size": {
+        "assinatura": "(self, batch_size: int)",
+        "docstring": "Set the batch size for the query.\n\nArgs:\n    batch_size (int): The batch size to use when hybrid_policy is \"BATCHES\".\n\nRaises:\n    TypeError: If batch_size is not an integer\n    ValueError: If batch_size is not positive"
+      },
+      "set_ef_runtime": {
+        "assinatura": "(self, ef_runtime: int)",
+        "docstring": "Set the EF_RUNTIME parameter for the query.\n\nArgs:\n    ef_runtime (int): The EF_RUNTIME value to use for HNSW algorithm.\n        Higher values improve recall at the expense of slower search.\n\nRaises:\n    TypeError: If ef_runtime is not an integer\n    ValueError: If ef_runtime is not positive"
+      },
+      "set_filter": {
+        "assinatura": "(self, filter_expression: str | redisvl.query.filter.FilterExpression | None = None)",
+        "docstring": "Set the filter expression for the query.\n\nArgs:\n    filter_expression (Optional[Union[str, FilterExpression]], optional): The filter\n        expression or query string to use on the query.\n\nRaises:\n    TypeError: If filter_expression is not a valid FilterExpression or string."
+      },
+      "set_hybrid_policy": {
+        "assinatura": "(self, hybrid_policy: str)",
+        "docstring": "Set the hybrid policy for the query.\n\nArgs:\n    hybrid_policy (str): The hybrid policy to use. Options are \"BATCHES\"\n                        or \"ADHOC_BF\".\n\nRaises:\n    ValueError: If hybrid_policy is not one of the valid options"
+      },
+      "set_search_buffer_capacity": {
+        "assinatura": "(self, search_buffer_capacity: int)",
+        "docstring": "Set the SEARCH_BUFFER_CAPACITY parameter for the query.\n\nArgs:\n    search_buffer_capacity (int): Tuning parameter for SVS-VAMANA indexes using\n        two-level compression. Determines the number of vector candidates to collect\n        in the first level of search before the re-ranking level.\n\nRaises:\n    TypeError: If search_buffer_capacity is not an integer\n    ValueError: If search_buffer_capacity is not positive"
+      },
+      "set_search_window_size": {
+        "assinatura": "(self, search_window_size: int)",
+        "docstring": "Set the SEARCH_WINDOW_SIZE parameter for the query.\n\nArgs:\n    search_window_size (int): The size of the search window for SVS-VAMANA KNN searches.\n        Increasing this value generally yields more accurate but slower search results.\n\nRaises:\n    TypeError: If search_window_size is not an integer\n    ValueError: If search_window_size is not positive"
+      },
+      "set_use_search_history": {
+        "assinatura": "(self, use_search_history: str)",
+        "docstring": "Set the USE_SEARCH_HISTORY parameter for the query.\n\nArgs:\n    use_search_history (str): For SVS-VAMANA indexes, controls whether to use the\n        search buffer or entire search history. Options are \"OFF\", \"ON\", or \"AUTO\".\n\nRaises:\n    TypeError: If use_search_history is not a string\n    ValueError: If use_search_history is not one of \"OFF\", \"ON\", or \"AUTO\""
+      },
+      "slop": {
+        "assinatura": "(self, slop: int) -> 'Query'",
+        "docstring": "Allow a maximum of N intervening non-matched terms between\nphrase terms (0 means exact phrase)."
+      },
+      "sort_by": {
+        "assinatura": "(self, sort_spec: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, asc: bool = True) -> 'BaseQuery'",
+        "docstring": "Set the sort order for query results.\n\nThis method supports sorting by single or multiple fields. Note that Redis Search\nnatively supports only a single SORTBY field. When multiple fields are specified,\nonly the FIRST field is used for the Redis SORTBY clause.\n\nArgs:\n    sort_spec: Sort specification in various formats:\n        - str: single field name\n        - Tuple[str, str]: (field_name, \"ASC\"|\"DESC\")\n        - List: list of field names or tuples\n    asc: Default sort direction when not specified (only used when sort_spec is a string).\n        Defaults to True (ascending).\n\nReturns:\n    self: Returns the query object for method chaining.\n\nRaises:\n    TypeError: If sort_spec is not a valid type.\n    ValueError: If direction is not \"ASC\" or \"DESC\".\n\nExamples:\n    >>> query.sort_by(\"price\")  # Single field, ascending\n    >>> query.sort_by((\"price\", \"DESC\"))  # Single field, descending\n    >>> query.sort_by([\"price\", \"rating\"])  # Multiple fields (only first used)\n    >>> query.sort_by([(\"price\", \"DESC\"), (\"rating\", \"ASC\")])\n\nNote:\n    When multiple fields are specified, only the first field is used for sorting\n    in Redis. Future versions may support multi-field sorting through post-query\n    sorting in Python."
+      },
+      "summarize": {
+        "assinatura": "(self, fields: Optional[List] = None, context_len: Optional[int] = None, num_frags: Optional[int] = None, sep: Optional[str] = None) -> 'Query'",
+        "docstring": "Return an abridged format of the field, containing only the segments of\nthe field that contain the matching term(s).\n\nIf `fields` is specified, then only the mentioned fields are\nsummarized; otherwise, all results are summarized.\n\nServer-side defaults are used for each option (except `fields`)\nif not specified\n\n- **fields** List of fields to summarize. All fields are summarized\nif not specified\n- **context_len** Amount of context to include with each fragment\n- **num_frags** Number of fragments per document\n- **sep** Separator string to separate fragments"
+      },
+      "timeout": {
+        "assinatura": "(self, timeout: float) -> 'Query'",
+        "docstring": "overrides the timeout parameter of the module"
+      },
+      "verbatim": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Set the query to be verbatim, i.e., use no query expansion\nor stemming."
+      },
+      "with_payloads": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Ask the engine to return document payloads."
+      },
+      "with_scores": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Ask the engine to return document search scores."
+      }
+    }
+  },
+  "VectorRangeQuery": {
+    "tipo": "classe",
+    "assinatura": "(vector: list[float] | bytes, vector_field_name: str, return_fields: list[str] | None = None, filter_expression: str | redisvl.query.filter.FilterExpression | None = None, dtype: str = 'float32', distance_threshold: float = 0.2, epsilon: float | None = None, search_window_size: int | None = None, use_search_history: str | None = None, search_buffer_capacity: int | None = None, num_results: int = 10, return_score: bool = True, dialect: int = 2, sort_by: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, in_order: bool = False, hybrid_policy: str | None = None, batch_size: int | None = None, normalize_vector_distance: bool = False)",
+    "docstring": "Base query class used to subclass many query types.\n\nNOTE: In the base class, the `_query_string` field is set once on\ninitialization, and afterward, redis-py expects to be able to read it. By\ncontrast, our query subclasses allow users to call methods that alter the\nquery string at runtime. To avoid having to rebuild `_query_string` every\ntime one of these methods is called, we lazily build the query string when a\nuser calls `query()` or accesses the property `_query_string`, when the\nunderlying `_built_query_string` field is None. Any method that alters the query\nstring should set `_built_query_string` to None so that the next time the query\nstring is accessed, it is rebuilt.",
+    "modulo_origem": "redisvl.query.query",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, vector: list[float] | bytes, vector_field_name: str, return_fields: list[str] | None = None, filter_expression: str | redisvl.query.filter.FilterExpression | None = None, dtype: str = 'float32', distance_threshold: float = 0.2, epsilon: float | None = None, search_window_size: int | None = None, use_search_history: str | None = None, search_buffer_capacity: int | None = None, num_results: int = 10, return_score: bool = True, dialect: int = 2, sort_by: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, in_order: bool = False, hybrid_policy: str | None = None, batch_size: int | None = None, normalize_vector_distance: bool = False)",
+        "docstring": "A query for running a filtered vector search based on semantic\ndistance threshold.\n\nArgs:\n    vector (List[float]): The vector to perform the range query with.\n    vector_field_name (str): The name of the vector field to search\n        against in the database.\n    return_fields (List[str]): The declared fields to return with search\n        results.\n    filter_expression (Union[str, FilterExpression], optional): A filter to apply\n        along with the range query. Defaults to None.\n    dtype (str, optional): The dtype of the vector. Defaults to\n        \"float32\".\n    distance_threshold (float): The threshold for vector distance.\n        A smaller threshold indicates a stricter semantic search.\n        Defaults to 0.2.\n    epsilon (Optional[float]): The relative factor for vector range queries,\n        setting boundaries for candidates within radius * (1 + epsilon).\n        This controls how extensive the search is beyond the specified radius.\n        Higher values increase recall at the expense of performance.\n        Defaults to None, which uses the index-defined epsilon (typically 0.01).\n    search_window_size (Optional[int]): The size of the search window for SVS-VAMANA range searches.\n        Increasing this value generally yields more accurate but slower search results.\n        Defaults to None, which uses the index-defined value (typically 10).\n    use_search_history (Optional[str]): For SVS-VAMANA indexes, controls whether to use the\n        search buffer or entire search history. Options are \"OFF\", \"ON\", or \"AUTO\".\n        \"AUTO\" is always evaluated internally as \"ON\". Using the entire history may yield\n        a slightly better graph at the cost of more search time.\n        Defaults to None, which uses the index-defined value (typically \"AUTO\").\n    search_buffer_capacity (Optional[int]): Tuning parameter for SVS-VAMANA indexes using\n        two-level compression (LVQ<X>x<Y> or LeanVec types). Determines the number of vector\n        candidates to collect in the first level of search before the re-ranking level.\n        Defaults to None, which uses the index-defined value (typically SEARCH_WINDOW_SIZE).\n    num_results (int): The MAX number of results to return.\n        Defaults to 10.\n    return_score (bool, optional): Whether to return the vector\n        distance. Defaults to True.\n    dialect (int, optional): The Redis Search query dialect.\n        Defaults to 2.\n    sort_by (Optional[SortSpec]): The field(s) to order the results by. Can be:\n        - str: single field name\n        - Tuple[str, str]: (field_name, \"ASC\"|\"DESC\")\n        - List: list of fields or tuples\n        Note: Only the first field is used for Redis sorting.\n        Defaults to None. Results will be ordered by vector distance.\n    in_order (bool): Requires the terms in the field to have\n        the same order as the terms in the query filter, regardless of\n        the offsets between them. Defaults to False.\n    hybrid_policy (Optional[str]): Controls how filters are applied during vector search.\n        Options are \"BATCHES\" (paginates through small batches of nearest neighbors) or\n        \"ADHOC_BF\" (computes scores for all vectors passing the filter).\n        \"BATCHES\" mode is typically faster for queries with selective filters.\n        \"ADHOC_BF\" mode is better when filters match a large portion of the dataset.\n        Defaults to None, which lets Redis auto-select the optimal policy.\n    batch_size (Optional[int]): When hybrid_policy is \"BATCHES\", controls the number\n        of vectors to fetch in each batch. Larger values may improve performance\n        at the cost of memory usage. Only applies when hybrid_policy=\"BATCHES\".\n        Defaults to None, which lets Redis auto-select an appropriate batch size.\n    normalize_vector_distance (bool): Redis supports 3 distance metrics: L2 (euclidean),\n        IP (inner product), and COSINE. By default, L2 distance returns an unbounded value.\n        COSINE distance returns a value between 0 and 2. IP returns a value determined by\n        the magnitude of the vector. Setting this flag to true converts COSINE and L2 distance\n        to a similarity score between 0 and 1. Note: setting this flag to true for IP will\n        throw a warning since by definition COSINE similarity is normalized IP.\n\nRaises:\n    TypeError: If filter_expression is not of type redisvl.query.FilterExpression\n\nNote:\n    Learn more about vector range queries: https://redis.io/docs/interact/search-and-query/search/vectors/#range-query"
+      },
+      "add_filter": {
+        "assinatura": "(self, flt: 'Filter') -> 'Query'",
+        "docstring": "Add a numeric or geo filter to the query.\n**Currently, only one of each filter is supported by the engine**\n\n- **flt**: A NumericFilter or GeoFilter object, used on a\ncorresponding field"
+      },
+      "dialect": {
+        "assinatura": "(self, dialect: int) -> 'Query'",
+        "docstring": "Add a dialect field to the query.\n\n- **dialect** - dialect version to execute the query under"
+      },
+      "expander": {
+        "assinatura": "(self, expander: str) -> 'Query'",
+        "docstring": "Add an expander field to the query.\n\n- **expander** - the name of the expander"
+      },
+      "get_args": {
+        "assinatura": "(self) -> List[Union[str, int, float]]",
+        "docstring": "Format the redis arguments for this query and return them."
+      },
+      "highlight": {
+        "assinatura": "(self, fields: Optional[List[str]] = None, tags: Optional[List[str]] = None) -> 'Query'",
+        "docstring": "Apply specified markup to matched term(s) within the returned field(s).\n\n- **fields** If specified, then only those mentioned fields are\nhighlighted, otherwise all fields are highlighted\n- **tags** A list of two strings to surround the match."
+      },
+      "in_order": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Match only documents where the query terms appear in\nthe same order in the document.\ni.e., for the query \"hello world\", we do not match \"world hello\""
+      },
+      "language": {
+        "assinatura": "(self, language: str) -> 'Query'",
+        "docstring": "Analyze the query as being in the specified language.\n\n:param language: The language (e.g. `chinese` or `english`)"
+      },
+      "limit_fields": {
+        "assinatura": "(self, *fields: str) -> 'Query'",
+        "docstring": "Limit the search to specific TEXT fields only.\n\n- **fields**: Each element should be a string, case sensitive field name\nfrom the defined schema."
+      },
+      "limit_ids": {
+        "assinatura": "(self, *ids) -> 'Query'",
+        "docstring": "Limit the results to a specific set of pre-known document\nids of any length."
+      },
+      "no_content": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Set the query to only return ids and not the document content."
+      },
+      "no_stopwords": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Prevent the query from being filtered for stopwords.\nOnly useful in very big queries that you are certain contain\nno stopwords."
+      },
+      "paging": {
+        "assinatura": "(self, offset: int, num: int) -> 'Query'",
+        "docstring": "Set the paging for the query (defaults to 0..10).\n\n- **offset**: Paging offset for the results. Defaults to 0\n- **num**: How many results do we want"
+      },
+      "query_string": {
+        "assinatura": "(self) -> str",
+        "docstring": "Return the query string of this query only."
+      },
+      "return_field": {
+        "assinatura": "(self, field: str, as_field: Optional[str] = None, decode_field: Optional[bool] = True, encoding: Optional[str] = 'utf8') -> 'Query'",
+        "docstring": "Add a field to the list of fields to return.\n\n- **field**: The field to include in query results\n- **as_field**: The alias for the field\n- **decode_field**: Whether to decode the field from bytes to string\n- **encoding**: The encoding to use when decoding the field"
+      },
+      "return_fields": {
+        "assinatura": "(self, *fields, skip_decode: str | list[str] | None = None)",
+        "docstring": "Set the fields to return with search results.\n\nArgs:\n    *fields: Variable number of field names to return.\n    skip_decode: Optional field name or list of field names that should not be\n        decoded. Useful for binary data like embeddings.\n\nReturns:\n    self: Returns the query object for method chaining.\n\nRaises:\n    TypeError: If skip_decode is not a string, list, or None."
+      },
+      "scorer": {
+        "assinatura": "(self, scorer: str) -> 'Query'",
+        "docstring": "Use a different scoring function to evaluate document relevance.\nDefault is `TFIDF`.\n\nSince Redis 8.0 default was changed to BM25STD.\n\n:param scorer: The scoring function to use\n               (e.g. `TFIDF.DOCNORM` or `BM25`)"
+      },
+      "set_batch_size": {
+        "assinatura": "(self, batch_size: int)",
+        "docstring": "Set the batch size for the query.\n\nArgs:\n    batch_size (int): The batch size to use when hybrid_policy is \"BATCHES\".\n\nRaises:\n    TypeError: If batch_size is not an integer\n    ValueError: If batch_size is not positive"
+      },
+      "set_distance_threshold": {
+        "assinatura": "(self, distance_threshold: float)",
+        "docstring": "Set the distance threshold for the query.\n\nArgs:\n    distance_threshold (float): Vector distance threshold.\n\nRaises:\n    TypeError: If distance_threshold is not a float or int\n    ValueError: If distance_threshold is negative"
+      },
+      "set_epsilon": {
+        "assinatura": "(self, epsilon: float)",
+        "docstring": "Set the epsilon parameter for the range query.\n\nArgs:\n    epsilon (float): The relative factor for vector range queries,\n        setting boundaries for candidates within radius * (1 + epsilon).\n\nRaises:\n    TypeError: If epsilon is not a float or int\n    ValueError: If epsilon is negative"
+      },
+      "set_filter": {
+        "assinatura": "(self, filter_expression: str | redisvl.query.filter.FilterExpression | None = None)",
+        "docstring": "Set the filter expression for the query.\n\nArgs:\n    filter_expression (Optional[Union[str, FilterExpression]], optional): The filter\n        expression or query string to use on the query.\n\nRaises:\n    TypeError: If filter_expression is not a valid FilterExpression or string."
+      },
+      "set_hybrid_policy": {
+        "assinatura": "(self, hybrid_policy: str)",
+        "docstring": "Set the hybrid policy for the query.\n\nArgs:\n    hybrid_policy (str): The hybrid policy to use. Options are \"BATCHES\"\n                        or \"ADHOC_BF\".\n\nRaises:\n    ValueError: If hybrid_policy is not one of the valid options"
+      },
+      "set_search_buffer_capacity": {
+        "assinatura": "(self, search_buffer_capacity: int)",
+        "docstring": "Set the SEARCH_BUFFER_CAPACITY parameter for the range query.\n\nArgs:\n    search_buffer_capacity (int): Tuning parameter for SVS-VAMANA indexes using\n        two-level compression.\n\nRaises:\n    TypeError: If search_buffer_capacity is not an integer\n    ValueError: If search_buffer_capacity is not positive"
+      },
+      "set_search_window_size": {
+        "assinatura": "(self, search_window_size: int)",
+        "docstring": "Set the SEARCH_WINDOW_SIZE parameter for the range query.\n\nArgs:\n    search_window_size (int): The size of the search window for SVS-VAMANA range searches.\n\nRaises:\n    TypeError: If search_window_size is not an integer\n    ValueError: If search_window_size is not positive"
+      },
+      "set_use_search_history": {
+        "assinatura": "(self, use_search_history: str)",
+        "docstring": "Set the USE_SEARCH_HISTORY parameter for the range query.\n\nArgs:\n    use_search_history (str): Controls whether to use the search buffer or entire history.\n        Must be one of \"OFF\", \"ON\", or \"AUTO\".\n\nRaises:\n    TypeError: If use_search_history is not a string\n    ValueError: If use_search_history is not one of the valid options"
+      },
+      "slop": {
+        "assinatura": "(self, slop: int) -> 'Query'",
+        "docstring": "Allow a maximum of N intervening non-matched terms between\nphrase terms (0 means exact phrase)."
+      },
+      "sort_by": {
+        "assinatura": "(self, sort_spec: str | tuple[str, str] | list[str | tuple[str, str]] | None = None, asc: bool = True) -> 'BaseQuery'",
+        "docstring": "Set the sort order for query results.\n\nThis method supports sorting by single or multiple fields. Note that Redis Search\nnatively supports only a single SORTBY field. When multiple fields are specified,\nonly the FIRST field is used for the Redis SORTBY clause.\n\nArgs:\n    sort_spec: Sort specification in various formats:\n        - str: single field name\n        - Tuple[str, str]: (field_name, \"ASC\"|\"DESC\")\n        - List: list of field names or tuples\n    asc: Default sort direction when not specified (only used when sort_spec is a string).\n        Defaults to True (ascending).\n\nReturns:\n    self: Returns the query object for method chaining.\n\nRaises:\n    TypeError: If sort_spec is not a valid type.\n    ValueError: If direction is not \"ASC\" or \"DESC\".\n\nExamples:\n    >>> query.sort_by(\"price\")  # Single field, ascending\n    >>> query.sort_by((\"price\", \"DESC\"))  # Single field, descending\n    >>> query.sort_by([\"price\", \"rating\"])  # Multiple fields (only first used)\n    >>> query.sort_by([(\"price\", \"DESC\"), (\"rating\", \"ASC\")])\n\nNote:\n    When multiple fields are specified, only the first field is used for sorting\n    in Redis. Future versions may support multi-field sorting through post-query\n    sorting in Python."
+      },
+      "summarize": {
+        "assinatura": "(self, fields: Optional[List] = None, context_len: Optional[int] = None, num_frags: Optional[int] = None, sep: Optional[str] = None) -> 'Query'",
+        "docstring": "Return an abridged format of the field, containing only the segments of\nthe field that contain the matching term(s).\n\nIf `fields` is specified, then only the mentioned fields are\nsummarized; otherwise, all results are summarized.\n\nServer-side defaults are used for each option (except `fields`)\nif not specified\n\n- **fields** List of fields to summarize. All fields are summarized\nif not specified\n- **context_len** Amount of context to include with each fragment\n- **num_frags** Number of fragments per document\n- **sep** Separator string to separate fragments"
+      },
+      "timeout": {
+        "assinatura": "(self, timeout: float) -> 'Query'",
+        "docstring": "overrides the timeout parameter of the module"
+      },
+      "verbatim": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Set the query to be verbatim, i.e., use no query expansion\nor stemming."
+      },
+      "with_payloads": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Ask the engine to return document payloads."
+      },
+      "with_scores": {
+        "assinatura": "(self) -> 'Query'",
+        "docstring": "Ask the engine to return document search scores."
+      }
+    }
+  }
+}

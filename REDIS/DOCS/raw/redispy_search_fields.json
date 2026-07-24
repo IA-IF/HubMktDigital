@@ -1,0 +1,22 @@
+{
+  "TagField": {
+    "assinatura": "(self, name: str, separator: str = ',', case_sensitive: bool = False, withsuffixtrie: bool = False, **kwargs)",
+    "docstring": "TagField is a tag-indexing field with simpler compression and tokenization.\nSee http://redisearch.io/Tags/"
+  },
+  "TextField": {
+    "assinatura": "(self, name: str, weight: float = 1.0, no_stem: bool = False, phonetic_matcher: str = None, withsuffixtrie: bool = False, **kwargs)",
+    "docstring": "TextField is used to define a text field in a schema definition"
+  },
+  "NumericField": {
+    "assinatura": "(self, name: str, **kwargs)",
+    "docstring": "NumericField is used to define a numeric field in a schema definition"
+  },
+  "VectorField": {
+    "assinatura": "(self, name: str, algorithm: str, attributes: dict, **kwargs)",
+    "docstring": "Allows vector similarity queries against the value in this attribute.\nSee https://oss.redis.com/redisearch/Vectors/#vector_fields."
+  },
+  "GeoField": {
+    "assinatura": "(self, name: str, **kwargs)",
+    "docstring": "GeoField is used to define a geo-indexing field in a schema definition"
+  }
+}

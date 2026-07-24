@@ -1,0 +1,12 @@
+{
+  "name": "catalogo_produtos",
+  "plataforma": "geral",
+  "description": "Le o sitemap publico do site e devolve a lista de URLs de produto -- usa pra saber o que o site tem pra vender antes de propor um anuncio ou responder sobre catalogo. So leitura, dado real via HTTP no sitemap.xml de producao.",
+  "script": "TOOLS/CATALOGO/catalogo_produtos/catalogo_produtos.py",
+  "modo_entrada": "argv",
+  "input_schema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  }
+}

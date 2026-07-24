@@ -5,8 +5,7 @@ Uso:
     python analise_ads.py [site] [dias]
     python analise_ads.py 3gfoods 7
 
-Credenciais so da raiz do projeto (.env + SITES/<site>/.env), nunca de
-LEGADO/.
+Credenciais so da raiz do projeto (.env + SITES/<site>/.env).
 """
 import json
 import sys
@@ -57,9 +56,7 @@ def buscar_dados_ads(client, cid: str, dias: int) -> dict:
     diluindo o numero (achado real: 3G Foods tem page_view/session_start/
     etc marcados como conversao, ver TOOLS/ADWORDS/... e pratico.md). Por
     isso a query aqui segmenta por conversion_action_name e so soma as
-    que batem com evento de negocio real -- mesmo criterio ja usado em
-    LEGADO/agente-ads/src/conversion_actions.py (nao importado, so mesmo
-    criterio replicado aqui pra nao depender de LEGADO)."""
+    que batem com evento de negocio real."""
     service = client.get_service("GoogleAdsService")
 
     query_custo = f"""

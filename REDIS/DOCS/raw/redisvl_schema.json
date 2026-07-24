@@ -1,0 +1,531 @@
+{
+  "BaseField": {
+    "tipo": "classe",
+    "assinatura": "(*, name: str, type: str, path: str | None = None, attrs: redisvl.schema.fields.BaseFieldAttributes | redisvl.schema.fields.BaseVectorFieldAttributes | None = None) -> None",
+    "docstring": "Base field",
+    "modulo_origem": "redisvl.schema.fields",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, /, **data: 'Any') -> 'None'",
+        "docstring": "Create a new model by parsing and validating input data from keyword arguments.\n\nRaises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be\nvalidated to form a valid model.\n\n`self` is explicitly positional-only to allow `self` as a field name."
+      },
+      "as_redis_field": {
+        "assinatura": "(self) -> redis.commands.search.field.Field",
+        "docstring": "Convert schema field to Redis Field object"
+      },
+      "copy": {
+        "assinatura": "(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "Returns a copy of the model.\n\n!!! warning \"Deprecated\"\n    This method is now deprecated; use `model_copy` instead.\n\nIf you need `include` or `exclude`, use:\n\n```python {test=\"skip\" lint=\"skip\"}\ndata = self.model_dump(include=include, exclude=exclude, round_trip=True)\ndata = {**data, **(update or {})}\ncopied = self.model_validate(data)\n```\n\nArgs:\n    include: Optional set or mapping specifying which fields to include in the copied model.\n    exclude: Optional set or mapping specifying which fields to exclude in the copied model.\n    update: Optional dictionary of field-value pairs to override field values in the copied model.\n    deep: If True, the values of fields that are Pydantic models will be deep-copied.\n\nReturns:\n    A copy of the model with included, excluded and updated fields as specified."
+      },
+      "dict": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'",
+        "docstring": null
+      },
+      "json": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'",
+        "docstring": null
+      },
+      "model_copy": {
+        "assinatura": "(self, *, update: 'Mapping[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_copy`](../concepts/serialization.md#model_copy)\n\nReturns a copy of the model.\n\n!!! note\n    The underlying instance's [`__dict__`][object.__dict__] attribute is copied. This\n    might have unexpected side effects if you store anything in it, on top of the model\n    fields (e.g. the value of [cached properties][functools.cached_property]).\n\nArgs:\n    update: Values to change/add in the new model. Note: the data is not validated\n        before creating the new model. You should trust this data.\n    deep: Set to `True` to make a deep copy of the model.\n\nReturns:\n    New model instance."
+      },
+      "model_dump": {
+        "assinatura": "(self, *, mode: \"Literal['json', 'python'] | str\" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump`](../concepts/serialization.md#modelmodel_dump)\n\nGenerate a dictionary representation of the model, optionally specifying which fields to include or exclude.\n\nArgs:\n    mode: The mode in which `to_python` should run.\n        If mode is 'json', the output will only contain JSON serializable types.\n        If mode is 'python', the output may contain non-JSON-serializable Python objects.\n    include: A set of fields to include in the output.\n    exclude: A set of fields to exclude from the output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to use the field's alias in the dictionary key if defined.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A dictionary representation of the model."
+      },
+      "model_dump_json": {
+        "assinatura": "(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'str'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump_json`](../concepts/serialization.md#modelmodel_dump_json)\n\nGenerates a JSON representation of the model using Pydantic's `to_json` method.\n\nArgs:\n    indent: Indentation to use in the JSON output. If None is passed, the output will be compact.\n    include: Field(s) to include in the JSON output.\n    exclude: Field(s) to exclude from the JSON output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to serialize using field aliases.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A JSON string representation of the model."
+      },
+      "model_post_init": {
+        "assinatura": "(self, context: 'Any', /) -> 'None'",
+        "docstring": "Override this method to perform additional initialization after `__init__` and `model_construct`.\nThis is useful if you want to do some validation that requires the entire model to be initialized."
+      }
+    }
+  },
+  "CompressionType": {
+    "tipo": "classe",
+    "assinatura": "(*values)",
+    "docstring": "Vector compression types for SVS-VAMANA algorithm",
+    "modulo_origem": "redisvl.schema.fields",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, *args, **kwds)",
+        "docstring": "Initialize self.  See help(type(self)) for accurate signature."
+      }
+    }
+  },
+  "FieldTypes": {
+    "tipo": "classe",
+    "assinatura": "(*values)",
+    "docstring": "str(object='') -> str\nstr(bytes_or_buffer[, encoding[, errors]]) -> str\n\nCreate a new string object from the given object. If encoding or\nerrors is specified, then the object must expose a data buffer\nthat will be decoded using the given encoding and error handler.\nOtherwise, returns the result of object.__str__() (if defined)\nor repr(object).\nencoding defaults to 'utf-8'.\nerrors defaults to 'strict'.",
+    "modulo_origem": "redisvl.schema.fields",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, *args, **kwds)",
+        "docstring": "Initialize self.  See help(type(self)) for accurate signature."
+      }
+    }
+  },
+  "FlatVectorField": {
+    "tipo": "classe",
+    "assinatura": "(*, name: str, type: Literal[<FieldTypes.VECTOR: 'vector'>] = <FieldTypes.VECTOR: 'vector'>, path: str | None = None, attrs: redisvl.schema.fields.FlatVectorFieldAttributes) -> None",
+    "docstring": "Vector field with FLAT (exact search) indexing for exact nearest neighbor search.",
+    "modulo_origem": "redisvl.schema.fields",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, /, **data: 'Any') -> 'None'",
+        "docstring": "Create a new model by parsing and validating input data from keyword arguments.\n\nRaises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be\nvalidated to form a valid model.\n\n`self` is explicitly positional-only to allow `self` as a field name."
+      },
+      "as_redis_field": {
+        "assinatura": "(self) -> redis.commands.search.field.Field",
+        "docstring": "Convert schema field to Redis Field object"
+      },
+      "copy": {
+        "assinatura": "(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "Returns a copy of the model.\n\n!!! warning \"Deprecated\"\n    This method is now deprecated; use `model_copy` instead.\n\nIf you need `include` or `exclude`, use:\n\n```python {test=\"skip\" lint=\"skip\"}\ndata = self.model_dump(include=include, exclude=exclude, round_trip=True)\ndata = {**data, **(update or {})}\ncopied = self.model_validate(data)\n```\n\nArgs:\n    include: Optional set or mapping specifying which fields to include in the copied model.\n    exclude: Optional set or mapping specifying which fields to exclude in the copied model.\n    update: Optional dictionary of field-value pairs to override field values in the copied model.\n    deep: If True, the values of fields that are Pydantic models will be deep-copied.\n\nReturns:\n    A copy of the model with included, excluded and updated fields as specified."
+      },
+      "dict": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'",
+        "docstring": null
+      },
+      "json": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'",
+        "docstring": null
+      },
+      "model_copy": {
+        "assinatura": "(self, *, update: 'Mapping[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_copy`](../concepts/serialization.md#model_copy)\n\nReturns a copy of the model.\n\n!!! note\n    The underlying instance's [`__dict__`][object.__dict__] attribute is copied. This\n    might have unexpected side effects if you store anything in it, on top of the model\n    fields (e.g. the value of [cached properties][functools.cached_property]).\n\nArgs:\n    update: Values to change/add in the new model. Note: the data is not validated\n        before creating the new model. You should trust this data.\n    deep: Set to `True` to make a deep copy of the model.\n\nReturns:\n    New model instance."
+      },
+      "model_dump": {
+        "assinatura": "(self, *, mode: \"Literal['json', 'python'] | str\" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump`](../concepts/serialization.md#modelmodel_dump)\n\nGenerate a dictionary representation of the model, optionally specifying which fields to include or exclude.\n\nArgs:\n    mode: The mode in which `to_python` should run.\n        If mode is 'json', the output will only contain JSON serializable types.\n        If mode is 'python', the output may contain non-JSON-serializable Python objects.\n    include: A set of fields to include in the output.\n    exclude: A set of fields to exclude from the output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to use the field's alias in the dictionary key if defined.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A dictionary representation of the model."
+      },
+      "model_dump_json": {
+        "assinatura": "(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'str'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump_json`](../concepts/serialization.md#modelmodel_dump_json)\n\nGenerates a JSON representation of the model using Pydantic's `to_json` method.\n\nArgs:\n    indent: Indentation to use in the JSON output. If None is passed, the output will be compact.\n    include: Field(s) to include in the JSON output.\n    exclude: Field(s) to exclude from the JSON output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to serialize using field aliases.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A JSON string representation of the model."
+      },
+      "model_post_init": {
+        "assinatura": "(self, context: 'Any', /) -> 'None'",
+        "docstring": "Override this method to perform additional initialization after `__init__` and `model_construct`.\nThis is useful if you want to do some validation that requires the entire model to be initialized."
+      }
+    }
+  },
+  "GeoField": {
+    "tipo": "classe",
+    "assinatura": "(*, name: str, type: Literal[<FieldTypes.GEO: 'geo'>] = <FieldTypes.GEO: 'geo'>, path: str | None = None, attrs: redisvl.schema.fields.GeoFieldAttributes = <factory>) -> None",
+    "docstring": "Geo field with a geo-spatial index for location based search",
+    "modulo_origem": "redisvl.schema.fields",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, /, **data: 'Any') -> 'None'",
+        "docstring": "Create a new model by parsing and validating input data from keyword arguments.\n\nRaises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be\nvalidated to form a valid model.\n\n`self` is explicitly positional-only to allow `self` as a field name."
+      },
+      "as_redis_field": {
+        "assinatura": "(self) -> redis.commands.search.field.Field",
+        "docstring": "Convert schema field to Redis Field object"
+      },
+      "copy": {
+        "assinatura": "(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "Returns a copy of the model.\n\n!!! warning \"Deprecated\"\n    This method is now deprecated; use `model_copy` instead.\n\nIf you need `include` or `exclude`, use:\n\n```python {test=\"skip\" lint=\"skip\"}\ndata = self.model_dump(include=include, exclude=exclude, round_trip=True)\ndata = {**data, **(update or {})}\ncopied = self.model_validate(data)\n```\n\nArgs:\n    include: Optional set or mapping specifying which fields to include in the copied model.\n    exclude: Optional set or mapping specifying which fields to exclude in the copied model.\n    update: Optional dictionary of field-value pairs to override field values in the copied model.\n    deep: If True, the values of fields that are Pydantic models will be deep-copied.\n\nReturns:\n    A copy of the model with included, excluded and updated fields as specified."
+      },
+      "dict": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'",
+        "docstring": null
+      },
+      "json": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'",
+        "docstring": null
+      },
+      "model_copy": {
+        "assinatura": "(self, *, update: 'Mapping[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_copy`](../concepts/serialization.md#model_copy)\n\nReturns a copy of the model.\n\n!!! note\n    The underlying instance's [`__dict__`][object.__dict__] attribute is copied. This\n    might have unexpected side effects if you store anything in it, on top of the model\n    fields (e.g. the value of [cached properties][functools.cached_property]).\n\nArgs:\n    update: Values to change/add in the new model. Note: the data is not validated\n        before creating the new model. You should trust this data.\n    deep: Set to `True` to make a deep copy of the model.\n\nReturns:\n    New model instance."
+      },
+      "model_dump": {
+        "assinatura": "(self, *, mode: \"Literal['json', 'python'] | str\" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump`](../concepts/serialization.md#modelmodel_dump)\n\nGenerate a dictionary representation of the model, optionally specifying which fields to include or exclude.\n\nArgs:\n    mode: The mode in which `to_python` should run.\n        If mode is 'json', the output will only contain JSON serializable types.\n        If mode is 'python', the output may contain non-JSON-serializable Python objects.\n    include: A set of fields to include in the output.\n    exclude: A set of fields to exclude from the output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to use the field's alias in the dictionary key if defined.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A dictionary representation of the model."
+      },
+      "model_dump_json": {
+        "assinatura": "(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'str'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump_json`](../concepts/serialization.md#modelmodel_dump_json)\n\nGenerates a JSON representation of the model using Pydantic's `to_json` method.\n\nArgs:\n    indent: Indentation to use in the JSON output. If None is passed, the output will be compact.\n    include: Field(s) to include in the JSON output.\n    exclude: Field(s) to exclude from the JSON output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to serialize using field aliases.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A JSON string representation of the model."
+      },
+      "model_post_init": {
+        "assinatura": "(self, context: 'Any', /) -> 'None'",
+        "docstring": "Override this method to perform additional initialization after `__init__` and `model_construct`.\nThis is useful if you want to do some validation that requires the entire model to be initialized."
+      }
+    }
+  },
+  "HNSWVectorField": {
+    "tipo": "classe",
+    "assinatura": "(*, name: str, type: Literal['vector'] = 'vector', path: str | None = None, attrs: redisvl.schema.fields.HNSWVectorFieldAttributes) -> None",
+    "docstring": "Vector field with HNSW (Hierarchical Navigable Small World) indexing for approximate nearest neighbor search.",
+    "modulo_origem": "redisvl.schema.fields",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, /, **data: 'Any') -> 'None'",
+        "docstring": "Create a new model by parsing and validating input data from keyword arguments.\n\nRaises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be\nvalidated to form a valid model.\n\n`self` is explicitly positional-only to allow `self` as a field name."
+      },
+      "as_redis_field": {
+        "assinatura": "(self) -> redis.commands.search.field.Field",
+        "docstring": "Convert schema field to Redis Field object"
+      },
+      "copy": {
+        "assinatura": "(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "Returns a copy of the model.\n\n!!! warning \"Deprecated\"\n    This method is now deprecated; use `model_copy` instead.\n\nIf you need `include` or `exclude`, use:\n\n```python {test=\"skip\" lint=\"skip\"}\ndata = self.model_dump(include=include, exclude=exclude, round_trip=True)\ndata = {**data, **(update or {})}\ncopied = self.model_validate(data)\n```\n\nArgs:\n    include: Optional set or mapping specifying which fields to include in the copied model.\n    exclude: Optional set or mapping specifying which fields to exclude in the copied model.\n    update: Optional dictionary of field-value pairs to override field values in the copied model.\n    deep: If True, the values of fields that are Pydantic models will be deep-copied.\n\nReturns:\n    A copy of the model with included, excluded and updated fields as specified."
+      },
+      "dict": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'",
+        "docstring": null
+      },
+      "json": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'",
+        "docstring": null
+      },
+      "model_copy": {
+        "assinatura": "(self, *, update: 'Mapping[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_copy`](../concepts/serialization.md#model_copy)\n\nReturns a copy of the model.\n\n!!! note\n    The underlying instance's [`__dict__`][object.__dict__] attribute is copied. This\n    might have unexpected side effects if you store anything in it, on top of the model\n    fields (e.g. the value of [cached properties][functools.cached_property]).\n\nArgs:\n    update: Values to change/add in the new model. Note: the data is not validated\n        before creating the new model. You should trust this data.\n    deep: Set to `True` to make a deep copy of the model.\n\nReturns:\n    New model instance."
+      },
+      "model_dump": {
+        "assinatura": "(self, *, mode: \"Literal['json', 'python'] | str\" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump`](../concepts/serialization.md#modelmodel_dump)\n\nGenerate a dictionary representation of the model, optionally specifying which fields to include or exclude.\n\nArgs:\n    mode: The mode in which `to_python` should run.\n        If mode is 'json', the output will only contain JSON serializable types.\n        If mode is 'python', the output may contain non-JSON-serializable Python objects.\n    include: A set of fields to include in the output.\n    exclude: A set of fields to exclude from the output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to use the field's alias in the dictionary key if defined.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A dictionary representation of the model."
+      },
+      "model_dump_json": {
+        "assinatura": "(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'str'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump_json`](../concepts/serialization.md#modelmodel_dump_json)\n\nGenerates a JSON representation of the model using Pydantic's `to_json` method.\n\nArgs:\n    indent: Indentation to use in the JSON output. If None is passed, the output will be compact.\n    include: Field(s) to include in the JSON output.\n    exclude: Field(s) to exclude from the JSON output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to serialize using field aliases.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A JSON string representation of the model."
+      },
+      "model_post_init": {
+        "assinatura": "(self, context: 'Any', /) -> 'None'",
+        "docstring": "Override this method to perform additional initialization after `__init__` and `model_construct`.\nThis is useful if you want to do some validation that requires the entire model to be initialized."
+      }
+    }
+  },
+  "IndexInfo": {
+    "tipo": "classe",
+    "assinatura": "(*, name: str, prefix: str | list[str] = 'rvl', key_separator: str = ':', storage_type: redisvl.schema.schema.StorageType = <StorageType.HASH: 'hash'>, stopwords: list[str] | None = None) -> None",
+    "docstring": "Index info includes the essential details regarding index settings,\nsuch as its name, prefix, key separator, storage type, and stopwords in Redis.\n\nIn yaml format, the index info section looks like:\n\n.. code-block:: yaml\n\n    index:\n        name: user-index\n        prefix: user\n        key_separator: ':'\n        storage_type: json\n        stopwords: []  # Disable stopwords (STOPWORDS 0)\n\nIn dict format, the index info section looks like:\n\n.. code-block:: python\n\n    {\"index\": {\n        \"name\": \"user-index\",\n        \"prefix\": \"user\",\n        \"key_separator\": \":\",\n        \"storage_type\": \"json\",\n        \"stopwords\": [\"the\", \"a\", \"an\"]  # Custom stopwords\n    }}",
+    "modulo_origem": "redisvl.schema.schema",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, /, **data: 'Any') -> 'None'",
+        "docstring": "Create a new model by parsing and validating input data from keyword arguments.\n\nRaises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be\nvalidated to form a valid model.\n\n`self` is explicitly positional-only to allow `self` as a field name."
+      },
+      "copy": {
+        "assinatura": "(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "Returns a copy of the model.\n\n!!! warning \"Deprecated\"\n    This method is now deprecated; use `model_copy` instead.\n\nIf you need `include` or `exclude`, use:\n\n```python {test=\"skip\" lint=\"skip\"}\ndata = self.model_dump(include=include, exclude=exclude, round_trip=True)\ndata = {**data, **(update or {})}\ncopied = self.model_validate(data)\n```\n\nArgs:\n    include: Optional set or mapping specifying which fields to include in the copied model.\n    exclude: Optional set or mapping specifying which fields to exclude in the copied model.\n    update: Optional dictionary of field-value pairs to override field values in the copied model.\n    deep: If True, the values of fields that are Pydantic models will be deep-copied.\n\nReturns:\n    A copy of the model with included, excluded and updated fields as specified."
+      },
+      "dict": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'",
+        "docstring": null
+      },
+      "json": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'",
+        "docstring": null
+      },
+      "model_copy": {
+        "assinatura": "(self, *, update: 'Mapping[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_copy`](../concepts/serialization.md#model_copy)\n\nReturns a copy of the model.\n\n!!! note\n    The underlying instance's [`__dict__`][object.__dict__] attribute is copied. This\n    might have unexpected side effects if you store anything in it, on top of the model\n    fields (e.g. the value of [cached properties][functools.cached_property]).\n\nArgs:\n    update: Values to change/add in the new model. Note: the data is not validated\n        before creating the new model. You should trust this data.\n    deep: Set to `True` to make a deep copy of the model.\n\nReturns:\n    New model instance."
+      },
+      "model_dump": {
+        "assinatura": "(self, *, mode: \"Literal['json', 'python'] | str\" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump`](../concepts/serialization.md#modelmodel_dump)\n\nGenerate a dictionary representation of the model, optionally specifying which fields to include or exclude.\n\nArgs:\n    mode: The mode in which `to_python` should run.\n        If mode is 'json', the output will only contain JSON serializable types.\n        If mode is 'python', the output may contain non-JSON-serializable Python objects.\n    include: A set of fields to include in the output.\n    exclude: A set of fields to exclude from the output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to use the field's alias in the dictionary key if defined.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A dictionary representation of the model."
+      },
+      "model_dump_json": {
+        "assinatura": "(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'str'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump_json`](../concepts/serialization.md#modelmodel_dump_json)\n\nGenerates a JSON representation of the model using Pydantic's `to_json` method.\n\nArgs:\n    indent: Indentation to use in the JSON output. If None is passed, the output will be compact.\n    include: Field(s) to include in the JSON output.\n    exclude: Field(s) to exclude from the JSON output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to serialize using field aliases.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A JSON string representation of the model."
+      },
+      "model_post_init": {
+        "assinatura": "(self, context: 'Any', /) -> 'None'",
+        "docstring": "Override this method to perform additional initialization after `__init__` and `model_construct`.\nThis is useful if you want to do some validation that requires the entire model to be initialized."
+      }
+    }
+  },
+  "IndexSchema": {
+    "tipo": "classe",
+    "assinatura": "(*, index: redisvl.schema.schema.IndexInfo, fields: dict[str, redisvl.schema.fields.BaseField] = <factory>, version: Literal['0.1.0'] = '0.1.0') -> None",
+    "docstring": "A schema definition for a search index in Redis, used in RedisVL for\nconfiguring index settings and organizing vector and metadata fields.\n\nThe class offers methods to create an index schema from a YAML file or a\nPython dictionary, supporting flexible schema definitions and easy\nintegration into various workflows.\n\nAn example `schema.yaml` file might look like this:\n\n.. code-block:: yaml\n\n    version: '0.1.0'\n\n    index:\n        name: user-index\n        prefix: user\n        key_separator: \":\"\n        storage_type: json\n\n    fields:\n        - name: user\n          type: tag\n        - name: credit_score\n          type: tag\n        - name: embedding\n          type: vector\n          attrs:\n            algorithm: flat\n            dims: 3\n            distance_metric: cosine\n            datatype: float32\n\nLoading the schema for RedisVL from yaml is as simple as:\n\n.. code-block:: python\n\n    from redisvl.schema import IndexSchema\n\n    schema = IndexSchema.from_yaml(\"schema.yaml\")\n\nLoading the schema for RedisVL from dict is as simple as:\n\n.. code-block:: python\n\n    from redisvl.schema import IndexSchema\n\n    schema = IndexSchema.from_dict({\n        \"index\": {\n            \"name\": \"user-index\",\n            \"prefix\": \"user\",\n            \"key_separator\": \":\",\n            \"storage_type\": \"json\",\n        },\n        \"fields\": [\n            {\"name\": \"user\", \"type\": \"tag\"},\n            {\"name\": \"credit_score\", \"type\": \"tag\"},\n            {\n                \"name\": \"embedding\",\n                \"type\": \"vector\",\n                \"attrs\": {\n                    \"algorithm\": \"flat\",\n                    \"dims\": 3,\n                    \"distance_metric\": \"cosine\",\n                    \"datatype\": \"float32\"\n                }\n            }\n        ]\n    })\n\nNote:\n    The `fields` attribute in the schema must contain unique field names to ensure\n    correct and unambiguous field references.",
+    "modulo_origem": "redisvl.schema.schema",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, /, **data: 'Any') -> 'None'",
+        "docstring": "Create a new model by parsing and validating input data from keyword arguments.\n\nRaises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be\nvalidated to form a valid model.\n\n`self` is explicitly positional-only to allow `self` as a field name."
+      },
+      "add_field": {
+        "assinatura": "(self, field_inputs: dict[str, typing.Any])",
+        "docstring": "Adds a single field to the index schema based on the specified field\ntype and attributes.\n\nThis method allows for the addition of individual fields to the schema,\nproviding flexibility in defining the structure of the index.\n\nArgs:\n    field_inputs (Dict[str, Any]): A field to add.\n\nRaises:\n    ValueError: If the field name or type are not provided or if the name\n        already exists within the schema.\n\n.. code-block:: python\n\n    # Add a tag field\n    schema.add_field({\"name\": \"user\", \"type\": \"tag\"})\n\n    # Add a vector field\n    schema.add_field({\n        \"name\": \"user-embedding\",\n        \"type\": \"vector\",\n        \"attrs\": {\n            \"dims\": 1024,\n            \"algorithm\": \"flat\",\n            \"datatype\": \"float32\"\n        }\n    })"
+      },
+      "add_fields": {
+        "assinatura": "(self, fields: list[dict[str, typing.Any]])",
+        "docstring": "Extends the schema with additional fields.\n\nThis method allows dynamically adding new fields to the index schema. It\nprocesses a list of field definitions.\n\nArgs:\n    fields (List[Dict[str, Any]]): A list of fields to add.\n\nRaises:\n    ValueError: If a field with the same name already exists in the\n        schema.\n\n.. code-block:: python\n\n    schema.add_fields([\n        {\"name\": \"user\", \"type\": \"tag\"},\n        {\"name\": \"bio\", \"type\": \"text\"},\n        {\n            \"name\": \"user-embedding\",\n            \"type\": \"vector\",\n            \"attrs\": {\n                \"dims\": 1024,\n                \"algorithm\": \"flat\",\n                \"datatype\": \"float32\"\n            }\n        }\n    ])"
+      },
+      "copy": {
+        "assinatura": "(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "Returns a copy of the model.\n\n!!! warning \"Deprecated\"\n    This method is now deprecated; use `model_copy` instead.\n\nIf you need `include` or `exclude`, use:\n\n```python {test=\"skip\" lint=\"skip\"}\ndata = self.model_dump(include=include, exclude=exclude, round_trip=True)\ndata = {**data, **(update or {})}\ncopied = self.model_validate(data)\n```\n\nArgs:\n    include: Optional set or mapping specifying which fields to include in the copied model.\n    exclude: Optional set or mapping specifying which fields to exclude in the copied model.\n    update: Optional dictionary of field-value pairs to override field values in the copied model.\n    deep: If True, the values of fields that are Pydantic models will be deep-copied.\n\nReturns:\n    A copy of the model with included, excluded and updated fields as specified."
+      },
+      "dict": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'",
+        "docstring": null
+      },
+      "generate_fields": {
+        "assinatura": "(self, data: dict[str, typing.Any], strict: bool = False, ignore_fields: list[str] = []) -> list[dict[str, typing.Any]]",
+        "docstring": "Generates a list of extracted field specs from a sample data point.\n\nThis method simplifies the process of creating a schema by inferring\nfield types and attributes from sample data. It's particularly useful\nduring the development process while dealing with datasets containing\nnumerous fields, reducing the need for manual specification.\n\nArgs:\n    data (Dict[str, Any]): Sample data used to infer field definitions.\n    strict (bool, optional): If True, raises an error on failing to\n        infer a field type. Defaults to False.\n    ignore_fields (List[str], optional): A list of field names to\n        exclude from processing. Defaults to an empty list.\n\nReturns:\n    Dict[str, List[Dict[str, Any]]]: A dictionary with inferred field\n        types and attributes.\n\nNotes:\n    - Vector fields are not generated by this method.\n    - This method employs heuristics and may not always correctly infer\n        field types."
+      },
+      "json": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'",
+        "docstring": null
+      },
+      "model_copy": {
+        "assinatura": "(self, *, update: 'Mapping[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_copy`](../concepts/serialization.md#model_copy)\n\nReturns a copy of the model.\n\n!!! note\n    The underlying instance's [`__dict__`][object.__dict__] attribute is copied. This\n    might have unexpected side effects if you store anything in it, on top of the model\n    fields (e.g. the value of [cached properties][functools.cached_property]).\n\nArgs:\n    update: Values to change/add in the new model. Note: the data is not validated\n        before creating the new model. You should trust this data.\n    deep: Set to `True` to make a deep copy of the model.\n\nReturns:\n    New model instance."
+      },
+      "model_dump": {
+        "assinatura": "(self, *, mode: \"Literal['json', 'python'] | str\" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump`](../concepts/serialization.md#modelmodel_dump)\n\nGenerate a dictionary representation of the model, optionally specifying which fields to include or exclude.\n\nArgs:\n    mode: The mode in which `to_python` should run.\n        If mode is 'json', the output will only contain JSON serializable types.\n        If mode is 'python', the output may contain non-JSON-serializable Python objects.\n    include: A set of fields to include in the output.\n    exclude: A set of fields to exclude from the output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to use the field's alias in the dictionary key if defined.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A dictionary representation of the model."
+      },
+      "model_dump_json": {
+        "assinatura": "(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'str'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump_json`](../concepts/serialization.md#modelmodel_dump_json)\n\nGenerates a JSON representation of the model using Pydantic's `to_json` method.\n\nArgs:\n    indent: Indentation to use in the JSON output. If None is passed, the output will be compact.\n    include: Field(s) to include in the JSON output.\n    exclude: Field(s) to exclude from the JSON output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to serialize using field aliases.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A JSON string representation of the model."
+      },
+      "model_post_init": {
+        "assinatura": "(self, context: 'Any', /) -> 'None'",
+        "docstring": "Override this method to perform additional initialization after `__init__` and `model_construct`.\nThis is useful if you want to do some validation that requires the entire model to be initialized."
+      },
+      "remove_field": {
+        "assinatura": "(self, field_name: str)",
+        "docstring": "Removes a field from the schema based on the specified name.\n\nThis method is useful for dynamically altering the schema by removing\nexisting fields.\n\nArgs:\n    field_name (str): The name of the field to be removed."
+      },
+      "to_dict": {
+        "assinatura": "(self) -> dict[str, typing.Any]",
+        "docstring": "Serialize the index schema model to a dictionary, handling Enums\nand other special cases properly.\n\nReturns:\n    Dict[str, Any]: The index schema as a dictionary."
+      },
+      "to_yaml": {
+        "assinatura": "(self, file_path: str, overwrite: bool = True) -> None",
+        "docstring": "Write the index schema to a YAML file.\n\nArgs:\n    file_path (str): The path to the YAML file.\n    overwrite (bool): Whether to overwrite the file if it already exists.\n\nRaises:\n    FileExistsError: If the file already exists and overwrite is False."
+      }
+    }
+  },
+  "NumericField": {
+    "tipo": "classe",
+    "assinatura": "(*, name: str, type: Literal[<FieldTypes.NUMERIC: 'numeric'>] = <FieldTypes.NUMERIC: 'numeric'>, path: str | None = None, attrs: redisvl.schema.fields.NumericFieldAttributes = <factory>) -> None",
+    "docstring": "Numeric field for numeric range filtering",
+    "modulo_origem": "redisvl.schema.fields",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, /, **data: 'Any') -> 'None'",
+        "docstring": "Create a new model by parsing and validating input data from keyword arguments.\n\nRaises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be\nvalidated to form a valid model.\n\n`self` is explicitly positional-only to allow `self` as a field name."
+      },
+      "as_redis_field": {
+        "assinatura": "(self) -> redis.commands.search.field.Field",
+        "docstring": "Convert schema field to Redis Field object"
+      },
+      "copy": {
+        "assinatura": "(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "Returns a copy of the model.\n\n!!! warning \"Deprecated\"\n    This method is now deprecated; use `model_copy` instead.\n\nIf you need `include` or `exclude`, use:\n\n```python {test=\"skip\" lint=\"skip\"}\ndata = self.model_dump(include=include, exclude=exclude, round_trip=True)\ndata = {**data, **(update or {})}\ncopied = self.model_validate(data)\n```\n\nArgs:\n    include: Optional set or mapping specifying which fields to include in the copied model.\n    exclude: Optional set or mapping specifying which fields to exclude in the copied model.\n    update: Optional dictionary of field-value pairs to override field values in the copied model.\n    deep: If True, the values of fields that are Pydantic models will be deep-copied.\n\nReturns:\n    A copy of the model with included, excluded and updated fields as specified."
+      },
+      "dict": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'",
+        "docstring": null
+      },
+      "json": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'",
+        "docstring": null
+      },
+      "model_copy": {
+        "assinatura": "(self, *, update: 'Mapping[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_copy`](../concepts/serialization.md#model_copy)\n\nReturns a copy of the model.\n\n!!! note\n    The underlying instance's [`__dict__`][object.__dict__] attribute is copied. This\n    might have unexpected side effects if you store anything in it, on top of the model\n    fields (e.g. the value of [cached properties][functools.cached_property]).\n\nArgs:\n    update: Values to change/add in the new model. Note: the data is not validated\n        before creating the new model. You should trust this data.\n    deep: Set to `True` to make a deep copy of the model.\n\nReturns:\n    New model instance."
+      },
+      "model_dump": {
+        "assinatura": "(self, *, mode: \"Literal['json', 'python'] | str\" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump`](../concepts/serialization.md#modelmodel_dump)\n\nGenerate a dictionary representation of the model, optionally specifying which fields to include or exclude.\n\nArgs:\n    mode: The mode in which `to_python` should run.\n        If mode is 'json', the output will only contain JSON serializable types.\n        If mode is 'python', the output may contain non-JSON-serializable Python objects.\n    include: A set of fields to include in the output.\n    exclude: A set of fields to exclude from the output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to use the field's alias in the dictionary key if defined.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A dictionary representation of the model."
+      },
+      "model_dump_json": {
+        "assinatura": "(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'str'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump_json`](../concepts/serialization.md#modelmodel_dump_json)\n\nGenerates a JSON representation of the model using Pydantic's `to_json` method.\n\nArgs:\n    indent: Indentation to use in the JSON output. If None is passed, the output will be compact.\n    include: Field(s) to include in the JSON output.\n    exclude: Field(s) to exclude from the JSON output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to serialize using field aliases.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A JSON string representation of the model."
+      },
+      "model_post_init": {
+        "assinatura": "(self, context: 'Any', /) -> 'None'",
+        "docstring": "Override this method to perform additional initialization after `__init__` and `model_construct`.\nThis is useful if you want to do some validation that requires the entire model to be initialized."
+      }
+    }
+  },
+  "SVSVectorField": {
+    "tipo": "classe",
+    "assinatura": "(*, name: str, type: Literal[<FieldTypes.VECTOR: 'vector'>] = <FieldTypes.VECTOR: 'vector'>, path: str | None = None, attrs: redisvl.schema.fields.SVSVectorFieldAttributes) -> None",
+    "docstring": "Vector field with SVS-VAMANA indexing and compression for memory-efficient approximate nearest neighbor search.",
+    "modulo_origem": "redisvl.schema.fields",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, /, **data: 'Any') -> 'None'",
+        "docstring": "Create a new model by parsing and validating input data from keyword arguments.\n\nRaises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be\nvalidated to form a valid model.\n\n`self` is explicitly positional-only to allow `self` as a field name."
+      },
+      "as_redis_field": {
+        "assinatura": "(self) -> redis.commands.search.field.Field",
+        "docstring": "Convert schema field to Redis Field object"
+      },
+      "copy": {
+        "assinatura": "(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "Returns a copy of the model.\n\n!!! warning \"Deprecated\"\n    This method is now deprecated; use `model_copy` instead.\n\nIf you need `include` or `exclude`, use:\n\n```python {test=\"skip\" lint=\"skip\"}\ndata = self.model_dump(include=include, exclude=exclude, round_trip=True)\ndata = {**data, **(update or {})}\ncopied = self.model_validate(data)\n```\n\nArgs:\n    include: Optional set or mapping specifying which fields to include in the copied model.\n    exclude: Optional set or mapping specifying which fields to exclude in the copied model.\n    update: Optional dictionary of field-value pairs to override field values in the copied model.\n    deep: If True, the values of fields that are Pydantic models will be deep-copied.\n\nReturns:\n    A copy of the model with included, excluded and updated fields as specified."
+      },
+      "dict": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'",
+        "docstring": null
+      },
+      "json": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'",
+        "docstring": null
+      },
+      "model_copy": {
+        "assinatura": "(self, *, update: 'Mapping[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_copy`](../concepts/serialization.md#model_copy)\n\nReturns a copy of the model.\n\n!!! note\n    The underlying instance's [`__dict__`][object.__dict__] attribute is copied. This\n    might have unexpected side effects if you store anything in it, on top of the model\n    fields (e.g. the value of [cached properties][functools.cached_property]).\n\nArgs:\n    update: Values to change/add in the new model. Note: the data is not validated\n        before creating the new model. You should trust this data.\n    deep: Set to `True` to make a deep copy of the model.\n\nReturns:\n    New model instance."
+      },
+      "model_dump": {
+        "assinatura": "(self, *, mode: \"Literal['json', 'python'] | str\" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump`](../concepts/serialization.md#modelmodel_dump)\n\nGenerate a dictionary representation of the model, optionally specifying which fields to include or exclude.\n\nArgs:\n    mode: The mode in which `to_python` should run.\n        If mode is 'json', the output will only contain JSON serializable types.\n        If mode is 'python', the output may contain non-JSON-serializable Python objects.\n    include: A set of fields to include in the output.\n    exclude: A set of fields to exclude from the output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to use the field's alias in the dictionary key if defined.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A dictionary representation of the model."
+      },
+      "model_dump_json": {
+        "assinatura": "(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'str'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump_json`](../concepts/serialization.md#modelmodel_dump_json)\n\nGenerates a JSON representation of the model using Pydantic's `to_json` method.\n\nArgs:\n    indent: Indentation to use in the JSON output. If None is passed, the output will be compact.\n    include: Field(s) to include in the JSON output.\n    exclude: Field(s) to exclude from the JSON output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to serialize using field aliases.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A JSON string representation of the model."
+      },
+      "model_post_init": {
+        "assinatura": "(self, context: 'Any', /) -> 'None'",
+        "docstring": "Override this method to perform additional initialization after `__init__` and `model_construct`.\nThis is useful if you want to do some validation that requires the entire model to be initialized."
+      }
+    }
+  },
+  "StorageType": {
+    "tipo": "classe",
+    "assinatura": "(*values)",
+    "docstring": "Enumeration for the storage types supported in Redis.\n\nAttributes:\n    HASH (str): Represents the 'hash' storage type in Redis.\n    JSON (str): Represents the 'json' storage type in Redis.",
+    "modulo_origem": "redisvl.schema.schema",
+    "metodos": {}
+  },
+  "TagField": {
+    "tipo": "classe",
+    "assinatura": "(*, name: str, type: Literal[<FieldTypes.TAG: 'tag'>] = <FieldTypes.TAG: 'tag'>, path: str | None = None, attrs: redisvl.schema.fields.TagFieldAttributes = <factory>) -> None",
+    "docstring": "Tag field for simple boolean-style filtering",
+    "modulo_origem": "redisvl.schema.fields",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, /, **data: 'Any') -> 'None'",
+        "docstring": "Create a new model by parsing and validating input data from keyword arguments.\n\nRaises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be\nvalidated to form a valid model.\n\n`self` is explicitly positional-only to allow `self` as a field name."
+      },
+      "as_redis_field": {
+        "assinatura": "(self) -> redis.commands.search.field.Field",
+        "docstring": "Convert schema field to Redis Field object"
+      },
+      "copy": {
+        "assinatura": "(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "Returns a copy of the model.\n\n!!! warning \"Deprecated\"\n    This method is now deprecated; use `model_copy` instead.\n\nIf you need `include` or `exclude`, use:\n\n```python {test=\"skip\" lint=\"skip\"}\ndata = self.model_dump(include=include, exclude=exclude, round_trip=True)\ndata = {**data, **(update or {})}\ncopied = self.model_validate(data)\n```\n\nArgs:\n    include: Optional set or mapping specifying which fields to include in the copied model.\n    exclude: Optional set or mapping specifying which fields to exclude in the copied model.\n    update: Optional dictionary of field-value pairs to override field values in the copied model.\n    deep: If True, the values of fields that are Pydantic models will be deep-copied.\n\nReturns:\n    A copy of the model with included, excluded and updated fields as specified."
+      },
+      "dict": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'",
+        "docstring": null
+      },
+      "json": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'",
+        "docstring": null
+      },
+      "model_copy": {
+        "assinatura": "(self, *, update: 'Mapping[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_copy`](../concepts/serialization.md#model_copy)\n\nReturns a copy of the model.\n\n!!! note\n    The underlying instance's [`__dict__`][object.__dict__] attribute is copied. This\n    might have unexpected side effects if you store anything in it, on top of the model\n    fields (e.g. the value of [cached properties][functools.cached_property]).\n\nArgs:\n    update: Values to change/add in the new model. Note: the data is not validated\n        before creating the new model. You should trust this data.\n    deep: Set to `True` to make a deep copy of the model.\n\nReturns:\n    New model instance."
+      },
+      "model_dump": {
+        "assinatura": "(self, *, mode: \"Literal['json', 'python'] | str\" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump`](../concepts/serialization.md#modelmodel_dump)\n\nGenerate a dictionary representation of the model, optionally specifying which fields to include or exclude.\n\nArgs:\n    mode: The mode in which `to_python` should run.\n        If mode is 'json', the output will only contain JSON serializable types.\n        If mode is 'python', the output may contain non-JSON-serializable Python objects.\n    include: A set of fields to include in the output.\n    exclude: A set of fields to exclude from the output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to use the field's alias in the dictionary key if defined.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A dictionary representation of the model."
+      },
+      "model_dump_json": {
+        "assinatura": "(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'str'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump_json`](../concepts/serialization.md#modelmodel_dump_json)\n\nGenerates a JSON representation of the model using Pydantic's `to_json` method.\n\nArgs:\n    indent: Indentation to use in the JSON output. If None is passed, the output will be compact.\n    include: Field(s) to include in the JSON output.\n    exclude: Field(s) to exclude from the JSON output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to serialize using field aliases.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A JSON string representation of the model."
+      },
+      "model_post_init": {
+        "assinatura": "(self, context: 'Any', /) -> 'None'",
+        "docstring": "Override this method to perform additional initialization after `__init__` and `model_construct`.\nThis is useful if you want to do some validation that requires the entire model to be initialized."
+      }
+    }
+  },
+  "TextField": {
+    "tipo": "classe",
+    "assinatura": "(*, name: str, type: Literal[<FieldTypes.TEXT: 'text'>] = <FieldTypes.TEXT: 'text'>, path: str | None = None, attrs: redisvl.schema.fields.TextFieldAttributes = <factory>) -> None",
+    "docstring": "Text field supporting a full text search index",
+    "modulo_origem": "redisvl.schema.fields",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, /, **data: 'Any') -> 'None'",
+        "docstring": "Create a new model by parsing and validating input data from keyword arguments.\n\nRaises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be\nvalidated to form a valid model.\n\n`self` is explicitly positional-only to allow `self` as a field name."
+      },
+      "as_redis_field": {
+        "assinatura": "(self) -> redis.commands.search.field.Field",
+        "docstring": "Convert schema field to Redis Field object"
+      },
+      "copy": {
+        "assinatura": "(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "Returns a copy of the model.\n\n!!! warning \"Deprecated\"\n    This method is now deprecated; use `model_copy` instead.\n\nIf you need `include` or `exclude`, use:\n\n```python {test=\"skip\" lint=\"skip\"}\ndata = self.model_dump(include=include, exclude=exclude, round_trip=True)\ndata = {**data, **(update or {})}\ncopied = self.model_validate(data)\n```\n\nArgs:\n    include: Optional set or mapping specifying which fields to include in the copied model.\n    exclude: Optional set or mapping specifying which fields to exclude in the copied model.\n    update: Optional dictionary of field-value pairs to override field values in the copied model.\n    deep: If True, the values of fields that are Pydantic models will be deep-copied.\n\nReturns:\n    A copy of the model with included, excluded and updated fields as specified."
+      },
+      "dict": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'",
+        "docstring": null
+      },
+      "json": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'",
+        "docstring": null
+      },
+      "model_copy": {
+        "assinatura": "(self, *, update: 'Mapping[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_copy`](../concepts/serialization.md#model_copy)\n\nReturns a copy of the model.\n\n!!! note\n    The underlying instance's [`__dict__`][object.__dict__] attribute is copied. This\n    might have unexpected side effects if you store anything in it, on top of the model\n    fields (e.g. the value of [cached properties][functools.cached_property]).\n\nArgs:\n    update: Values to change/add in the new model. Note: the data is not validated\n        before creating the new model. You should trust this data.\n    deep: Set to `True` to make a deep copy of the model.\n\nReturns:\n    New model instance."
+      },
+      "model_dump": {
+        "assinatura": "(self, *, mode: \"Literal['json', 'python'] | str\" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump`](../concepts/serialization.md#modelmodel_dump)\n\nGenerate a dictionary representation of the model, optionally specifying which fields to include or exclude.\n\nArgs:\n    mode: The mode in which `to_python` should run.\n        If mode is 'json', the output will only contain JSON serializable types.\n        If mode is 'python', the output may contain non-JSON-serializable Python objects.\n    include: A set of fields to include in the output.\n    exclude: A set of fields to exclude from the output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to use the field's alias in the dictionary key if defined.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A dictionary representation of the model."
+      },
+      "model_dump_json": {
+        "assinatura": "(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'str'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump_json`](../concepts/serialization.md#modelmodel_dump_json)\n\nGenerates a JSON representation of the model using Pydantic's `to_json` method.\n\nArgs:\n    indent: Indentation to use in the JSON output. If None is passed, the output will be compact.\n    include: Field(s) to include in the JSON output.\n    exclude: Field(s) to exclude from the JSON output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to serialize using field aliases.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A JSON string representation of the model."
+      },
+      "model_post_init": {
+        "assinatura": "(self, context: 'Any', /) -> 'None'",
+        "docstring": "Override this method to perform additional initialization after `__init__` and `model_construct`.\nThis is useful if you want to do some validation that requires the entire model to be initialized."
+      }
+    }
+  },
+  "VectorDataType": {
+    "tipo": "classe",
+    "assinatura": "(*values)",
+    "docstring": "str(object='') -> str\nstr(bytes_or_buffer[, encoding[, errors]]) -> str\n\nCreate a new string object from the given object. If encoding or\nerrors is specified, then the object must expose a data buffer\nthat will be decoded using the given encoding and error handler.\nOtherwise, returns the result of object.__str__() (if defined)\nor repr(object).\nencoding defaults to 'utf-8'.\nerrors defaults to 'strict'.",
+    "modulo_origem": "redisvl.schema.fields",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, *args, **kwds)",
+        "docstring": "Initialize self.  See help(type(self)) for accurate signature."
+      }
+    }
+  },
+  "VectorDistanceMetric": {
+    "tipo": "classe",
+    "assinatura": "(*values)",
+    "docstring": "str(object='') -> str\nstr(bytes_or_buffer[, encoding[, errors]]) -> str\n\nCreate a new string object from the given object. If encoding or\nerrors is specified, then the object must expose a data buffer\nthat will be decoded using the given encoding and error handler.\nOtherwise, returns the result of object.__str__() (if defined)\nor repr(object).\nencoding defaults to 'utf-8'.\nerrors defaults to 'strict'.",
+    "modulo_origem": "redisvl.schema.fields",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, *args, **kwds)",
+        "docstring": "Initialize self.  See help(type(self)) for accurate signature."
+      }
+    }
+  },
+  "VectorIndexAlgorithm": {
+    "tipo": "classe",
+    "assinatura": "(*values)",
+    "docstring": "str(object='') -> str\nstr(bytes_or_buffer[, encoding[, errors]]) -> str\n\nCreate a new string object from the given object. If encoding or\nerrors is specified, then the object must expose a data buffer\nthat will be decoded using the given encoding and error handler.\nOtherwise, returns the result of object.__str__() (if defined)\nor repr(object).\nencoding defaults to 'utf-8'.\nerrors defaults to 'strict'.",
+    "modulo_origem": "redisvl.schema.fields",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, *args, **kwds)",
+        "docstring": "Initialize self.  See help(type(self)) for accurate signature."
+      }
+    }
+  },
+  "validate_object": {
+    "tipo": "funcao",
+    "assinatura": "(schema: redisvl.schema.schema.IndexSchema, obj: dict[str, typing.Any]) -> dict[str, typing.Any]",
+    "docstring": "Validate an object against a schema.\n\nArgs:\n    schema: The IndexSchema to validate against\n    obj: The object to validate\n\nReturns:\n    Validated object with any type coercions applied\n\nRaises:\n    ValueError: If validation fails with enhanced error message",
+    "modulo_origem": "redisvl.schema.validation"
+  }
+}

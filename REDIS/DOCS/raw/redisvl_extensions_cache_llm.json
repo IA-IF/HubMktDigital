@@ -1,0 +1,326 @@
+{
+  "CacheEntry": {
+    "tipo": "classe",
+    "assinatura": "(*, entry_id: str | None = None, prompt: str, response: str, prompt_vector: list[float], inserted_at: float = <factory>, updated_at: float = <factory>, metadata: dict[str, typing.Any] | None = None, filters: dict[str, typing.Any] | None = None) -> None",
+    "docstring": "A single cache entry in Redis",
+    "modulo_origem": "redisvl.extensions.cache.llm.schema",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, /, **data: 'Any') -> 'None'",
+        "docstring": "Create a new model by parsing and validating input data from keyword arguments.\n\nRaises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be\nvalidated to form a valid model.\n\n`self` is explicitly positional-only to allow `self` as a field name."
+      },
+      "copy": {
+        "assinatura": "(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "Returns a copy of the model.\n\n!!! warning \"Deprecated\"\n    This method is now deprecated; use `model_copy` instead.\n\nIf you need `include` or `exclude`, use:\n\n```python {test=\"skip\" lint=\"skip\"}\ndata = self.model_dump(include=include, exclude=exclude, round_trip=True)\ndata = {**data, **(update or {})}\ncopied = self.model_validate(data)\n```\n\nArgs:\n    include: Optional set or mapping specifying which fields to include in the copied model.\n    exclude: Optional set or mapping specifying which fields to exclude in the copied model.\n    update: Optional dictionary of field-value pairs to override field values in the copied model.\n    deep: If True, the values of fields that are Pydantic models will be deep-copied.\n\nReturns:\n    A copy of the model with included, excluded and updated fields as specified."
+      },
+      "dict": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'",
+        "docstring": null
+      },
+      "json": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'",
+        "docstring": null
+      },
+      "model_copy": {
+        "assinatura": "(self, *, update: 'Mapping[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_copy`](../concepts/serialization.md#model_copy)\n\nReturns a copy of the model.\n\n!!! note\n    The underlying instance's [`__dict__`][object.__dict__] attribute is copied. This\n    might have unexpected side effects if you store anything in it, on top of the model\n    fields (e.g. the value of [cached properties][functools.cached_property]).\n\nArgs:\n    update: Values to change/add in the new model. Note: the data is not validated\n        before creating the new model. You should trust this data.\n    deep: Set to `True` to make a deep copy of the model.\n\nReturns:\n    New model instance."
+      },
+      "model_dump": {
+        "assinatura": "(self, *, mode: \"Literal['json', 'python'] | str\" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump`](../concepts/serialization.md#modelmodel_dump)\n\nGenerate a dictionary representation of the model, optionally specifying which fields to include or exclude.\n\nArgs:\n    mode: The mode in which `to_python` should run.\n        If mode is 'json', the output will only contain JSON serializable types.\n        If mode is 'python', the output may contain non-JSON-serializable Python objects.\n    include: A set of fields to include in the output.\n    exclude: A set of fields to exclude from the output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to use the field's alias in the dictionary key if defined.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A dictionary representation of the model."
+      },
+      "model_dump_json": {
+        "assinatura": "(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'str'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump_json`](../concepts/serialization.md#modelmodel_dump_json)\n\nGenerates a JSON representation of the model using Pydantic's `to_json` method.\n\nArgs:\n    indent: Indentation to use in the JSON output. If None is passed, the output will be compact.\n    include: Field(s) to include in the JSON output.\n    exclude: Field(s) to exclude from the JSON output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to serialize using field aliases.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A JSON string representation of the model."
+      },
+      "model_post_init": {
+        "assinatura": "(self, context: 'Any', /) -> 'None'",
+        "docstring": "Override this method to perform additional initialization after `__init__` and `model_construct`.\nThis is useful if you want to do some validation that requires the entire model to be initialized."
+      },
+      "to_dict": {
+        "assinatura": "(self, dtype: str) -> dict[str, typing.Any]",
+        "docstring": null
+      }
+    }
+  },
+  "CacheHit": {
+    "tipo": "classe",
+    "assinatura": "(*, entry_id: str, prompt: str, response: str, vector_distance: float, inserted_at: float, updated_at: float, metadata: dict[str, typing.Any] | None = None, filters: dict[str, typing.Any] | None = None, **extra_data: Any) -> None",
+    "docstring": "A cache hit based on some input query",
+    "modulo_origem": "redisvl.extensions.cache.llm.schema",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, /, **data: 'Any') -> 'None'",
+        "docstring": "Create a new model by parsing and validating input data from keyword arguments.\n\nRaises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be\nvalidated to form a valid model.\n\n`self` is explicitly positional-only to allow `self` as a field name."
+      },
+      "copy": {
+        "assinatura": "(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "Returns a copy of the model.\n\n!!! warning \"Deprecated\"\n    This method is now deprecated; use `model_copy` instead.\n\nIf you need `include` or `exclude`, use:\n\n```python {test=\"skip\" lint=\"skip\"}\ndata = self.model_dump(include=include, exclude=exclude, round_trip=True)\ndata = {**data, **(update or {})}\ncopied = self.model_validate(data)\n```\n\nArgs:\n    include: Optional set or mapping specifying which fields to include in the copied model.\n    exclude: Optional set or mapping specifying which fields to exclude in the copied model.\n    update: Optional dictionary of field-value pairs to override field values in the copied model.\n    deep: If True, the values of fields that are Pydantic models will be deep-copied.\n\nReturns:\n    A copy of the model with included, excluded and updated fields as specified."
+      },
+      "dict": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'",
+        "docstring": null
+      },
+      "json": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'",
+        "docstring": null
+      },
+      "model_copy": {
+        "assinatura": "(self, *, update: 'Mapping[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_copy`](../concepts/serialization.md#model_copy)\n\nReturns a copy of the model.\n\n!!! note\n    The underlying instance's [`__dict__`][object.__dict__] attribute is copied. This\n    might have unexpected side effects if you store anything in it, on top of the model\n    fields (e.g. the value of [cached properties][functools.cached_property]).\n\nArgs:\n    update: Values to change/add in the new model. Note: the data is not validated\n        before creating the new model. You should trust this data.\n    deep: Set to `True` to make a deep copy of the model.\n\nReturns:\n    New model instance."
+      },
+      "model_dump": {
+        "assinatura": "(self, *, mode: \"Literal['json', 'python'] | str\" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump`](../concepts/serialization.md#modelmodel_dump)\n\nGenerate a dictionary representation of the model, optionally specifying which fields to include or exclude.\n\nArgs:\n    mode: The mode in which `to_python` should run.\n        If mode is 'json', the output will only contain JSON serializable types.\n        If mode is 'python', the output may contain non-JSON-serializable Python objects.\n    include: A set of fields to include in the output.\n    exclude: A set of fields to exclude from the output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to use the field's alias in the dictionary key if defined.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A dictionary representation of the model."
+      },
+      "model_dump_json": {
+        "assinatura": "(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'str'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump_json`](../concepts/serialization.md#modelmodel_dump_json)\n\nGenerates a JSON representation of the model using Pydantic's `to_json` method.\n\nArgs:\n    indent: Indentation to use in the JSON output. If None is passed, the output will be compact.\n    include: Field(s) to include in the JSON output.\n    exclude: Field(s) to exclude from the JSON output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to serialize using field aliases.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A JSON string representation of the model."
+      },
+      "model_post_init": {
+        "assinatura": "(self, context: 'Any', /) -> 'None'",
+        "docstring": "Override this method to perform additional initialization after `__init__` and `model_construct`.\nThis is useful if you want to do some validation that requires the entire model to be initialized."
+      },
+      "to_dict": {
+        "assinatura": "(self) -> dict[str, typing.Any]",
+        "docstring": "Convert this model to a dictionary, merging filters into the result."
+      }
+    }
+  },
+  "LangCacheSemanticCache": {
+    "tipo": "classe",
+    "assinatura": "(name: str = 'langcache', server_url: str = 'https://aws-us-east-1.langcache.redis.io', cache_id: str = '', api_key: str = '', ttl: int | None = None, use_exact_search: bool = True, use_semantic_search: bool = True, distance_scale: Literal['normalized', 'redis'] = 'normalized', **kwargs)",
+    "docstring": "LLM Cache implementation using the LangCache managed service.\n\nThis cache uses the LangCache API service for semantic caching of LLM\nresponses. It requires a LangCache account and API key.\n\nExample:\n    .. code-block:: python\n\n        from redisvl.extensions.cache.llm import LangCacheSemanticCache\n\n        cache = LangCacheSemanticCache(\n            name=\"my_cache\",\n            server_url=\"https://api.langcache.com\",\n            cache_id=\"your-cache-id\",\n            api_key=\"your-api-key\",\n            ttl=3600\n        )\n\n        # Store a response\n        cache.store(\n            prompt=\"What is the capital of France?\",\n            response=\"Paris\"\n        )\n\n        # Check for cached responses\n        results = cache.check(prompt=\"What is the capital of France?\")",
+    "modulo_origem": "redisvl.extensions.cache.llm.langcache",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, name: str = 'langcache', server_url: str = 'https://aws-us-east-1.langcache.redis.io', cache_id: str = '', api_key: str = '', ttl: int | None = None, use_exact_search: bool = True, use_semantic_search: bool = True, distance_scale: Literal['normalized', 'redis'] = 'normalized', **kwargs)",
+        "docstring": "Initialize a LangCache semantic cache.\n\nArgs:\n    name (str): The name of the cache. Defaults to \"langcache\".\n    server_url (str): The LangCache server URL.\n    cache_id (str): The LangCache cache ID.\n    api_key (str): The LangCache API key.\n    ttl (Optional[int]): Time-to-live for cache entries in seconds.\n    use_exact_search (bool): Whether to use exact matching. Defaults to True.\n    use_semantic_search (bool): Whether to use semantic search. Defaults to True.\n    distance_scale (str): Threshold scale for distance_threshold:\n        - \"normalized\": 0–1 semantic distance (lower is better)\n        - \"redis\": Redis COSINE distance 0–2 (lower is better)\n\nRaises:\n    ImportError: If the langcache package is not installed.\n    ValueError: If cache_id or api_key is not provided."
+      },
+      "acheck": {
+        "assinatura": "(self, prompt: str | None = None, vector: list[float] | None = None, num_results: int = 1, return_fields: list[str] | None = None, filter_expression: redisvl.query.filter.FilterExpression | None = None, distance_threshold: float | None = None, attributes: dict[str, typing.Any] | None = None) -> list[dict[str, typing.Any]]",
+        "docstring": "Async check the cache for semantically similar prompts.\n\nArgs:\n    prompt (Optional[str]): The text prompt to search for.\n    vector (Optional[List[float]]): Not supported by LangCache API.\n    num_results (int): Number of results to return. Defaults to 1.\n    return_fields (Optional[List[str]]): Not used (for compatibility).\n    filter_expression (Optional[FilterExpression]): Not supported.\n    distance_threshold (Optional[float]): Maximum distance threshold.\n        Converted to similarity_threshold according to distance_scale:\n        If \"redis\", uses norm_cosine_distance(distance_threshold) ([0,2] -> [0,1]).\n        If \"normalized\", uses (1.0 - distance_threshold) ([0,1] -> [0,1]).\n    attributes (Optional[Dict[str, Any]]): LangCache attributes to filter by.\n        Note: Attributes must be pre-configured in your LangCache instance.\n\nReturns:\n    List[Dict[str, Any]]: List of matching cache entries.\n\nRaises:\n    ValueError: If prompt is not provided."
+      },
+      "aclear": {
+        "assinatura": "(self) -> None",
+        "docstring": "Async clear the cache of all entries.\n\nThis is an alias for adelete() to match the BaseCache interface."
+      },
+      "adelete": {
+        "assinatura": "(self) -> None",
+        "docstring": "Async delete the entire cache.\n\nThis deletes all entries in the cache by calling the flush API."
+      },
+      "adelete_by_attributes": {
+        "assinatura": "(self, attributes: dict[str, typing.Any]) -> dict[str, typing.Any]",
+        "docstring": "Async delete cache entries matching the given attributes.\n\nArgs:\n    attributes (Dict[str, Any]): Attributes to match for deletion.\n        Cannot be empty.\n\nReturns:\n    Dict[str, Any]: Result of the deletion operation.\n\nRaises:\n    ValueError: If attributes is an empty dictionary."
+      },
+      "adelete_by_id": {
+        "assinatura": "(self, entry_id: str) -> None",
+        "docstring": "Async delete a single cache entry by ID.\n\nArgs:\n    entry_id (str): The ID of the entry to delete."
+      },
+      "adisconnect": {
+        "assinatura": "(self) -> None",
+        "docstring": "Async disconnect from Redis."
+      },
+      "aexpire": {
+        "assinatura": "(self, key: str, ttl: int | None = None) -> None",
+        "docstring": "Asynchronously set or refresh the expiration time for a key in the cache.\n\nArgs:\n    key (str): The Redis key to set the expiration on.\n    ttl (Optional[int], optional): The time-to-live in seconds. If None,\n        uses the default TTL configured for this cache instance.\n        Defaults to None.\n\nNote:\n    If neither the provided TTL nor the default TTL is set (both are None),\n    this method will have no effect."
+      },
+      "astore": {
+        "assinatura": "(self, prompt: str, response: str, vector: list[float] | None = None, metadata: dict[str, typing.Any] | None = None, filters: dict[str, typing.Any] | None = None, ttl: int | None = None) -> str",
+        "docstring": "Async store a prompt-response pair in the cache.\n\nArgs:\n    prompt (str): The user prompt to cache.\n    response (str): The LLM response to cache.\n    vector (Optional[List[float]]): Not supported by LangCache API.\n    metadata (Optional[Dict[str, Any]]): Optional metadata (stored as attributes).\n    filters (Optional[Dict[str, Any]]): Not supported.\n    ttl (Optional[int]): Optional TTL override in seconds.\n\nReturns:\n    str: The entry ID for the cached entry.\n\nRaises:\n    ValueError: If prompt or response is empty."
+      },
+      "aupdate": {
+        "assinatura": "(self, key: str, **kwargs) -> None",
+        "docstring": "Async update specific fields within an existing cache entry.\n\nNote: LangCache API does not support updating individual entries.\nThis method will raise NotImplementedError.\n\nArgs:\n    key (str): The key of the document to update.\n    **kwargs: Field-value pairs to update.\n\nRaises:\n    NotImplementedError: LangCache does not support entry updates."
+      },
+      "check": {
+        "assinatura": "(self, prompt: str | None = None, vector: list[float] | None = None, num_results: int = 1, return_fields: list[str] | None = None, filter_expression: redisvl.query.filter.FilterExpression | None = None, distance_threshold: float | None = None, attributes: dict[str, typing.Any] | None = None) -> list[dict[str, typing.Any]]",
+        "docstring": "Check the cache for semantically similar prompts.\n\nArgs:\n    prompt (Optional[str]): The text prompt to search for.\n    vector (Optional[List[float]]): Not supported by LangCache API.\n    num_results (int): Number of results to return. Defaults to 1.\n    return_fields (Optional[List[str]]): Not used (for compatibility).\n    filter_expression (Optional[FilterExpression]): Not supported.\n    distance_threshold (Optional[float]): Maximum distance threshold.\n        Converted to similarity_threshold according to distance_scale:\n        If \"redis\", uses norm_cosine_distance(distance_threshold) ([0,2] -> [0,1]).\n        If \"normalized\", uses (1.0 - distance_threshold) ([0,1] -> [0,1]).\n    attributes (Optional[Dict[str, Any]]): LangCache attributes to filter by.\n        Note: Attributes must be pre-configured in your LangCache instance.\n\nReturns:\n    List[Dict[str, Any]]: List of matching cache entries.\n\nRaises:\n    ValueError: If prompt is not provided."
+      },
+      "clear": {
+        "assinatura": "(self) -> None",
+        "docstring": "Clear the cache of all entries.\n\nThis is an alias for delete() to match the BaseCache interface."
+      },
+      "delete": {
+        "assinatura": "(self) -> None",
+        "docstring": "Delete the entire cache.\n\nThis deletes all entries in the cache by calling the flush API."
+      },
+      "delete_by_attributes": {
+        "assinatura": "(self, attributes: dict[str, typing.Any]) -> dict[str, typing.Any]",
+        "docstring": "Delete cache entries matching the given attributes.\n\nArgs:\n    attributes (Dict[str, Any]): Attributes to match for deletion.\n        Cannot be empty.\n\nReturns:\n    Dict[str, Any]: Result of the deletion operation.\n\nRaises:\n    ValueError: If attributes is an empty dictionary."
+      },
+      "delete_by_id": {
+        "assinatura": "(self, entry_id: str) -> None",
+        "docstring": "Delete a single cache entry by ID.\n\nArgs:\n    entry_id (str): The ID of the entry to delete."
+      },
+      "disconnect": {
+        "assinatura": "(self) -> None",
+        "docstring": "Disconnect from Redis."
+      },
+      "expire": {
+        "assinatura": "(self, key: str, ttl: int | None = None) -> None",
+        "docstring": "Set or refresh the expiration time for a key in the cache.\n\nArgs:\n    key (str): The Redis key to set the expiration on.\n    ttl (Optional[int], optional): The time-to-live in seconds. If None,\n        uses the default TTL configured for this cache instance.\n        Defaults to None.\n\nNote:\n    If neither the provided TTL nor the default TTL is set (both are None),\n    this method will have no effect."
+      },
+      "set_ttl": {
+        "assinatura": "(self, ttl: int | None = None) -> None",
+        "docstring": "Set the default TTL, in seconds, for entries in the cache.\n\nArgs:\n    ttl (Optional[int], optional): The optional time-to-live expiration\n        for the cache, in seconds.\n\nRaises:\n    ValueError: If the time-to-live value is not an integer."
+      },
+      "store": {
+        "assinatura": "(self, prompt: str, response: str, vector: list[float] | None = None, metadata: dict[str, typing.Any] | None = None, filters: dict[str, typing.Any] | None = None, ttl: int | None = None) -> str",
+        "docstring": "Store a prompt-response pair in the cache.\n\nArgs:\n    prompt (str): The user prompt to cache.\n    response (str): The LLM response to cache.\n    vector (Optional[List[float]]): Not supported by LangCache API.\n    metadata (Optional[Dict[str, Any]]): Optional metadata (stored as attributes).\n    filters (Optional[Dict[str, Any]]): Not supported.\n    ttl (Optional[int]): Optional TTL override in seconds.\n\nReturns:\n    str: The entry ID for the cached entry.\n\nRaises:\n    ValueError: If prompt or response is empty."
+      },
+      "update": {
+        "assinatura": "(self, key: str, **kwargs) -> None",
+        "docstring": "Update specific fields within an existing cache entry.\n\nNote: LangCache API does not support updating individual entries.\nThis method will raise NotImplementedError.\n\nArgs:\n    key (str): The key of the document to update.\n    **kwargs: Field-value pairs to update.\n\nRaises:\n    NotImplementedError: LangCache does not support entry updates."
+      }
+    }
+  },
+  "SemanticCache": {
+    "tipo": "classe",
+    "assinatura": "(name: str = 'llmcache', distance_threshold: float = 0.1, ttl: int | None = None, vectorizer: redisvl.utils.vectorize.base.BaseVectorizer | None = None, filterable_fields: list[dict[str, typing.Any]] | None = None, redis_client: redis.client.Redis | None = None, redis_url: str = 'redis://localhost:6379', connection_kwargs: dict[str, typing.Any] = {}, overwrite: bool = False, **kwargs)",
+    "docstring": "Semantic Cache for Large Language Models.",
+    "modulo_origem": "redisvl.extensions.cache.llm.semantic",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, name: str = 'llmcache', distance_threshold: float = 0.1, ttl: int | None = None, vectorizer: redisvl.utils.vectorize.base.BaseVectorizer | None = None, filterable_fields: list[dict[str, typing.Any]] | None = None, redis_client: redis.client.Redis | None = None, redis_url: str = 'redis://localhost:6379', connection_kwargs: dict[str, typing.Any] = {}, overwrite: bool = False, **kwargs)",
+        "docstring": "Semantic Cache for Large Language Models.\n\nArgs:\n    name (str, optional): The name of the semantic cache search index.\n        Defaults to \"llmcache\".\n    distance_threshold (float, optional): Semantic distance threshold for the\n        cache in Redis COSINE units [0-2], where lower values indicate stricter\n        matching. Defaults to 0.1.\n    ttl (Optional[int], optional): The time-to-live for records cached\n        in Redis. Defaults to None.\n    vectorizer (Optional[BaseVectorizer], optional): The vectorizer for the cache.\n        Defaults to HFTextVectorizer.\n    filterable_fields (Optional[List[Dict[str, Any]]]): An optional list of RedisVL fields\n        that can be used to customize cache retrieval with filters.\n    redis_client(Optional[Redis], optional): A redis client connection instance.\n        Defaults to None.\n    redis_url (str, optional): The redis url. Defaults to redis://localhost:6379.\n    connection_kwargs (Dict[str, Any]): The connection arguments\n        for the redis client. Defaults to empty {}.\n    overwrite (bool): Whether or not to force overwrite the schema for\n        the semantic cache index. Defaults to false.\n\nRaises:\n    TypeError: If an invalid vectorizer is provided.\n    TypeError: If the TTL value is not an int.\n    ValueError: If the threshold is not between 0 and 2 (Redis COSINE distance).\n    ValueError: If existing schema does not match new schema and overwrite is False."
+      },
+      "acheck": {
+        "assinatura": "(self, prompt: str | None = None, vector: list[float] | None = None, num_results: int = 1, return_fields: list[str] | None = None, filter_expression: redisvl.query.filter.FilterExpression | None = None, distance_threshold: float | None = None) -> list[dict[str, typing.Any]]",
+        "docstring": "Async check the semantic cache for results similar to the specified prompt\nor vector.\n\nThis method searches the cache using vector similarity with\neither a raw text prompt (converted to a vector) or a provided vector as\ninput. It checks for semantically similar prompts and fetches the cached\nLLM responses.\n\nArgs:\n    prompt (Optional[str], optional): The text prompt to search for in\n        the cache.\n    vector (Optional[List[float]], optional): The vector representation\n        of the prompt to search for in the cache.\n    num_results (int, optional): The number of cached results to return.\n        Defaults to 1.\n    return_fields (Optional[List[str]], optional): The fields to include\n        in each returned result. If None, defaults to all available\n        fields in the cached entry.\n    filter_expression (Optional[FilterExpression]) : Optional filter expression\n        that can be used to filter cache results. Defaults to None and\n        the full cache will be searched.\n    distance_threshold (Optional[float]): The threshold for semantic\n        vector distance.\n\nReturns:\n    List[Dict[str, Any]]: A list of dicts containing the requested\n        return fields for each similar cached response.\n\nRaises:\n    ValueError: If neither a `prompt` nor a `vector` is specified.\n    ValueError: if 'vector' has incorrect dimensions.\n    TypeError: If `return_fields` is not a list when provided.\n\n.. code-block:: python\n\n    response = await cache.acheck(\n        prompt=\"What is the capital city of France?\"\n    )"
+      },
+      "aclear": {
+        "assinatura": "(self) -> None",
+        "docstring": "Async clear the cache of all keys."
+      },
+      "adelete": {
+        "assinatura": "(self) -> None",
+        "docstring": "Async delete the cache and its index entirely."
+      },
+      "adisconnect": {
+        "assinatura": "(self)",
+        "docstring": "Asynchronously disconnect from Redis and search index.\n\nCloses all Redis connections and index connections."
+      },
+      "adrop": {
+        "assinatura": "(self, ids: list[str] | None = None, keys: list[str] | None = None) -> None",
+        "docstring": "Async drop specific entries from the cache by ID or Redis key.\n\nArgs:\n    ids (Optional[List[str]]): List of entry IDs to remove from the cache.\n        Entry IDs are the unique identifiers without the cache prefix.\n    keys (Optional[List[str]]): List of full Redis keys to remove from the cache.\n        Keys are the complete Redis keys including the cache prefix.\n\nNote:\n    At least one of ids or keys must be provided.\n\nRaises:\n    ValueError: If neither ids nor keys is provided."
+      },
+      "aexpire": {
+        "assinatura": "(self, key: str, ttl: int | None = None) -> None",
+        "docstring": "Asynchronously set or refresh the expiration time for a key in the cache.\n\nArgs:\n    key (str): The Redis key to set the expiration on.\n    ttl (Optional[int], optional): The time-to-live in seconds. If None,\n        uses the default TTL configured for this cache instance.\n        Defaults to None.\n\nNote:\n    If neither the provided TTL nor the default TTL is set (both are None),\n    this method will have no effect."
+      },
+      "astore": {
+        "assinatura": "(self, prompt: str, response: str, vector: list[float] | None = None, metadata: dict[str, typing.Any] | None = None, filters: dict[str, typing.Any] | None = None, ttl: int | None = None) -> str",
+        "docstring": "Async stores the specified key-value pair in the cache along with metadata.\n\nArgs:\n    prompt (str): The user prompt to cache.\n    response (str): The LLM response to cache.\n    vector (Optional[List[float]], optional): The prompt vector to\n        cache. Defaults to None, and the prompt vector is generated on\n        demand.\n    metadata (Optional[Dict[str, Any]], optional): The optional metadata to cache\n        alongside the prompt and response. Defaults to None.\n    filters (Optional[Dict[str, Any]]): The optional tag to assign to the cache entry.\n        Defaults to None.\n    ttl (Optional[int]): The optional TTL override to use on this individual cache\n        entry. Defaults to the global TTL setting.\n\nReturns:\n    str: The Redis key for the entries added to the semantic cache.\n\nRaises:\n    ValueError: If neither prompt nor vector is specified.\n    ValueError: if vector has incorrect dimensions.\n    TypeError: If provided metadata is not a dictionary.\n\n.. code-block:: python\n\n    key = await cache.astore(\n        prompt=\"What is the capital city of France?\",\n        response=\"Paris\",\n        metadata={\"city\": \"Paris\", \"country\": \"France\"}\n    )"
+      },
+      "aupdate": {
+        "assinatura": "(self, key: str, **kwargs) -> None",
+        "docstring": "Async update specific fields within an existing cache entry. If no fields\nare passed, then only the document TTL is refreshed.\n\nArgs:\n    key (str): the key of the document to update using kwargs.\n\nRaises:\n    ValueError if an incorrect mapping is provided as a kwarg.\n    TypeError if metadata is provided and not of type dict.\n\n.. code-block:: python\n\n    key = await cache.astore('this is a prompt', 'this is a response')\n    await cache.aupdate(\n        key,\n        metadata={\"hit_count\": 1, \"model_name\": \"Llama-2-7b\"}\n    )"
+      },
+      "check": {
+        "assinatura": "(self, prompt: str | None = None, vector: list[float] | None = None, num_results: int = 1, return_fields: list[str] | None = None, filter_expression: redisvl.query.filter.FilterExpression | None = None, distance_threshold: float | None = None) -> list[dict[str, typing.Any]]",
+        "docstring": "Checks the semantic cache for results similar to the specified prompt\nor vector.\n\nThis method searches the cache using vector similarity with\neither a raw text prompt (converted to a vector) or a provided vector as\ninput. It checks for semantically similar prompts and fetches the cached\nLLM responses.\n\nArgs:\n    prompt (Optional[str], optional): The text prompt to search for in\n        the cache.\n    vector (Optional[List[float]], optional): The vector representation\n        of the prompt to search for in the cache.\n    num_results (int, optional): The number of cached results to return.\n        Defaults to 1.\n    return_fields (Optional[List[str]], optional): The fields to include\n        in each returned result. If None, defaults to all available\n        fields in the cached entry.\n    filter_expression (Optional[FilterExpression]) : Optional filter expression\n        that can be used to filter cache results. Defaults to None and\n        the full cache will be searched.\n    distance_threshold (Optional[float]): The threshold for semantic\n        vector distance.\n\nReturns:\n    List[Dict[str, Any]]: A list of dicts containing the requested\n        return fields for each similar cached response.\n\nRaises:\n    ValueError: If neither a `prompt` nor a `vector` is specified.\n    ValueError: if 'vector' has incorrect dimensions.\n    TypeError: If `return_fields` is not a list when provided.\n\n.. code-block:: python\n\n    response = cache.check(\n        prompt=\"What is the capital city of France?\"\n    )"
+      },
+      "clear": {
+        "assinatura": "(self) -> None",
+        "docstring": "Clear the cache of all keys."
+      },
+      "delete": {
+        "assinatura": "(self) -> None",
+        "docstring": "Delete the cache and its index entirely."
+      },
+      "disconnect": {
+        "assinatura": "(self)",
+        "docstring": "Disconnect from Redis and search index.\n\nCloses all Redis connections and index connections."
+      },
+      "drop": {
+        "assinatura": "(self, ids: list[str] | None = None, keys: list[str] | None = None) -> None",
+        "docstring": "Drop specific entries from the cache by ID or Redis key.\n\nArgs:\n    ids (Optional[List[str]]): List of entry IDs to remove from the cache.\n        Entry IDs are the unique identifiers without the cache prefix.\n    keys (Optional[List[str]]): List of full Redis keys to remove from the cache.\n        Keys are the complete Redis keys including the cache prefix.\n\nNote:\n    At least one of ids or keys must be provided.\n\nRaises:\n    ValueError: If neither ids nor keys is provided."
+      },
+      "expire": {
+        "assinatura": "(self, key: str, ttl: int | None = None) -> None",
+        "docstring": "Set or refresh the expiration time for a key in the cache.\n\nArgs:\n    key (str): The Redis key to set the expiration on.\n    ttl (Optional[int], optional): The time-to-live in seconds. If None,\n        uses the default TTL configured for this cache instance.\n        Defaults to None.\n\nNote:\n    If neither the provided TTL nor the default TTL is set (both are None),\n    this method will have no effect."
+      },
+      "set_threshold": {
+        "assinatura": "(self, distance_threshold: float) -> None",
+        "docstring": "Sets the semantic distance threshold for the cache.\n\nArgs:\n    distance_threshold (float): The semantic distance threshold for\n        the cache.\n\nRaises:\n    ValueError: If the threshold is not between 0 and 2 (Redis COSINE distance)."
+      },
+      "set_ttl": {
+        "assinatura": "(self, ttl: int | None = None) -> None",
+        "docstring": "Set the default TTL, in seconds, for entries in the cache.\n\nArgs:\n    ttl (Optional[int], optional): The optional time-to-live expiration\n        for the cache, in seconds.\n\nRaises:\n    ValueError: If the time-to-live value is not an integer."
+      },
+      "store": {
+        "assinatura": "(self, prompt: str, response: str, vector: list[float] | None = None, metadata: dict[str, typing.Any] | None = None, filters: dict[str, typing.Any] | None = None, ttl: int | None = None) -> str",
+        "docstring": "Stores the specified key-value pair in the cache along with metadata.\n\nArgs:\n    prompt (str): The user prompt to cache.\n    response (str): The LLM response to cache.\n    vector (Optional[List[float]], optional): The prompt vector to\n        cache. Defaults to None, and the prompt vector is generated on\n        demand.\n    metadata (Optional[Dict[str, Any]], optional): The optional metadata to cache\n        alongside the prompt and response. Defaults to None.\n    filters (Optional[Dict[str, Any]]): The optional tag to assign to the cache entry.\n        Defaults to None.\n    ttl (Optional[int]): The optional TTL override to use on this individual cache\n        entry. Defaults to the global TTL setting.\n\nReturns:\n    str: The Redis key for the entries added to the semantic cache.\n\nRaises:\n    ValueError: If neither prompt nor vector is specified.\n    ValueError: if vector has incorrect dimensions.\n    TypeError: If provided metadata is not a dictionary.\n\n.. code-block:: python\n\n    key = cache.store(\n        prompt=\"What is the capital city of France?\",\n        response=\"Paris\",\n        metadata={\"city\": \"Paris\", \"country\": \"France\"}\n    )"
+      },
+      "update": {
+        "assinatura": "(self, key: str, **kwargs) -> None",
+        "docstring": "Update specific fields within an existing cache entry. If no fields\nare passed, then only the document TTL is refreshed.\n\nArgs:\n    key (str): the key of the document to update using kwargs.\n\nRaises:\n    ValueError if an incorrect mapping is provided as a kwarg.\n    TypeError if metadata is provided and not of type dict.\n\n.. code-block:: python\n\n    key = cache.store('this is a prompt', 'this is a response')\n    cache.update(key, metadata={\"hit_count\": 1, \"model_name\": \"Llama-2-7b\"})"
+      }
+    }
+  },
+  "SemanticCacheIndexSchema": {
+    "tipo": "classe",
+    "assinatura": "(*, index: redisvl.schema.schema.IndexInfo, fields: dict[str, redisvl.schema.fields.BaseField] = <factory>, version: Literal['0.1.0'] = '0.1.0') -> None",
+    "docstring": "A schema definition for a search index in Redis, used in RedisVL for\nconfiguring index settings and organizing vector and metadata fields.\n\nThe class offers methods to create an index schema from a YAML file or a\nPython dictionary, supporting flexible schema definitions and easy\nintegration into various workflows.\n\nAn example `schema.yaml` file might look like this:\n\n.. code-block:: yaml\n\n    version: '0.1.0'\n\n    index:\n        name: user-index\n        prefix: user\n        key_separator: \":\"\n        storage_type: json\n\n    fields:\n        - name: user\n          type: tag\n        - name: credit_score\n          type: tag\n        - name: embedding\n          type: vector\n          attrs:\n            algorithm: flat\n            dims: 3\n            distance_metric: cosine\n            datatype: float32\n\nLoading the schema for RedisVL from yaml is as simple as:\n\n.. code-block:: python\n\n    from redisvl.schema import IndexSchema\n\n    schema = IndexSchema.from_yaml(\"schema.yaml\")\n\nLoading the schema for RedisVL from dict is as simple as:\n\n.. code-block:: python\n\n    from redisvl.schema import IndexSchema\n\n    schema = IndexSchema.from_dict({\n        \"index\": {\n            \"name\": \"user-index\",\n            \"prefix\": \"user\",\n            \"key_separator\": \":\",\n            \"storage_type\": \"json\",\n        },\n        \"fields\": [\n            {\"name\": \"user\", \"type\": \"tag\"},\n            {\"name\": \"credit_score\", \"type\": \"tag\"},\n            {\n                \"name\": \"embedding\",\n                \"type\": \"vector\",\n                \"attrs\": {\n                    \"algorithm\": \"flat\",\n                    \"dims\": 3,\n                    \"distance_metric\": \"cosine\",\n                    \"datatype\": \"float32\"\n                }\n            }\n        ]\n    })\n\nNote:\n    The `fields` attribute in the schema must contain unique field names to ensure\n    correct and unambiguous field references.",
+    "modulo_origem": "redisvl.extensions.cache.llm.schema",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, /, **data: 'Any') -> 'None'",
+        "docstring": "Create a new model by parsing and validating input data from keyword arguments.\n\nRaises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be\nvalidated to form a valid model.\n\n`self` is explicitly positional-only to allow `self` as a field name."
+      },
+      "add_field": {
+        "assinatura": "(self, field_inputs: dict[str, typing.Any])",
+        "docstring": "Adds a single field to the index schema based on the specified field\ntype and attributes.\n\nThis method allows for the addition of individual fields to the schema,\nproviding flexibility in defining the structure of the index.\n\nArgs:\n    field_inputs (Dict[str, Any]): A field to add.\n\nRaises:\n    ValueError: If the field name or type are not provided or if the name\n        already exists within the schema.\n\n.. code-block:: python\n\n    # Add a tag field\n    schema.add_field({\"name\": \"user\", \"type\": \"tag\"})\n\n    # Add a vector field\n    schema.add_field({\n        \"name\": \"user-embedding\",\n        \"type\": \"vector\",\n        \"attrs\": {\n            \"dims\": 1024,\n            \"algorithm\": \"flat\",\n            \"datatype\": \"float32\"\n        }\n    })"
+      },
+      "add_fields": {
+        "assinatura": "(self, fields: list[dict[str, typing.Any]])",
+        "docstring": "Extends the schema with additional fields.\n\nThis method allows dynamically adding new fields to the index schema. It\nprocesses a list of field definitions.\n\nArgs:\n    fields (List[Dict[str, Any]]): A list of fields to add.\n\nRaises:\n    ValueError: If a field with the same name already exists in the\n        schema.\n\n.. code-block:: python\n\n    schema.add_fields([\n        {\"name\": \"user\", \"type\": \"tag\"},\n        {\"name\": \"bio\", \"type\": \"text\"},\n        {\n            \"name\": \"user-embedding\",\n            \"type\": \"vector\",\n            \"attrs\": {\n                \"dims\": 1024,\n                \"algorithm\": \"flat\",\n                \"datatype\": \"float32\"\n            }\n        }\n    ])"
+      },
+      "copy": {
+        "assinatura": "(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "Returns a copy of the model.\n\n!!! warning \"Deprecated\"\n    This method is now deprecated; use `model_copy` instead.\n\nIf you need `include` or `exclude`, use:\n\n```python {test=\"skip\" lint=\"skip\"}\ndata = self.model_dump(include=include, exclude=exclude, round_trip=True)\ndata = {**data, **(update or {})}\ncopied = self.model_validate(data)\n```\n\nArgs:\n    include: Optional set or mapping specifying which fields to include in the copied model.\n    exclude: Optional set or mapping specifying which fields to exclude in the copied model.\n    update: Optional dictionary of field-value pairs to override field values in the copied model.\n    deep: If True, the values of fields that are Pydantic models will be deep-copied.\n\nReturns:\n    A copy of the model with included, excluded and updated fields as specified."
+      },
+      "dict": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'",
+        "docstring": null
+      },
+      "generate_fields": {
+        "assinatura": "(self, data: dict[str, typing.Any], strict: bool = False, ignore_fields: list[str] = []) -> list[dict[str, typing.Any]]",
+        "docstring": "Generates a list of extracted field specs from a sample data point.\n\nThis method simplifies the process of creating a schema by inferring\nfield types and attributes from sample data. It's particularly useful\nduring the development process while dealing with datasets containing\nnumerous fields, reducing the need for manual specification.\n\nArgs:\n    data (Dict[str, Any]): Sample data used to infer field definitions.\n    strict (bool, optional): If True, raises an error on failing to\n        infer a field type. Defaults to False.\n    ignore_fields (List[str], optional): A list of field names to\n        exclude from processing. Defaults to an empty list.\n\nReturns:\n    Dict[str, List[Dict[str, Any]]]: A dictionary with inferred field\n        types and attributes.\n\nNotes:\n    - Vector fields are not generated by this method.\n    - This method employs heuristics and may not always correctly infer\n        field types."
+      },
+      "json": {
+        "assinatura": "(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'",
+        "docstring": null
+      },
+      "model_copy": {
+        "assinatura": "(self, *, update: 'Mapping[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_copy`](../concepts/serialization.md#model_copy)\n\nReturns a copy of the model.\n\n!!! note\n    The underlying instance's [`__dict__`][object.__dict__] attribute is copied. This\n    might have unexpected side effects if you store anything in it, on top of the model\n    fields (e.g. the value of [cached properties][functools.cached_property]).\n\nArgs:\n    update: Values to change/add in the new model. Note: the data is not validated\n        before creating the new model. You should trust this data.\n    deep: Set to `True` to make a deep copy of the model.\n\nReturns:\n    New model instance."
+      },
+      "model_dump": {
+        "assinatura": "(self, *, mode: \"Literal['json', 'python'] | str\" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump`](../concepts/serialization.md#modelmodel_dump)\n\nGenerate a dictionary representation of the model, optionally specifying which fields to include or exclude.\n\nArgs:\n    mode: The mode in which `to_python` should run.\n        If mode is 'json', the output will only contain JSON serializable types.\n        If mode is 'python', the output may contain non-JSON-serializable Python objects.\n    include: A set of fields to include in the output.\n    exclude: A set of fields to exclude from the output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to use the field's alias in the dictionary key if defined.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A dictionary representation of the model."
+      },
+      "model_dump_json": {
+        "assinatura": "(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool | None' = None, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: \"bool | Literal['none', 'warn', 'error']\" = True, fallback: 'Callable[[Any], Any] | None' = None, serialize_as_any: 'bool' = False) -> 'str'",
+        "docstring": "!!! abstract \"Usage Documentation\"\n    [`model_dump_json`](../concepts/serialization.md#modelmodel_dump_json)\n\nGenerates a JSON representation of the model using Pydantic's `to_json` method.\n\nArgs:\n    indent: Indentation to use in the JSON output. If None is passed, the output will be compact.\n    include: Field(s) to include in the JSON output.\n    exclude: Field(s) to exclude from the JSON output.\n    context: Additional context to pass to the serializer.\n    by_alias: Whether to serialize using field aliases.\n    exclude_unset: Whether to exclude fields that have not been explicitly set.\n    exclude_defaults: Whether to exclude fields that are set to their default value.\n    exclude_none: Whether to exclude fields that have a value of `None`.\n    round_trip: If True, dumped values should be valid as input for non-idempotent types such as Json[T].\n    warnings: How to handle serialization errors. False/\"none\" ignores them, True/\"warn\" logs errors,\n        \"error\" raises a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError].\n    fallback: A function to call when an unknown value is encountered. If not provided,\n        a [`PydanticSerializationError`][pydantic_core.PydanticSerializationError] error is raised.\n    serialize_as_any: Whether to serialize fields with duck-typing serialization behavior.\n\nReturns:\n    A JSON string representation of the model."
+      },
+      "model_post_init": {
+        "assinatura": "(self, context: 'Any', /) -> 'None'",
+        "docstring": "Override this method to perform additional initialization after `__init__` and `model_construct`.\nThis is useful if you want to do some validation that requires the entire model to be initialized."
+      },
+      "remove_field": {
+        "assinatura": "(self, field_name: str)",
+        "docstring": "Removes a field from the schema based on the specified name.\n\nThis method is useful for dynamically altering the schema by removing\nexisting fields.\n\nArgs:\n    field_name (str): The name of the field to be removed."
+      },
+      "to_dict": {
+        "assinatura": "(self) -> dict[str, typing.Any]",
+        "docstring": "Serialize the index schema model to a dictionary, handling Enums\nand other special cases properly.\n\nReturns:\n    Dict[str, Any]: The index schema as a dictionary."
+      },
+      "to_yaml": {
+        "assinatura": "(self, file_path: str, overwrite: bool = True) -> None",
+        "docstring": "Write the index schema to a YAML file.\n\nArgs:\n    file_path (str): The path to the YAML file.\n    overwrite (bool): Whether to overwrite the file if it already exists.\n\nRaises:\n    FileExistsError: If the file already exists and overwrite is False."
+      }
+    }
+  }
+}

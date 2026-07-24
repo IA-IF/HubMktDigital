@@ -1,0 +1,12 @@
+{
+  "name": "analise_tecnica",
+  "plataforma": "SEARCH_CONSOLE",
+  "description": "Fase D do esquema de analise de vendas (so indexacao — Core Web Vitals desativado ate ter navegador real conectado): saude dos sitemaps enviados no Search Console (enviado, processado, erros, paginas descobertas vs indexadas). So leitura, dado real via Search Console API.",
+  "script": "TOOLS/SEARCH_CONSOLE/analise_vendas/analise_tecnica.py",
+  "modo_entrada": "argv",
+  "input_schema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  }
+}

@@ -14,8 +14,8 @@ description: >
 # Auditoria/Tráfego GA4
 
 Wrapper fino sobre `LEGADO/agente-ga4/main.py`, que já existe e é usado ao
-vivo (inclusive chamado pelo `agente-julio`/`agente-conversacional` para
-responder perguntas de tráfego no Telegram).
+vivo (inclusive chamado pelo `agente-julio` para responder perguntas de
+tráfego no Telegram).
 
 ## Pré-requisito: site explícito
 

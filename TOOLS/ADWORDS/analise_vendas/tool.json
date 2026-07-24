@@ -1,0 +1,17 @@
+{
+  "name": "analise_ads",
+  "plataforma": "ADWORDS",
+  "description": "Fase B do esquema de analise de vendas: eficiencia de investimento em Google Ads cruzada com compras reais do GA4 (custo, conversoes reportadas pelo Ads vs compras reais no GA4, CAC-blended). So leitura, dado real via GoogleAdsService + GA4 runReport.",
+  "script": "TOOLS/ADWORDS/analise_vendas/analise_ads.py",
+  "modo_entrada": "argv",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "dias": {
+        "type": "integer",
+        "description": "Quantos dias pra tras a partir de hoje. Opcional, default 7."
+      }
+    },
+    "required": []
+  }
+}

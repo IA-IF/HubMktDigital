@@ -10,3 +10,4 @@ LEGADO/SITES/*/.env
 !.env.example
 SITES/*/.env
 !SITES/_template/.env.example
+TOOLS/GOOGLE_API/auth.json

@@ -5,8 +5,7 @@ Uso:
     python analise_vendas.py [site] [dias]
     python analise_vendas.py 3gfoods 7
 
-Credenciais so da raiz do projeto (.env + SITES/<site>/.env), nunca de
-LEGADO/ -- mesma regra de TOOLS/GA4/DOCS/README.md.
+Credenciais so da raiz do projeto (.env + SITES/<site>/.env).
 """
 import json
 import sys

@@ -1,0 +1,22 @@
+{
+  "name": "analise_organico",
+  "plataforma": "SEARCH_CONSOLE",
+  "description": "Fase C do esquema de analise de vendas: saude do trafego organico via Search Console (cliques, impressoes, CTR, posicao media) com split marca vs generico, cruzado com sessoes/compras organicas reais do GA4. So leitura, dado real via Search Console API + GA4 runReport.",
+  "script": "TOOLS/SEARCH_CONSOLE/analise_vendas/analise_organico.py",
+  "modo_entrada": "argv",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "dias": {
+        "type": "integer",
+        "description": "Quantos dias pra tras a partir de hoje. Opcional, default 7."
+      },
+      "termos_marca": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "Termos de marca (ex: [\"3g foods\", \"3gfoods\"]) usados pra separar busca de marca vs generica. Opcional, default lista vazia (sem split de marca)."
+      }
+    },
+    "required": []
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "registrar_pedido_futuro",
+  "plataforma": "geral",
+  "description": "Chame quando o usuario pedir algo que nenhuma outra ferramenta resolve. Regra inegociavel: nunca inventar resposta nem fingir ter executado algo. Registra o pedido pra ser analisado depois, fora desta conversa.",
+  "modo_entrada": "local",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "pedido": {"type": "string", "description": "O que o usuario pediu, resumido em 1 frase."},
+      "contexto": {"type": "string", "description": "Detalhes adicionais relevantes. Opcional."}
+    },
+    "required": ["pedido"]
+  }
+}

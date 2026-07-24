@@ -2,6 +2,8 @@
   "name": "analise_vendas",
   "plataforma": "GA4",
   "description": "Fase A do esquema de analise de vendas: funil de conversao (session_start->purchase, com taxa de abandono por etapa), split de sessao por canal (pago/organico/direto) com taxa de conversao de cada canal, e taxas de ecommerce (add-to-cart rate, checkout completion rate, AOV). So leitura, dado real via runReport.",
+  "script": "TOOLS/GA4/analise_vendas/analise_vendas.py",
+  "modo_entrada": "argv",
   "input_schema": {
     "type": "object",
     "properties": {

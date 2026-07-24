@@ -47,7 +47,7 @@ class LLMRouter:
         # pelo modelo barato nunca seja devolvida quando alguem pede o
         # modelo caro, e vice-versa.
         # distance_threshold=0.1: mais estrito que os 0.9 usados para
-        # memoria de conversa (agente-conversacional) — decisao deliberada
+        # memoria de conversa (agente-julio) — decisao deliberada
         # do design spec, porque uma pergunta "parecida mas nao identica"
         # pode ter resposta correta diferente, ao contrario de recall de
         # conversa por similaridade. Explicito aqui para nao depender do

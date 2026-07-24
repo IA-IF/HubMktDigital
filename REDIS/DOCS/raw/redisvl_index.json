@@ -1,0 +1,206 @@
+{
+  "AsyncSearchIndex": {
+    "tipo": "classe",
+    "assinatura": "(schema: redisvl.schema.schema.IndexSchema, *, redis_url: str | None = None, redis_client: redis.asyncio.client.Redis | redis.asyncio.cluster.RedisCluster | None = None, connection_kwargs: dict[str, typing.Any] | None = None, validate_on_load: bool = False, **kwargs)",
+    "docstring": "A search index class for interacting with Redis as a vector database in\nasync-mode.\n\nThe AsyncSearchIndex is instantiated with a reference to a Redis database\nand an IndexSchema (YAML path or dictionary object) that describes the\nvarious settings and field configurations.\n\n.. code-block:: python\n\n    from redisvl.index import AsyncSearchIndex\n\n    # initialize the index object with schema from file\n    index = AsyncSearchIndex.from_yaml(\n        \"schemas/schema.yaml\",\n        redis_url=\"redis://localhost:6379\",\n        validate_on_load=True\n    )\n\n    # create the index\n    await index.create(overwrite=True, drop=False)\n\n    # data is an iterable of dictionaries\n    await index.load(data)\n\n    # delete index and data\n    await index.delete(drop=True)",
+    "modulo_origem": "redisvl.index.index",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, schema: redisvl.schema.schema.IndexSchema, *, redis_url: str | None = None, redis_client: redis.asyncio.client.Redis | redis.asyncio.cluster.RedisCluster | None = None, connection_kwargs: dict[str, typing.Any] | None = None, validate_on_load: bool = False, **kwargs)",
+        "docstring": "Initialize the RedisVL async search index with a schema.\n\nArgs:\n    schema (IndexSchema): Index schema object.\n    redis_url (Optional[str], optional): The URL of the Redis server to\n        connect to.\n    redis_client (Optional[AsyncRedis]): An\n        instantiated redis client.\n    connection_kwargs (Optional[Dict[str, Any]]): Redis client connection\n        args.\n    validate_on_load (bool, optional): Whether to validate data against schema\n        when loading. Defaults to False."
+      },
+      "aggregate": {
+        "assinatura": "(self, *args, **kwargs) -> 'AggregateResult'",
+        "docstring": "Perform an aggregation operation against the index.\n\nWrapper around the aggregation API that adds the index name\nto the query and passes along the rest of the arguments\nto the redis-py ft().aggregate() method.\n\nReturns:\n    Result: Raw Redis aggregation results."
+      },
+      "batch_query": {
+        "assinatura": "(self, queries: list[redisvl.query.query.BaseQuery], batch_size: int = 10) -> list[list[dict[str, typing.Any]]]",
+        "docstring": "Asynchronously execute a batch of queries and process results."
+      },
+      "batch_search": {
+        "assinatura": "(self, queries: list[tuple[str | redisvl.query.query.BaseQuery, dict[str, str | int | float | bytes] | None] | str | redisvl.query.query.BaseQuery], batch_size: int = 10) -> list['Result']",
+        "docstring": "Asynchronously execute a batch of search queries.\n\nThis method takes a list of search queries and executes them in batches\nto improve performance when dealing with multiple queries.\n\nNOTE: Cluster users may need to incorporate hash tags into their query\nto avoid cross-slot operations.\n\nArgs:\n    queries (List[SearchParams]): A list of search queries to execute.\n        Each query can be either a string or a tuple of (query, params).\n    batch_size (int, optional): The number of queries to execute in each\n        batch. Defaults to 10.\n\nReturns:\n    List[Result]: A list of search results corresponding to each query.\n\n.. code-block:: python\n\n    queries = [\n        \"hello world\",\n        (\"goodbye world\", {\"num_results\": 5}),\n    ]\n\n    results = await index.batch_search(queries)"
+      },
+      "clear": {
+        "assinatura": "(self) -> int",
+        "docstring": "Clear all keys in Redis associated with the index, leaving the index\navailable and in-place for future insertions or updates.\n\nNOTE: This method requires custom behavior for Redis Cluster because here,\nwe can't easily give control of the keys we're clearing to the user so they\ncan separate them based on hash tag.\n\nReturns:\n    int: Count of records deleted from Redis."
+      },
+      "connect": {
+        "assinatura": "(self, redis_url: str | None = None, **kwargs)",
+        "docstring": "[DEPRECATED] Connect to a Redis instance. Use connection parameters in __init__."
+      },
+      "create": {
+        "assinatura": "(self, overwrite: bool = False, drop: bool = False) -> None",
+        "docstring": "Asynchronously create an index in Redis with the current schema\n    and properties.\n\nArgs:\n    overwrite (bool, optional): Whether to overwrite the index if it\n        already exists. Defaults to False.\n    drop (bool, optional): Whether to drop all keys associated with the\n        index in the case of overwriting. Defaults to False.\n\nRaises:\n    RuntimeError: If the index already exists and 'overwrite' is False.\n    ValueError: If no fields are defined for the index.\n\n.. code-block:: python\n\n    # create an index in Redis; only if one does not exist with given name\n    await index.create()\n\n    # overwrite an index in Redis without dropping associated data\n    await index.create(overwrite=True)\n\n    # overwrite an index in Redis; drop associated data (clean slate)\n    await index.create(overwrite=True, drop=True)"
+      },
+      "delete": {
+        "assinatura": "(self, drop: bool = True)",
+        "docstring": "Delete the search index.\n\nArgs:\n    drop (bool, optional): Delete the documents in the index.\n        Defaults to True.\n\nRaises:\n    redis.exceptions.ResponseError: If the index does not exist."
+      },
+      "disconnect": {
+        "assinatura": "(self)",
+        "docstring": "Disconnect from the Redis database."
+      },
+      "disconnect_sync": {
+        "assinatura": "(self)",
+        "docstring": null
+      },
+      "drop_documents": {
+        "assinatura": "(self, ids: str | list[str]) -> int",
+        "docstring": "Remove documents from the index by their document IDs.\n\nThis method converts document IDs to Redis keys automatically by applying\nthe index's key prefix and separator configuration.\n\nNOTE: Cluster users will need to incorporate hash tags into their\ndocument IDs and only call this method with documents from a single hash\ntag at a time.\n\nArgs:\n    ids (Union[str, List[str]]): The document ID or IDs to remove from the index.\n\nReturns:\n    int: Count of documents deleted from Redis."
+      },
+      "drop_keys": {
+        "assinatura": "(self, keys: str | list[str]) -> int",
+        "docstring": "Remove a specific entry or entries from the index by it's key ID.\n\nUses ``UNLINK`` rather than ``DEL`` so memory reclamation runs on a\nbackground thread. This avoids blocking the main thread when a large\nnumber of keys are dropped at once (for example, scope-targeted\n``SemanticCache`` invalidation). The returned count is unchanged.\n\nArgs:\n    keys (Union[str, List[str]]): The document ID or IDs to remove from the index.\n\nReturns:\n    int: Count of records deleted from Redis."
+      },
+      "exists": {
+        "assinatura": "(self) -> bool",
+        "docstring": "Check if the index exists in Redis.\n\nReturns:\n    bool: True if the index exists, False otherwise."
+      },
+      "expire_keys": {
+        "assinatura": "(self, keys: str | list[str], ttl: int) -> int | list[int]",
+        "docstring": "Set the expiration time for a specific entry or entries in Redis.\n\nArgs:\n    keys (Union[str, List[str]]): The entry ID or IDs to set the expiration for.\n    ttl (int): The time-to-live in seconds."
+      },
+      "fetch": {
+        "assinatura": "(self, id: str) -> dict[str, typing.Any] | None",
+        "docstring": "Asynchronously etch an object from Redis by id. The id is typically\neither a unique identifier, or derived from some domain-specific\nmetadata combination (like a document id or chunk id).\n\nArgs:\n    id (str): The specified unique identifier for a particular\n        document indexed in Redis.\n\nReturns:\n    Dict[str, Any]: The fetched object."
+      },
+      "info": {
+        "assinatura": "(self, name: str | None = None) -> dict[str, typing.Any]",
+        "docstring": "Get information about the index.\n\nArgs:\n    name (str, optional): Index name to fetch info about.\n        Defaults to None.\n\nReturns:\n    dict: A dictionary containing the information about the index."
+      },
+      "invalidate_sql_schema_cache": {
+        "assinatura": "(self) -> None",
+        "docstring": "Clear cached sql-redis executors and schema state for this index."
+      },
+      "key": {
+        "assinatura": "(self, id: str) -> str",
+        "docstring": "Construct a redis key as a combination of an index key prefix (optional)\nand specified id.\n\nThe id is typically either a unique identifier, or\nderived from some domain-specific metadata combination (like a document\nid or chunk id).\n\nArgs:\n    id (str): The specified unique identifier for a particular\n        document indexed in Redis.\n\nReturns:\n    str: The full Redis key including key prefix and value as a string."
+      },
+      "listall": {
+        "assinatura": "(self) -> list[str]",
+        "docstring": "List all search indices in Redis database.\n\nReturns:\n    List[str]: The list of indices in the database."
+      },
+      "load": {
+        "assinatura": "(self, data: Iterable[Any], id_field: str | None = None, keys: Optional[Iterable[str]] = None, ttl: int | None = None, preprocess: Optional[Callable] = None, concurrency: int | None = None, batch_size: int | None = None) -> list[str]",
+        "docstring": "Asynchronously load objects to Redis. Returns the list of keys loaded\nto Redis.\n\nRedisVL automatically handles constructing the object keys, batching,\noptional preprocessing steps, and setting optional expiration\n(TTL policies) on keys.\n\nArgs:\n    data (Iterable[Any]): An iterable of objects to store.\n    id_field (Optional[str], optional): Specified field used as the id\n        portion of the redis key (after the prefix) for each\n        object. Defaults to None.\n    keys (Optional[Iterable[str]], optional): Optional iterable of keys.\n        Must match the length of objects if provided. Defaults to None.\n    ttl (Optional[int], optional): Time-to-live in seconds for each key.\n        Defaults to None.\n    preprocess (Optional[Callable], optional): A function to\n        preprocess objects before storage. Defaults to None.\n    batch_size (Optional[int], optional): Number of objects to write in\n        a single Redis pipeline execution. Defaults to class's\n        default batch size.\n\nReturns:\n    List[str]: List of keys loaded to Redis.\n\nRaises:\n    SchemaValidationError: If validation fails when validate_on_load is enabled.\n    RedisVLError: If there's an error loading data to Redis.\n\n.. code-block:: python\n\n    data = [{\"test\": \"foo\"}, {\"test\": \"bar\"}]\n\n    # simple case\n    keys = await index.load(data)\n\n    # set 360 second ttl policy on data\n    keys = await index.load(data, ttl=360)\n\n    # load data with predefined keys\n    keys = await index.load(data, keys=[\"rvl:foo\", \"rvl:bar\"])\n\n    # load data with preprocessing step\n    def add_field(d):\n        d[\"new_field\"] = 123\n        return d\n    keys = await index.load(data, preprocess=add_field)"
+      },
+      "paginate": {
+        "assinatura": "(self, query: redisvl.query.query.BaseQuery, page_size: int = 30) -> AsyncGenerator",
+        "docstring": "Execute a given query against the index and return results in\npaginated batches.\n\nThis method accepts a RedisVL query instance, enabling async pagination\nof results which allows for subsequent processing over each batch with a\ngenerator.\n\nArgs:\n    query (BaseQuery): The search query to be executed.\n    page_size (int, optional): The number of results to return in each\n        batch. Defaults to 30.\n\nYields:\n    An async generator yielding batches of search results.\n\nRaises:\n    TypeError: If the page_size argument is not of type int.\n    ValueError: If the page_size argument is less than or equal to zero.\n\n.. code-block:: python\n\n    # Iterate over paginated search results in batches of 10\n    async for result_batch in index.paginate(query, page_size=10):\n        # Process each batch of results\n        pass\n\nNote:\n    The page_size parameter controls the number of items each result\n    batch contains. Adjust this value based on performance\n    considerations and the expected volume of search results.\n\nNote:\n    For stable pagination, the query must have a `sort_by` clause."
+      },
+      "query": {
+        "assinatura": "(self, query: redisvl.query.query.BaseQuery | redisvl.query.aggregate.AggregationQuery | redisvl.query.hybrid.HybridQuery | redisvl.query.sql.SQLQuery) -> list[dict[str, typing.Any]]",
+        "docstring": "Asynchronously execute a query on the index.\n\nThis method takes a BaseQuery, AggregationQuery, HybridQuery, or SQLQuery object\ndirectly, runs the search, and handles post-processing of the search.\n\nArgs:\n    query (Union[BaseQuery, AggregationQuery, HybridQuery, SQLQuery]): The query to run.\n\nReturns:\n    List[Result]: A list of search results.\n\n.. code-block:: python\n\n    from redisvl.query import VectorQuery\n\n    query = VectorQuery(\n        vector=[0.16, -0.34, 0.98, 0.23],\n        vector_field_name=\"embedding\",\n        num_results=3\n    )\n\n    results = await index.query(query)"
+      },
+      "search": {
+        "assinatura": "(self, *args, **kwargs) -> 'Result'",
+        "docstring": "Perform an async search against the index.\n\nWrapper around the search API that adds the index name\nto the query and passes along the rest of the arguments\nto the redis-py ft().search() method.\n\nReturns:\n    Result: Raw Redis search results."
+      },
+      "set_client": {
+        "assinatura": "(self, redis_client: redis.asyncio.client.Redis | redis.asyncio.cluster.RedisCluster | redis.client.Redis | redis.cluster.RedisCluster)",
+        "docstring": "[DEPRECATED] Manually set the Redis client to use with the search index.\nThis method is deprecated; please provide connection parameters in __init__."
+      }
+    }
+  },
+  "SearchIndex": {
+    "tipo": "classe",
+    "assinatura": "(schema: redisvl.schema.schema.IndexSchema, redis_client: redis.client.Redis | redis.cluster.RedisCluster | None = None, redis_url: str | None = None, connection_kwargs: dict[str, typing.Any] | None = None, validate_on_load: bool = False, **kwargs)",
+    "docstring": "A search index class for interacting with Redis as a vector database.\n\nThe SearchIndex is instantiated with a reference to a Redis database and an\nIndexSchema (YAML path or dictionary object) that describes the various\nsettings and field configurations.\n\n.. code-block:: python\n\n    from redisvl.index import SearchIndex\n\n    # initialize the index object with schema from file\n    index = SearchIndex.from_yaml(\n        \"schemas/schema.yaml\",\n        redis_url=\"redis://localhost:6379\",\n        validate_on_load=True\n    )\n\n    # create the index\n    index.create(overwrite=True, drop=False)\n\n    # data is an iterable of dictionaries\n    index.load(data)\n\n    # delete index and data\n    index.delete(drop=True)",
+    "modulo_origem": "redisvl.index.index",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, schema: redisvl.schema.schema.IndexSchema, redis_client: redis.client.Redis | redis.cluster.RedisCluster | None = None, redis_url: str | None = None, connection_kwargs: dict[str, typing.Any] | None = None, validate_on_load: bool = False, **kwargs)",
+        "docstring": "Initialize the RedisVL search index with a schema, Redis client\n(or URL string with other connection args), connection_args, and other\nkwargs.\n\nArgs:\n    schema (IndexSchema): Index schema object.\n    redis_client(Optional[Redis]): An\n        instantiated redis client.\n    redis_url (Optional[str]): The URL of the Redis server to\n        connect to.\n    connection_kwargs (Dict[str, Any], optional): Redis client connection\n        args.\n    validate_on_load (bool, optional): Whether to validate data against schema\n        when loading. Defaults to False."
+      },
+      "aggregate": {
+        "assinatura": "(self, *args, **kwargs) -> 'AggregateResult'",
+        "docstring": "Perform an aggregation operation against the index.\n\nWrapper around the aggregation API that adds the index name\nto the query and passes along the rest of the arguments\nto the redis-py ft().aggregate() method.\n\nReturns:\n    Result: Raw Redis aggregation results."
+      },
+      "batch_query": {
+        "assinatura": "(self, queries: Sequence[redisvl.query.query.BaseQuery], batch_size: int = 10) -> list[list[dict[str, typing.Any]]]",
+        "docstring": "Execute a batch of queries and process results."
+      },
+      "batch_search": {
+        "assinatura": "(self, queries: list[tuple[str | redisvl.query.query.BaseQuery, dict[str, str | int | float | bytes] | None] | str | redisvl.query.query.BaseQuery], batch_size: int = 10) -> list['Result']",
+        "docstring": "Perform a search against the index for multiple queries.\n\nThis method takes a list of queries and optionally query params and\nreturns a list of Result objects for each query. Results are\nreturned in the same order as the queries.\n\nNOTE: Cluster users may need to incorporate hash tags into their query\nto avoid cross-slot operations.\n\nArgs:\n    queries (List[SearchParams]): The queries to search for.\n    batch_size (int, optional): The number of queries to search for at a time.\n        Defaults to 10.\n\nReturns:\n    List[Result]: The search results for each query."
+      },
+      "clear": {
+        "assinatura": "(self) -> int",
+        "docstring": "Clear all keys in Redis associated with the index, leaving the index\navailable and in-place for future insertions or updates.\n\nNOTE: This method requires custom behavior for Redis Cluster because\nhere, we can't easily give control of the keys we're clearing to the\nuser so they can separate them based on hash tag.\n\nReturns:\n    int: Count of records deleted from Redis."
+      },
+      "connect": {
+        "assinatura": "(self, redis_url: str | None = None, **kwargs)",
+        "docstring": "Connect to a Redis instance using the provided `redis_url`, falling\nback to the `REDIS_URL` environment variable (if available).\n\nNote: Additional keyword arguments (`**kwargs`) can be used to provide\nextra options specific to the Redis connection.\n\nArgs:\n    redis_url (Optional[str], optional): The URL of the Redis server to\n        connect to.\n\nRaises:\n    redis.exceptions.ConnectionError: If the connection to the Redis\n        server fails.\n    ValueError: If the Redis URL is not provided nor accessible\n        through the `REDIS_URL` environment variable.\n    ModuleNotFoundError: If required Redis modules are not installed."
+      },
+      "create": {
+        "assinatura": "(self, overwrite: bool = False, drop: bool = False) -> None",
+        "docstring": "Create an index in Redis with the current schema and properties.\n\nArgs:\n    overwrite (bool, optional): Whether to overwrite the index if it\n        already exists. Defaults to False.\n    drop (bool, optional): Whether to drop all keys associated with the\n        index in the case of overwriting. Defaults to False.\n\nRaises:\n    RuntimeError: If the index already exists and 'overwrite' is False.\n    ValueError: If no fields are defined for the index.\n\n.. code-block:: python\n\n    # create an index in Redis; only if one does not exist with given name\n    index.create()\n\n    # overwrite an index in Redis without dropping associated data\n    index.create(overwrite=True)\n\n    # overwrite an index in Redis; drop associated data (clean slate)\n    index.create(overwrite=True, drop=True)"
+      },
+      "delete": {
+        "assinatura": "(self, drop: bool = True)",
+        "docstring": "Delete the search index while optionally dropping all keys associated\nwith the index.\n\nArgs:\n    drop (bool, optional): Delete the key / documents pairs in the\n        index. Defaults to True.\n\nraises:\n    redis.exceptions.ResponseError: If the index does not exist."
+      },
+      "disconnect": {
+        "assinatura": "(self)",
+        "docstring": "Disconnect from the Redis database."
+      },
+      "drop_documents": {
+        "assinatura": "(self, ids: str | list[str]) -> int",
+        "docstring": "Remove documents from the index by their document IDs.\n\nThis method converts document IDs to Redis keys automatically by applying\nthe index's key prefix and separator configuration.\n\nNOTE: Cluster users will need to incorporate hash tags into their\ndocument IDs and only call this method with documents from a single hash\ntag at a time.\n\nArgs:\n    ids (Union[str, List[str]]): The document ID or IDs to remove from the index.\n\nReturns:\n    int: Count of documents deleted from Redis."
+      },
+      "drop_keys": {
+        "assinatura": "(self, keys: str | list[str]) -> int",
+        "docstring": "Remove a specific entry or entries from the index by it's key ID.\n\nUses ``UNLINK`` rather than ``DEL`` so memory reclamation runs on a\nbackground thread. This avoids blocking the main thread when a large\nnumber of keys are dropped at once (for example, scope-targeted\n``SemanticCache`` invalidation). The returned count is unchanged.\n\nArgs:\n    keys (Union[str, List[str]]): The document ID or IDs to remove from the index.\n\nReturns:\n    int: Count of records deleted from Redis."
+      },
+      "exists": {
+        "assinatura": "(self) -> bool",
+        "docstring": "Check if the index exists in Redis.\n\nReturns:\n    bool: True if the index exists, False otherwise."
+      },
+      "expire_keys": {
+        "assinatura": "(self, keys: str | list[str], ttl: int) -> int | list[int]",
+        "docstring": "Set the expiration time for a specific entry or entries in Redis.\n\nArgs:\n    keys (Union[str, List[str]]): The entry ID or IDs to set the expiration for.\n    ttl (int): The time-to-live in seconds."
+      },
+      "fetch": {
+        "assinatura": "(self, id: str) -> dict[str, typing.Any] | None",
+        "docstring": "Fetch an object from Redis by id.\n\nThe id is typically either a unique identifier,\nor derived from some domain-specific metadata combination\n(like a document id or chunk id).\n\nArgs:\n    id (str): The specified unique identifier for a particular\n        document indexed in Redis.\n\nReturns:\n    Dict[str, Any]: The fetched object."
+      },
+      "info": {
+        "assinatura": "(self, name: str | None = None) -> dict[str, typing.Any]",
+        "docstring": "Get information about the index.\n\nArgs:\n    name (str, optional): Index name to fetch info about.\n        Defaults to None.\n\nReturns:\n    dict: A dictionary containing the information about the index."
+      },
+      "invalidate_sql_schema_cache": {
+        "assinatura": "(self) -> None",
+        "docstring": "Clear cached sql-redis executors and schema state for this index."
+      },
+      "key": {
+        "assinatura": "(self, id: str) -> str",
+        "docstring": "Construct a redis key as a combination of an index key prefix (optional)\nand specified id.\n\nThe id is typically either a unique identifier, or\nderived from some domain-specific metadata combination (like a document\nid or chunk id).\n\nArgs:\n    id (str): The specified unique identifier for a particular\n        document indexed in Redis.\n\nReturns:\n    str: The full Redis key including key prefix and value as a string."
+      },
+      "listall": {
+        "assinatura": "(self) -> list[str]",
+        "docstring": "List all search indices in Redis database.\n\nReturns:\n    List[str]: The list of indices in the database."
+      },
+      "load": {
+        "assinatura": "(self, data: Iterable[Any], id_field: str | None = None, keys: Optional[Iterable[str]] = None, ttl: int | None = None, preprocess: Optional[Callable] = None, batch_size: int | None = None) -> list[str]",
+        "docstring": "Load objects to the Redis database. Returns the list of keys loaded\nto Redis.\n\nRedisVL automatically handles constructing the object keys, batching,\noptional preprocessing steps, and setting optional expiration\n(TTL policies) on keys.\n\nArgs:\n    data (Iterable[Any]): An iterable of objects to store.\n    id_field (Optional[str], optional): Specified field used as the id\n        portion of the redis key (after the prefix) for each\n        object. Defaults to None.\n    keys (Optional[Iterable[str]], optional): Optional iterable of keys.\n        Must match the length of objects if provided. Defaults to None.\n    ttl (Optional[int], optional): Time-to-live in seconds for each key.\n        Defaults to None.\n    preprocess (Optional[Callable], optional): A function to preprocess\n        objects before storage. Defaults to None.\n    batch_size (Optional[int], optional): Number of objects to write in\n        a single Redis pipeline execution. Defaults to class's\n        default batch size.\n\nReturns:\n    List[str]: List of keys loaded to Redis.\n\nRaises:\n    SchemaValidationError: If validation fails when validate_on_load is enabled.\n    RedisVLError: If there's an error loading data to Redis."
+      },
+      "paginate": {
+        "assinatura": "(self, query: redisvl.query.query.BaseQuery, page_size: int = 30) -> Generator",
+        "docstring": "Execute a given query against the index and return results in\npaginated batches.\n\nThis method accepts a RedisVL query instance, enabling pagination of\nresults which allows for subsequent processing over each batch with a\ngenerator.\n\nArgs:\n    query (BaseQuery): The search query to be executed.\n    page_size (int, optional): The number of results to return in each\n        batch. Defaults to 30.\n\nYields:\n    A generator yielding batches of search results.\n\nRaises:\n    TypeError: If the page_size argument is not of type int.\n    ValueError: If the page_size argument is less than or equal to zero.\n\n.. code-block:: python\n\n    # Iterate over paginated search results in batches of 10\n    for result_batch in index.paginate(query, page_size=10):\n        # Process each batch of results\n        pass\n\nNote:\n    The page_size parameter controls the number of items each result\n    batch contains. Adjust this value based on performance\n    considerations and the expected volume of search results.\n\nNote:\n    For stable pagination, the query must have a `sort_by` clause."
+      },
+      "query": {
+        "assinatura": "(self, query: redisvl.query.query.BaseQuery | redisvl.query.aggregate.AggregationQuery | redisvl.query.hybrid.HybridQuery | redisvl.query.sql.SQLQuery) -> list[dict[str, typing.Any]]",
+        "docstring": "Execute a query on the index.\n\nThis method takes a BaseQuery, AggregationQuery, or HybridQuery object directly, and\nhandles post-processing of the search.\n\nArgs:\n    query (Union[BaseQuery, AggregationQuery, HybridQuery]): The query to run.\n\nReturns:\n    List[Result]: A list of search results.\n\n.. code-block:: python\n\n    from redisvl.query import VectorQuery\n\n    query = VectorQuery(\n        vector=[0.16, -0.34, 0.98, 0.23],\n        vector_field_name=\"embedding\",\n        num_results=3\n    )\n\n    results = index.query(query)"
+      },
+      "search": {
+        "assinatura": "(self, *args, **kwargs) -> 'Result'",
+        "docstring": "Perform a search against the index.\n\nWrapper around the search API that adds the index name\nto the query and passes along the rest of the arguments\nto the redis-py ft().search() method.\n\nReturns:\n    Result: Raw Redis search results."
+      },
+      "set_client": {
+        "assinatura": "(self, redis_client: redis.client.Redis | redis.cluster.RedisCluster, **kwargs)",
+        "docstring": "Manually set the Redis client to use with the search index.\n\nThis method configures the search index to use a specific Redis or\nAsync Redis client. It is useful for cases where an external,\ncustom-configured client is preferred instead of creating a new one.\n\nArgs:\n    redis_client (Redis): A Redis or Async Redis\n        client instance to be used for the connection.\n\nRaises:\n    TypeError: If the provided client is not valid."
+      }
+    }
+  }
+}

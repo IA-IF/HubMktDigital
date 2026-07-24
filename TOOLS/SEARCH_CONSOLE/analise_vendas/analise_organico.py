@@ -5,8 +5,7 @@ Uso:
     python analise_organico.py [site] [dias] [termos_marca separados por virgula]
     python analise_organico.py 3gfoods 7 "3g foods,3gfoods"
 
-Credenciais so da raiz do projeto (.env + SITES/<site>/.env), nunca de
-LEGADO/.
+Credenciais so da raiz do projeto (.env + SITES/<site>/.env).
 """
 import json
 import sys

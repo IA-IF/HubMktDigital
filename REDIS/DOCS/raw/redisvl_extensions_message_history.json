@@ -1,0 +1,154 @@
+{
+  "BaseMessageHistory": {
+    "tipo": "classe",
+    "assinatura": "(name: str, session_tag: str | None = None)",
+    "docstring": null,
+    "modulo_origem": "redisvl.extensions.message_history.base_history",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, name: str, session_tag: str | None = None)",
+        "docstring": "Initialize message history with index\n\nMessage History stores the current and previous user text prompts and\nLLM responses to allow for enriching future prompts with session\ncontext. Message history is stored in individual user or LLM prompts and\nresponses.\n\nArgs:\n    name (str): The name of the message history index.\n    session_tag (str): Tag to be added to entries to link to a specific\n        conversation session. Defaults to instance ULID."
+      },
+      "add_message": {
+        "assinatura": "(self, message: dict[str, str], session_tag: str | None = None) -> None",
+        "docstring": "Insert a single prompt or response into the message history.\nA timestamp is associated with it so that it can be later sorted\nin sequential ordering after retrieval.\n\nArgs:\n    message (Dict[str,str]): The user prompt or LLM response.\n    session_tag (Optional[str]): The tag to mark the message with. Defaults to None."
+      },
+      "add_messages": {
+        "assinatura": "(self, messages: list[dict[str, str]], session_tag: str | None = None) -> None",
+        "docstring": "Insert a list of prompts and responses into the message history.\nA timestamp is associated with each so that they can be later sorted\nin sequential ordering after retrieval.\n\nArgs:\n    messages (List[Dict[str, str]]): The list of user prompts and LLM responses.\n    session_tag (Optional[str]): The tag to mark the messages with. Defaults to None."
+      },
+      "clear": {
+        "assinatura": "(self) -> None",
+        "docstring": "Clears the chat message history."
+      },
+      "count": {
+        "assinatura": "(self, session_tag: str | None = None) -> int",
+        "docstring": "Count the number of messages in the conversation history.\n\nArgs:\n    session_tag (Optional[str]): The session tag to filter messages by.\n        If None, counts all messages in the history."
+      },
+      "delete": {
+        "assinatura": "(self) -> None",
+        "docstring": "Clear all conversation history and remove any search indices."
+      },
+      "drop": {
+        "assinatura": "(self, id_field: str | None = None) -> None",
+        "docstring": "Remove a specific exchange from the conversation history.\n\nArgs:\n    id_field (Optional[str]): The id_field of the entry to delete.\n        If None then the last entry is deleted."
+      },
+      "get_recent": {
+        "assinatura": "(self, top_k: int = 5, as_text: bool = False, raw: bool = False, session_tag: str | None = None, role: str | list[str] | None = None) -> list[str] | list[dict[str, str]]",
+        "docstring": "Retrieve the recent conversation history in sequential order.\n\nArgs:\n    top_k (int): The number of previous exchanges to return. Default is 5.\n        Note that one exchange contains both a prompt and response.\n    as_text (bool): Whether to return the conversation as a single string,\n        or list of alternating prompts and responses.\n    raw (bool): Whether to return the full Redis hash entry or just the\n        prompt and response\n    session_tag (str): Tag to be added to entries to link to a specific\n        conversation session. Defaults to instance ULID.\n    role (Optional[Union[str, List[str]]]): Filter messages by role(s).\n        Can be a single role string (\"system\", \"user\", \"llm\", \"tool\") or\n        a list of roles. If None, all roles are returned.\n\nReturns:\n    Union[str, List[str]]: A single string transcription of the messages\n                           or list of strings if as_text is false.\n\nRaises:\n    ValueError: If top_k is not an integer greater than or equal to 0,\n        or if role contains invalid values."
+      },
+      "store": {
+        "assinatura": "(self, prompt: str, response: str, session_tag: str | None = None) -> None",
+        "docstring": "Insert a prompt:response pair into the message history. A timestamp\nis associated with each exchange so that they can be later sorted\nin sequential ordering after retrieval.\n\nArgs:\n    prompt (str): The user prompt to the LLM.\n    response (str): The corresponding LLM response.\n    session_tag (Optional[str]): The tag to mark the message with. Defaults to None."
+      }
+    }
+  },
+  "ChatRole": {
+    "tipo": "classe",
+    "assinatura": "(*values)",
+    "docstring": "Enumeration of valid roles for a chat message.",
+    "modulo_origem": "redisvl.extensions.message_history.schema",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, *args, **kwds)",
+        "docstring": "Initialize self.  See help(type(self)) for accurate signature."
+      }
+    }
+  },
+  "MessageHistory": {
+    "tipo": "classe",
+    "assinatura": "(name: str, session_tag: str | None = None, prefix: str | None = None, redis_client: redis.client.Redis | None = None, redis_url: str = 'redis://localhost:6379', connection_kwargs: dict[str, typing.Any] = {}, **kwargs)",
+    "docstring": null,
+    "modulo_origem": "redisvl.extensions.message_history.message_history",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, name: str, session_tag: str | None = None, prefix: str | None = None, redis_client: redis.client.Redis | None = None, redis_url: str = 'redis://localhost:6379', connection_kwargs: dict[str, typing.Any] = {}, **kwargs)",
+        "docstring": "Initialize message history\n\nMessage History stores the current and previous user text prompts and\nLLM responses to allow for enriching future prompts with session\ncontext. Message history is stored in individual user or LLM prompts and\nresponses.\n\nArgs:\n    name (str): The name of the message history index.\n    session_tag (Optional[str]): Tag to be added to entries to link to a specific\n        conversation session. Defaults to instance ULID.\n    prefix (Optional[str]): Prefix for the keys for this conversation data.\n        Defaults to None and will be replaced with the index name.\n    redis_client (Optional[Redis]): A Redis client instance. Defaults to\n        None.\n    redis_url (str, optional): The redis url. Defaults to redis://localhost:6379.\n    connection_kwargs (Dict[str, Any]): The connection arguments\n        for the redis client. Defaults to empty {}."
+      },
+      "add_message": {
+        "assinatura": "(self, message: dict[str, str], session_tag: str | None = None) -> None",
+        "docstring": "Insert a single prompt or response into the message history.\nA timestamp is associated with it so that it can be later sorted\nin sequential ordering after retrieval.\n\nArgs:\n    message (Dict[str,str]): The user prompt or LLM response.\n    session_tag (Optional[str]): Tag to be added to entries to link to a specific\n        conversation session. Defaults to instance ULID."
+      },
+      "add_messages": {
+        "assinatura": "(self, messages: list[dict[str, str]], session_tag: str | None = None) -> None",
+        "docstring": "Insert a list of prompts and responses into the message history.\nA timestamp is associated with each so that they can be later sorted\nin sequential ordering after retrieval.\n\nArgs:\n    messages (List[Dict[str, str]]): The list of user prompts and LLM responses.\n    session_tag (Optional[str]): Tag to be added to entries to link to a specific\n        conversation session. Defaults to instance ULID."
+      },
+      "clear": {
+        "assinatura": "(self) -> None",
+        "docstring": "Clears the conversation message history."
+      },
+      "count": {
+        "assinatura": "(self, session_tag=None)",
+        "docstring": "Count the number of messages in the conversation history.\n\nArgs:\n    session_tag (Optional[str]): The session tag to filter messages by.\n        If None, counts all messages in the history."
+      },
+      "delete": {
+        "assinatura": "(self) -> None",
+        "docstring": "Clear all conversation keys and remove the search index."
+      },
+      "drop": {
+        "assinatura": "(self, id: str | None = None) -> None",
+        "docstring": "Remove a specific exchange from the conversation history.\n\nArgs:\n    id (Optional[str]): The id of the message entry to delete.\n        If None then the last entry is deleted."
+      },
+      "get_recent": {
+        "assinatura": "(self, top_k: int = 5, as_text: bool = False, raw: bool = False, session_tag: str | None = None, role: str | list[str] | None = None) -> list[str] | list[dict[str, str]]",
+        "docstring": "Retrieve the recent message history in sequential order.\n\nArgs:\n    top_k (int): The number of previous messages to return. Default is 5.\n    as_text (bool): Whether to return the conversation as a single string,\n        or list of alternating prompts and responses.\n    raw (bool): Whether to return the full Redis hash entry or just the\n        prompt and response.\n    session_tag (Optional[str]): Tag of the entries linked to a specific\n        conversation session. Defaults to instance ULID.\n    role (Optional[Union[str, List[str]]]): Filter messages by role(s).\n        Can be a single role string (\"system\", \"user\", \"llm\", \"tool\") or\n        a list of roles. If None, all roles are returned.\n\nReturns:\n    Union[str, List[str]]: A single string transcription of the messages\n        or list of strings if as_text is false.\n\nRaises:\n    ValueError: if top_k is not an integer greater than or equal to 0,\n        or if role contains invalid values."
+      },
+      "store": {
+        "assinatura": "(self, prompt: str, response: str, session_tag: str | None = None) -> None",
+        "docstring": "Insert a prompt:response pair into the message history. A timestamp\nis associated with each exchange so that they can be later sorted\nin sequential ordering after retrieval.\n\nArgs:\n    prompt (str): The user prompt to the LLM.\n    response (str): The corresponding LLM response.\n    session_tag (Optional[str]): Tag to be added to entries to link to a specific\n        conversation session. Defaults to instance ULID."
+      }
+    }
+  },
+  "SemanticMessageHistory": {
+    "tipo": "classe",
+    "assinatura": "(name: str, session_tag: str | None = None, prefix: str | None = None, vectorizer: redisvl.utils.vectorize.base.BaseVectorizer | None = None, distance_threshold: float = 0.3, redis_client: redis.client.Redis | None = None, redis_url: str = 'redis://localhost:6379', connection_kwargs: dict[str, typing.Any] = {}, overwrite: bool = False, **kwargs)",
+    "docstring": null,
+    "modulo_origem": "redisvl.extensions.message_history.semantic_history",
+    "metodos": {
+      "__init__": {
+        "assinatura": "(self, name: str, session_tag: str | None = None, prefix: str | None = None, vectorizer: redisvl.utils.vectorize.base.BaseVectorizer | None = None, distance_threshold: float = 0.3, redis_client: redis.client.Redis | None = None, redis_url: str = 'redis://localhost:6379', connection_kwargs: dict[str, typing.Any] = {}, overwrite: bool = False, **kwargs)",
+        "docstring": "Initialize message history with index\n\nSemantic Message History stores the current and previous user text prompts\nand LLM responses to allow for enriching future prompts with session\ncontext. Message history is stored in individual user or LLM prompts and\nresponses.\n\nArgs:\n    name (str): The name of the message history index.\n    session_tag (Optional[str]): Tag to be added to entries to link to a specific\n        conversation session. Defaults to instance ULID.\n    prefix (Optional[str]): Prefix for the keys for this message data.\n        Defaults to None and will be replaced with the index name.\n    vectorizer (Optional[BaseVectorizer]): The vectorizer used to create embeddings.\n    distance_threshold (float): The maximum semantic distance to be\n        included in the context. Defaults to 0.3.\n    redis_client (Optional[Redis]): A Redis client instance. Defaults to\n        None.\n    redis_url (str, optional): The redis url. Defaults to redis://localhost:6379.\n    connection_kwargs (Dict[str, Any]): The connection arguments\n        for the redis client. Defaults to empty {}.\n    overwrite (bool): Whether or not to force overwrite the schema for\n        the semantic message index. Defaults to false.\n\nThe proposed schema will support a single vector embedding constructed\nfrom either the prompt or response in a single string."
+      },
+      "add_message": {
+        "assinatura": "(self, message: dict[str, str], session_tag: str | None = None) -> None",
+        "docstring": "Insert a single prompt or response into the message history.\nA timestamp is associated with it so that it can be later sorted\nin sequential ordering after retrieval.\n\nArgs:\n    message (Dict[str,str]): The user prompt or LLM response.\n    session_tag (Optional[str]): Tag to be added to entry to link to a specific\n        conversation session. Defaults to instance ULID."
+      },
+      "add_messages": {
+        "assinatura": "(self, messages: list[dict[str, str]], session_tag: str | None = None) -> None",
+        "docstring": "Insert a list of prompts and responses into the session memory.\nA timestamp is associated with each so that they can be later sorted\nin sequential ordering after retrieval.\n\nArgs:\n    messages (List[Dict[str, str]]): The list of user prompts and LLM responses.\n    session_tag (Optional[str]): Tag to be added to entries to link to a specific\n        conversation session. Defaults to instance ULID."
+      },
+      "clear": {
+        "assinatura": "(self) -> None",
+        "docstring": "Clears the message history."
+      },
+      "count": {
+        "assinatura": "(self, session_tag=None)",
+        "docstring": "Count the number of messages in the conversation history.\n\nArgs:\n    session_tag (Optional[str]): The session tag to filter messages by.\n        If None, counts all messages in the history."
+      },
+      "delete": {
+        "assinatura": "(self) -> None",
+        "docstring": "Clear all message keys and remove the search index."
+      },
+      "drop": {
+        "assinatura": "(self, id: str | None = None) -> None",
+        "docstring": "Remove a specific exchange from the message history.\n\nArgs:\n    id (Optional[str]): The id of the message entry to delete.\n        If None then the last entry is deleted."
+      },
+      "get_recent": {
+        "assinatura": "(self, top_k: int = 5, as_text: bool = False, raw: bool = False, session_tag: str | None = None, role: str | list[str] | None = None) -> list[str] | list[dict[str, str]]",
+        "docstring": "Retrieve the recent message history in sequential order.\n\nArgs:\n    top_k (int): The number of previous exchanges to return. Default is 5.\n    as_text (bool): Whether to return the conversation as a single string,\n        or list of alternating prompts and responses.\n    raw (bool): Whether to return the full Redis hash entry or just the\n        prompt and response\n    session_tag (Optional[str]): Tag of the entries linked to a specific\n        conversation session. Defaults to instance ULID.\n    role (Optional[Union[str, List[str]]]): Filter messages by role(s).\n        Can be a single role string (\"system\", \"user\", \"llm\", \"tool\") or\n        a list of roles. If None, all roles are returned.\n\nReturns:\n    Union[str, List[str]]: A single string transcription of the session\n        or list of strings if as_text is false.\n\nRaises:\n    ValueError: if top_k is not an integer greater than or equal to 0,\n        or if role contains invalid values."
+      },
+      "get_relevant": {
+        "assinatura": "(self, prompt: str, as_text: bool = False, top_k: int = 5, fall_back: bool = False, session_tag: str | None = None, raw: bool = False, distance_threshold: float | None = None, role: str | list[str] | None = None) -> list[str] | list[dict[str, str]]",
+        "docstring": "Searches the message history for information semantically related to\nthe specified prompt.\n\nThis method uses vector similarity search with a text prompt as input.\nIt checks for semantically similar prompts and responses and gets\nthe top k most relevant previous prompts or responses to include as\ncontext to the next LLM call.\n\nArgs:\n    prompt (str): The message text to search for in message history\n    as_text (bool): Whether to return the prompts and responses as text\n    or as JSON.\n    top_k (int): The number of previous messages to return. Default is 5.\n    session_tag (Optional[str]): Tag of the entries linked to a specific\n        conversation session. Defaults to instance ULID.\n    distance_threshold (Optional[float]): The threshold for semantic\n        vector distance.\n    fall_back (bool): Whether to drop back to recent conversation history\n        if no relevant context is found.\n    raw (bool): Whether to return the full Redis hash entry or just the\n        message.\n    role (Optional[Union[str, List[str]]]): Filter messages by role(s).\n        Can be a single role string (\"system\", \"user\", \"llm\", \"tool\") or\n        a list of roles. If None, all roles are returned.\n\nReturns:\n    Union[List[str], List[Dict[str,str]]: Either a list of strings, or a\n    list of prompts and responses in JSON containing the most relevant.\n\nRaises ValueError: if top_k is not an integer greater or equal to 0,\n    or if role contains invalid values."
+      },
+      "set_distance_threshold": {
+        "assinatura": "(self, threshold)",
+        "docstring": null
+      },
+      "store": {
+        "assinatura": "(self, prompt: str, response: str, session_tag: str | None = None) -> None",
+        "docstring": "Insert a prompt:response pair into the message history. A timestamp\nis associated with each message so that they can be later sorted\nin sequential ordering after retrieval.\n\nArgs:\n    prompt (str): The user prompt to the LLM.\n    response (str): The corresponding LLM response.\n    session_tag (Optional[str]): Tag to be added to entries to link to a specific\n        conversation session. Defaults to instance ULID."
+      }
+    }
+  }
+}
