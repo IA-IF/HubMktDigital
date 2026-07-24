@@ -192,8 +192,20 @@ P [orchestrator.py]: manda esse texto pro usuario via
 
 
 
-o norquestrador , coloca um  sistema de funcao fixas
+o n orquestrador , coloca um  sistema de funcao fixas
 
 no momento tenho essa, 
+
+na msg de boa vinda no começo, mostra que existe esse fix_help
+
+
+fix_help
+mostra os fix e o eles faz
+
+
 fix_redix
-reseta no redis os dados que existe do sobre R [discover_tool.py, descobrir]: busca vetorial no Redis, e vai regenera isso
+regenra os dados do REDIS sobre o discover , pra incluir todas TOOLS que existe no projeto, se a gente atualiza algo tem q ter isso
+
+fix_julio
+conversa com o H pra reajustar a personalidade do julio, mas conversa, explica com esta e confirma com ele como vai fica
+
