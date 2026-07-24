@@ -1,5 +1,6 @@
-"""Pedidos de mudanca/funcionalidade no PROPRIO projeto, feitos pelo
-gestor no modo projeto do Julio (ver orchestrator._processar_modo_projeto).
+"""Pedidos de mudanca/funcionalidade no PROPRIO projeto, feitos a Elis
+(ver elis_orchestrator.py) -- agente de conversa dedicado a
+desenvolvimento, irma do Julio (que cuida so de marketing).
 
 Diferente de pedidos.py (registrar_pedido_futuro, sobre MARKETING de um
 site) -- aqui o pedido e sobre o HubMktDigital em si, e o registro ja

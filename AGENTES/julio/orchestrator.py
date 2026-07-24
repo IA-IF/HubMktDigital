@@ -1,15 +1,9 @@
-"""O Julio: conversa com o humano no Telegram e aciona os outros agentes.
-
-Alem das tools de marketing por site, o Julio sempre tem disponiveis
-`registrar_pedido_projeto`/`listar_pedidos_projeto` (ver
-pedidos_projeto.py): quando alguem pede uma mudanca no PROPRIO projeto
-(nao no marketing de um site), o pedido dispara Planejador->Coder numa
-branch git isolada e, com confirmacao explicita ("aplicar?"), aplica de
-verdade (merge em master + reinicia o bot, com rollback automatico se
-nao voltar a responder — ver reiniciar_bot.py). Contexto do que o
-projeto ja faz/o que falta: STATUS_PROJETO.md, embutido no system
-prompt. Ver spec
-docs/superpowers/specs/2026-07-24-modo-projeto-pedidos-design.md.
+"""O Julio: conversa com o humano no Telegram sobre MARKETING de um site
+e aciona os outros agentes (GA4/Ads/Search Console/catalogo). Irmao da
+Elis (ver elis_orchestrator.py), que cuida do desenvolvimento do proprio
+projeto -- so um dos dois fica ativo por vez, escolhido por
+AGENTE_ATIVO em REDIS/.env (ver julio_config.agente_ativo(),
+main_telegram.py).
 
 O client Anthropic e instanciado direto (nao via LLMRouter.ask*): o
 router adiciona cache semantico, mas so ajuda em chamadas cujo prompt
@@ -56,7 +50,6 @@ import agentes
 import discover_tool
 import julio_config as config
 import pedidos
-import pedidos_projeto
 
 MAX_TURNOS_FERRAMENTA = 4
 
@@ -88,59 +81,8 @@ DESCRICAO_PERSONALIDADE = (
     "ideia, sem voce ter mostrado como ficaria e ele ter concordado."
 )
 
-# Tools de pedido de projeto -- sempre disponiveis, em qualquer site.
-# registrar_pedido_projeto roda direto (nunca pede confirmacao pra
-# GERAR o rascunho), mas o resultado "rascunho_pronto" vira uma
-# confirmacao pendente pra APLICAR (ver processar_mensagem,
-# pedido_pendente_aplicar) -- mesmo espirito do requer_confirmacao de
-# criar_campanha, so que a decisao de aplicar so existe depois do
-# rascunho pronto, entao nao da pra modelar como requer_confirmacao de
-# tool.json comum.
-SCHEMA_PEDIDO_PROJETO = {
-    "type": "object",
-    "properties": {
-        "pedido": {
-            "type": "string",
-            "description": "Resumo objetivo do que o gestor pediu, 1-2 frases.",
-        },
-        "contexto": {
-            "type": "string",
-            "description": "Detalhes adicionais relevantes. Opcional.",
-        },
-    },
-    "required": ["pedido"],
-}
-
-DESCRICAO_PEDIDO_PROJETO = (
-    "Chame quando o gestor descrever algo que quer MUDAR ou ADICIONAR no "
-    "proprio projeto (nao no marketing de um site) -- ex: 'quero que o "
-    "bot tambem avise sobre X'. Nao chame so pra responder uma pergunta "
-    "sobre o que ja existe hoje -- isso voce ja sabe pelo contexto desta "
-    "conversa."
-)
-
-SCHEMA_LISTAR_PEDIDOS = {"type": "object", "properties": {}, "required": []}
-
-DESCRICAO_LISTAR_PEDIDOS = (
-    "Chame quando o gestor perguntar pelo status de pedidos que ele ja "
-    "fez antes (ex: 'como estao meus pedidos', 'o que eu pedi')."
-)
-
-_STATUS_PEDIDO_HUMANO = {
-    "registrado": "na fila",
-    "rascunho_pronto": "rascunho pronto, aguardando confirmacao pra aplicar",
-    "aplicando": "aplicando agora",
-    "aplicado": "aplicado, ja esta no ar",
-    "erro": "registrado, precisa de atencao manual",
-    "erro_aplicar": "erro ao aplicar, rascunho preservado pra tentar de novo",
-    "erro_aplicar_revertido": "tentei aplicar mas revertido automaticamente por seguranca",
-    "erro_critico_bot_parado": "erro critico ao aplicar, precisa de atencao humana urgente",
-}
-
-
 def _sistema(site: str) -> str:
     nome = config.SITE_NOMES.get(site, site)
-    status_projeto = config.status_projeto_md().read_text(encoding="utf-8")
     return (
         f"Voce e o Julio, agente de marketing. Esta conversa e sobre a "
         f"'{nome}' — nao confunda com os outros sites/clientes que voce "
@@ -166,17 +108,7 @@ def _sistema(site: str) -> str:
         "lance, mudar orcamento de campanha existente, etc.) — voce NAO "
         "PODE fazer isso. Nao diga 'posso fazer' nem confirme a acao: use "
         "`registrar_pedido_futuro` e explique que ainda nao tem essa "
-        "capacidade.\n\n"
-        "IMPORTANTE sobre pedidos de mudanca NO PROPRIO PROJETO (nao no "
-        "marketing de um site) -- ex: 'quero que o bot tambem avise "
-        "sobre X', 'muda como voce responde tal coisa': use "
-        "`registrar_pedido_projeto`, NUNCA `registrar_pedido_futuro` "
-        "(essa e so pra pedidos de marketing sem ferramenta). Use "
-        "`listar_pedidos_projeto` quando perguntarem o status de pedidos "
-        "ja feitos. Nao mencione jargao tecnico (branch, commit, git) nas "
-        "respostas -- fale em termos simples ('rascunho preparado', "
-        "'aplicado').\n\n"
-        f"=== Status do projeto (o que ja existe, o que falta) ===\n{status_projeto}"
+        "capacidade."
     )
 
 
@@ -233,14 +165,7 @@ def _tools_candidatas(mensagem: str) -> list[dict]:
         return discover_tool.catalogar_tools()
 
 
-def _perguntar(
-    historico: list[dict], site: str, chat_id: str, telegram_transport
-) -> tuple[str | None, dict | None, list[dict]]:
-    """Devolve (bloco_texto, pendencia, novos_turnos). `pendencia`, quando
-    presente, e sempre algo que precisa de confirmacao "sim/nao" antes de
-    virar acao de verdade: {"tipo": "campanha", "dados": ...} (criar
-    campanha) ou {"tipo": "pedido", "id": ...} (aplicar um pedido de
-    projeto cujo rascunho ja ficou pronto)."""
+def _perguntar(historico: list[dict], site: str) -> tuple[str | None, dict | None, list[dict]]:
     client = anthropic.Anthropic(api_key=config.anthropic_api_key())
     global_regras = config.global_md().read_text(encoding="utf-8")
     regras_site = config.regras_negocio(site).read_text(encoding="utf-8")
@@ -255,17 +180,6 @@ def _perguntar(
     tools = [
         {"name": c["name"], "description": c["description"], "input_schema": c["input_schema"]}
         for c in candidatos
-    ] + [
-        {
-            "name": "registrar_pedido_projeto",
-            "description": DESCRICAO_PEDIDO_PROJETO,
-            "input_schema": SCHEMA_PEDIDO_PROJETO,
-        },
-        {
-            "name": "listar_pedidos_projeto",
-            "description": DESCRICAO_LISTAR_PEDIDOS,
-            "input_schema": SCHEMA_LISTAR_PEDIDOS,
-        },
     ]
 
     mensagens = list(historico)
@@ -285,41 +199,14 @@ def _perguntar(
         if bloco_tool is None:
             return bloco_texto, None, novos_turnos
 
-        if bloco_tool.name == "registrar_pedido_projeto":
-            # pedidos_projeto.registrar() ja dispara Planejador+Coder em
-            # sequencia -- pode demorar, avisa antes de travar a resposta.
-            telegram_transport.enviar(
-                chat_id, "Anotado! Deixa eu preparar um rascunho tecnico disso..."
-            )
-            registro = pedidos_projeto.registrar(
-                bloco_tool.input.get("pedido", ""), bloco_tool.input.get("contexto", "")
-            )
-            if registro["status"] == "rascunho_pronto":
-                return None, {"tipo": "pedido", "id": registro["id"]}, novos_turnos
-            resultado = {
-                "status": _STATUS_PEDIDO_HUMANO.get(registro["status"], registro["status"]),
-                "erro": registro.get("erro"),
-            }
-        elif bloco_tool.name == "listar_pedidos_projeto":
-            resultado = {
-                "pedidos": [
-                    {
-                        "pedido": p["pedido"],
-                        "status": _STATUS_PEDIDO_HUMANO.get(p["status"], p["status"]),
-                        "criado_em": p["criado_em"],
-                    }
-                    for p in pedidos_projeto.listar()
-                ]
-            }
-        else:
-            tool_meta = catalogo_por_nome.get(bloco_tool.name) or _tool_por_nome(bloco_tool.name)
-            if tool_meta and tool_meta.get("requer_confirmacao"):
-                return None, {"tipo": "campanha", "dados": bloco_tool.input}, novos_turnos
-            if tool_meta is None:
-                resultado = {"erro": f"ferramenta desconhecida: {bloco_tool.name}"}
-            else:
-                resultado = _executar_tool_leitura(tool_meta, bloco_tool.input, site)
+        tool_meta = catalogo_por_nome.get(bloco_tool.name) or _tool_por_nome(bloco_tool.name)
+        if tool_meta and tool_meta.get("requer_confirmacao"):
+            return None, bloco_tool.input, novos_turnos
 
+        if tool_meta is None:
+            resultado = {"erro": f"ferramenta desconhecida: {bloco_tool.name}"}
+        else:
+            resultado = _executar_tool_leitura(tool_meta, bloco_tool.input, site)
         turno_resultado = {
             "role": "user",
             "content": [{
@@ -437,7 +324,7 @@ def _estado_vazio() -> dict:
     return {
         "site": None, "historico": [], "proposta_pendente": None,
         "ajustando_personalidade": False, "personalidade_pendente": None,
-        "historico_personalidade": [], "pedido_pendente_aplicar": None,
+        "historico_personalidade": [],
     }
 
 
@@ -477,7 +364,6 @@ def processar_mensagem(chat_id: str, texto: str, telegram_transport) -> None:
         estado["ajustando_personalidade"] = False
         estado["personalidade_pendente"] = None
         estado["historico_personalidade"] = []
-        estado["pedido_pendente_aplicar"] = None
         _salvar_estado(chat_id, estado)
         _perguntar_qual_site(chat_id, "", telegram_transport)
         return
@@ -561,31 +447,6 @@ def processar_mensagem(chat_id: str, texto: str, telegram_transport) -> None:
         _salvar_estado(chat_id, estado)
         return
 
-    if estado.get("pedido_pendente_aplicar") is not None:
-        pedido_id = estado["pedido_pendente_aplicar"]
-        resposta = texto.strip().lower()
-        if resposta in ("sim", "s", "yes", "confirmo"):
-            telegram_transport.enviar(
-                chat_id,
-                "Aplicando agora — o bot vai reiniciar sozinho em instantes. "
-                "Se algo der errado, ele desfaz e volta sozinho tambem.",
-            )
-            pedidos_projeto.aplicar(pedido_id)
-        else:
-            telegram_transport.enviar(
-                chat_id,
-                "Ok, nao apliquei — o rascunho continua pronto, pode pedir "
-                "pra aplicar mais tarde.",
-            )
-        estado["pedido_pendente_aplicar"] = None
-        # O historico salvo termina num tool_use (registrar_pedido_projeto)
-        # sem tool_result correspondente -- a API da Anthropic exige o par
-        # na mensagem seguinte. Mesmo motivo pelo qual a confirmacao de
-        # campanha (abaixo) zera o historico nas duas respostas.
-        estado["historico"] = []
-        _salvar_estado(chat_id, estado)
-        return
-
     if estado["proposta_pendente"] is not None:
         resposta = texto.strip().lower()
         if resposta in ("sim", "s", "yes", "confirmo"):
@@ -629,20 +490,12 @@ def processar_mensagem(chat_id: str, texto: str, telegram_transport) -> None:
         return
 
     estado["historico"].append({"role": "user", "content": texto})
-    bloco_texto, pendencia, novos_turnos = _perguntar(
-        estado["historico"], estado["site"], chat_id, telegram_transport
-    )
+    bloco_texto, tool_input, novos_turnos = _perguntar(estado["historico"], estado["site"])
     estado["historico"].extend(novos_turnos)
 
-    if pendencia and pendencia["tipo"] == "campanha":
-        estado["proposta_pendente"] = pendencia["dados"]
-        telegram_transport.enviar(chat_id, _resumo_proposta(estado["site"], pendencia["dados"]))
-    elif pendencia and pendencia["tipo"] == "pedido":
-        estado["pedido_pendente_aplicar"] = pendencia["id"]
-        telegram_transport.enviar(
-            chat_id,
-            "Preparei um rascunho tecnico pro seu pedido. Aplicar agora? (sim/nao)",
-        )
+    if tool_input is not None:
+        estado["proposta_pendente"] = tool_input
+        telegram_transport.enviar(chat_id, _resumo_proposta(estado["site"], tool_input))
     elif bloco_texto:
         telegram_transport.enviar(chat_id, bloco_texto)
 

@@ -57,8 +57,23 @@ def regras_negocio(site: str) -> Path:
 
 
 def status_projeto_md() -> Path:
-    """Contexto fixo do modo projeto -- ver AGENTES/julio/STATUS_PROJETO.md."""
+    """Contexto fixo da Elis -- ver AGENTES/julio/STATUS_PROJETO.md."""
     return PACKAGE_ROOT / "STATUS_PROJETO.md"
+
+
+def global_elis_md() -> Path:
+    """Personalidade/comportamento da Elis -- ver AGENTES/julio/GLOBAL_ELIS.md."""
+    return PACKAGE_ROOT / "GLOBAL_ELIS.md"
+
+
+def agente_ativo() -> str:
+    """Qual dos dois agentes de conversa atende o bot Telegram agora --
+    "julio" (marketing) ou "elis" (desenvolvimento do projeto). So um
+    ativo por vez (ver main_telegram.py). Default "julio"."""
+    valor = os.getenv("AGENTE_ATIVO", "julio").strip().lower()
+    if valor not in ("julio", "elis"):
+        raise SystemExit(f"AGENTE_ATIVO invalido em REDIS/.env: {valor!r} -- use 'julio' ou 'elis'.")
+    return valor
 
 
 def _obrigatoria(nome: str) -> str:

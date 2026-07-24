@@ -1,10 +1,11 @@
-"""Julio — bot conversacional que aciona os outros agentes (hoje: agente-ads).
+"""Bot conversacional (Telegram) que roda UM dos dois agentes de conversa
+do projeto -- Julio (marketing de site, orchestrator.py) ou Elis
+(desenvolvimento do proprio projeto, elis_orchestrator.py) -- escolhido
+por AGENTE_ATIVO em REDIS/.env (ver julio_config.agente_ativo()).
 
-Roda como processo continuo (long polling no Telegram), UM SO PROCESSO pros 3 sites — nao ha
-SITE de ambiente aqui. E o proprio Julio quem pergunta ao humano, dentro da
-conversa, qual site (Integra Foods / 3G Foods / Adoro) esta em jogo antes
-de fazer qualquer coisa (ver orchestrator.py). So chat_ids na whitelist
-(TELEGRAM_AUTHORIZED_CHAT_IDS em REDIS/.env) podem falar com ele.
+Roda como processo continuo (long polling no Telegram), UM SO PROCESSO.
+So chat_ids na whitelist (TELEGRAM_AUTHORIZED_CHAT_IDS em REDIS/.env)
+podem falar com ele.
 
 Nome do arquivo (main_telegram.py, nao main.py): este pacote ja tem um
 main.py (o CLI de teste do ConversationalAgent puro, sem tools/Telegram) —
@@ -18,6 +19,7 @@ import time
 
 import requests
 
+import elis_orchestrator
 import julio_config as config
 import orchestrator
 import telegram_transport
@@ -31,7 +33,10 @@ def rodar_loop() -> None:
             "menos um chat_id autorizado antes de rodar o bot."
         )
 
-    print(f"Julio rodando. Chat_ids autorizados: {autorizados}")
+    agente = config.agente_ativo()
+    processar_mensagem = orchestrator.processar_mensagem if agente == "julio" else elis_orchestrator.processar_mensagem
+
+    print(f"Agente ativo: {agente}. Chat_ids autorizados: {autorizados}")
     offset = None
     while True:
         try:
@@ -51,7 +56,7 @@ def rodar_loop() -> None:
                 telegram_transport.enviar(chat_id, "Voce nao esta autorizado a usar este bot.")
                 continue
             try:
-                orchestrator.processar_mensagem(chat_id, mensagem["text"], telegram_transport)
+                processar_mensagem(chat_id, mensagem["text"], telegram_transport)
             except Exception as exc:  # noqa: BLE001 — nao derrubar o loop por erro de 1 msg
                 print(f"Erro processando mensagem de {chat_id}: {exc}")
                 try:
