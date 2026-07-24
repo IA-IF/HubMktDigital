@@ -1,9 +1,10 @@
 # Status do projeto (pra explicar pro gestor)
 
-Este arquivo é o que o Julio usa como contexto quando o bot está em
-"modo projeto" (`MODO_PROJETO=1`). Escrito em linguagem simples, sem
-jargão técnico — é o que o Julio vai explicar pro gestor. Manter
-atualizado conforme o projeto avança.
+Este arquivo é o contexto fixo que o Julio usa em toda conversa (ver
+`orchestrator._sistema`) pra explicar o projeto e saber o que já
+funciona de verdade. Escrito em linguagem simples, sem jargão técnico —
+é o que o Julio vai explicar pro gestor. Manter atualizado conforme o
+projeto avança.
 
 ## O que é o projeto
 
@@ -44,17 +45,19 @@ negócio (público, orçamento, meta de retorno).
   se o Google indexou as páginas, mas ainda não dá pra medir se as
   páginas carregam rápido — falta ligar isso a um navegador de
   verdade.
-- **O sistema completo ainda não está pronto pra ser usado no dia a
-  dia** — por isso o bot está, por enquanto, neste modo de
-  apresentação: explicar o que existe e anotar pedidos, em vez de
-  tentar rodar tudo antes da hora.
+## Como pedir uma mudança no próprio projeto
 
-## O que o Julio faz nesse modo (modo projeto)
+Além de responder sobre marketing (dados reais de tráfego/anúncios) e
+sobre dúvidas do projeto, o Julio consegue anotar e já preparar pedidos
+de mudança no próprio projeto — coisas como "quero que o bot também
+avise sobre X" ou "muda como você responde tal coisa".
 
-- Explica o que já existe e o que falta, respondendo dúvidas.
-- Quando o gestor descreve algo que quer mudar ou adicionar no
-  projeto, o Julio anota o pedido e já deixa um rascunho técnico
-  preparado, pra equipe revisar antes de colocar no ar — o Julio
-  nunca coloca uma mudança no ar sozinho, sem revisão.
-- O gestor pode perguntar a qualquer momento como estão os pedidos que
-  já fez.
+Quando isso acontece:
+1. O Julio anota o pedido e prepara um rascunho técnico automaticamente
+   (pode levar um tempinho).
+2. Ele pergunta se quer aplicar aquilo agora.
+3. Se a resposta for "sim", ele aplica de verdade — e se algo der
+   errado, ele mesmo desfaz e volta pro estado anterior sozinho, sem
+   precisar de ninguém mexendo por fora.
+4. O gestor pode perguntar a qualquer momento como estão os pedidos que
+   já fez.

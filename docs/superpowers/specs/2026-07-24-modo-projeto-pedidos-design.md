@@ -170,6 +170,45 @@ Ou, se `status == "erro"`:
 - Falha de `git checkout`/`commit`: captura `subprocess`, marca pedido
   como erro, tenta `git checkout master` mesmo assim no `finally`.
 
+## Atualização (mesmo dia): fim do modo restrito, "aplicar" fechado
+
+O modo apresentação isolado (`MODO_PROJETO=1` bloqueando tools de
+marketing) não atendeu — o gestor precisa conseguir usar as ferramentas
+de marketing reais **e** efetivamente fazer um pedido de projeto virar
+mudança de verdade, não só um rascunho parado numa branch. Mudanças:
+
+- **Flag `MODO_PROJETO` removido.** As duas tools de pedido
+  (`registrar_pedido_projeto`, `listar_pedidos_projeto`) ficam sempre
+  disponíveis dentro do fluxo normal (`_perguntar`, com site já
+  escolhido), lado a lado com as tools de marketing. `STATUS_PROJETO.md`
+  passa a ser embutido no `_sistema(site)` de toda conversa, não só de
+  um modo separado.
+- **Nova etapa "aplicar"**: depois que `registrar_pedido_projeto` deixa
+  o rascunho pronto (`status: rascunho_pronto`), a resposta vira uma
+  confirmação pendente (`estado["pedido_pendente_aplicar"]`, mesmo
+  espírito do `proposta_pendente` de `criar_campanha`). Um "sim" chama
+  `pedidos_projeto.aplicar(pedido_id)`:
+  1. `git merge --no-ff pedido/<id>` em `master` (working tree já está
+     em master, `executar()` garante isso no `finally`).
+  2. Dispara `reiniciar_bot.py` como processo **separado** (`setsid
+     nohup`) — precisa sobreviver independente do processo Python que o
+     chamou, porque ele mesmo mata e resobe esse processo.
+  3. `reiniciar_bot.py`: mata `main_telegram.py`, sobe de novo, espera
+     ~12s, confere com `pgrep` se o processo está vivo. Se não estiver,
+     `git reset --hard <commit_anterior>` e sobe de novo — rollback
+     automático, sem depender de intervenção humana.
+- **Ainda fora de escopo**: push pro GitHub continua não acontecendo
+  automaticamente (a deploy key da EC2 é só leitura) — os commits de
+  pedidos aplicados ficam locais na instância. Pra trazer pro
+  desenvolvimento local, `infra/ec2/puxar-mudancas.ps1` busca direto da
+  EC2 via SSH (chave que Eduardo já tem) pra uma branch local
+  `ec2-master`, sem merge automático em `master` local — revisão fica a
+  cargo de quem rodar o script.
+- **Risco aceito, explícito**: o healthcheck do `reiniciar_bot.py` é só
+  "o processo subiu e não morreu" (`pgrep`), não confirma que o bot
+  realmente responde no Telegram. Um bug que não derruba o processo mas
+  quebra o comportamento passa despercebido pelo rollback automático.
+
 ## Teste
 
 Sem suite automatizada (mesmo padrão do projeto). Verificação manual:

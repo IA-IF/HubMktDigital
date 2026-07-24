@@ -122,6 +122,45 @@ def executar(pedido_id: str) -> dict:
     return registro
 
 
+def aplicar(pedido_id: str) -> dict:
+    """Faz merge da branch do pedido em master (working tree ja esta em
+    master, executar() deixa assim) e dispara reiniciar_bot.py como
+    PROCESSO SEPARADO (setsid nohup) -- precisa sobreviver independente
+    deste, porque ele mesmo vai matar e resubir o processo do bot. Se o
+    bot nao voltar a responder, reiniciar_bot.py desfaz o merge sozinho
+    (git reset --hard pro commit anterior) e sobe de novo."""
+    registro = json.loads(_caminho(pedido_id).read_text(encoding="utf-8"))
+    if registro.get("status") != "rascunho_pronto" or not registro.get("branch"):
+        registro["status"] = "erro"
+        registro["erro"] = "nao ha rascunho pronto pra aplicar"
+        _salvar(registro)
+        return registro
+
+    commit_anterior = _git("rev-parse", "master").stdout.strip()
+    merge = _git("merge", "--no-ff", registro["branch"], "-m", f"Aplica pedido {pedido_id}")
+    if merge.returncode != 0:
+        _git("merge", "--abort")
+        registro["status"] = "erro_aplicar"
+        registro["erro"] = f"conflito ao aplicar, rascunho preservado na branch: {merge.stderr.strip()}"
+        _salvar(registro)
+        return registro
+
+    registro["status"] = "aplicando"
+    registro["commit_anterior"] = commit_anterior
+    _salvar(registro)
+
+    script = Path(__file__).resolve().parent / "reiniciar_bot.py"
+    subprocess.Popen(
+        ["setsid", "nohup", sys.executable, str(script), pedido_id, commit_anterior],
+        cwd=HUB_ROOT,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        stdin=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+    return registro
+
+
 def listar() -> list[dict]:
     PEDIDOS_DIR.mkdir(parents=True, exist_ok=True)
     registros = [
