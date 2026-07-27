@@ -62,7 +62,7 @@ parte da montagem do prompt, não um extra opcional.
     `carregar` de chave ausente (`cliente_redis.get` devolve `None`)
     devolve `EstadoConversa()` novo.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # ARQUITETURA/nucleo/tests/test_memoria.py
@@ -130,12 +130,12 @@ def test_repositorio_redis_usa_prefixo_customizado():
     assert "outro:chat1" in cliente._dados
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_memoria.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'ARQUITETURA.nucleo.memoria'`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # ARQUITETURA/nucleo/memoria.py
@@ -183,12 +183,12 @@ class RepositorioEstadoRedis:
         self._cliente.set(f"{self._prefixo}{chat_id}", json.dumps(dados, ensure_ascii=False))
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_memoria.py -v`
 Expected: PASS (5 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ARQUITETURA/nucleo/memoria.py ARQUITETURA/nucleo/tests/test_memoria.py
@@ -219,7 +219,7 @@ git commit -m "feat: RepositorioEstado - persistencia real de EstadoConversa (nu
     aqui automaticamente usa o resumo — não dá pra "esquecer" de ligar
     a memória de volta, porque monta o prompt inteiro numa função só.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # adicionar ao final de ARQUITETURA/nucleo/tests/test_memoria.py
@@ -253,12 +253,12 @@ def test_montar_system_com_resumo_anexa_secao():
     assert resultado.index("Voce e o Julio.") < resultado.index("pendente: confirmar campanha X")
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_memoria.py -v`
 Expected: FAIL with `ImportError: cannot import name 'carregar_resumo'`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # adicionar ao final de ARQUITETURA/nucleo/memoria.py
@@ -279,12 +279,12 @@ def montar_system_com_resumo(system_base: str, resumo: str | None) -> str:
     return f"{system_base}\n\n=== Resumo da conversa ate agora ===\n{resumo}"
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_memoria.py -v`
 Expected: PASS (9 tests total)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ARQUITETURA/nucleo/memoria.py ARQUITETURA/nucleo/tests/test_memoria.py
