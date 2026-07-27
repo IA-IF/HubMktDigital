@@ -63,7 +63,7 @@ injeta cliente, execução de tool e canal de saída.
   - `class Canal(Protocol)`: `def enviar(self, destinatario: str, texto: str) -> None`.
   - `class CanalFake` — implementação de teste: guarda `.enviados: list[tuple[str, str]]`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # ARQUITETURA/nucleo/tests/test_agente.py
@@ -95,12 +95,12 @@ def test_falha_permanente_e_transitoria_sao_excecoes_distintas():
     assert not issubclass(FalhaTransitoria, FalhaPermanente)
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_agente.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'ARQUITETURA.nucleo.agente'`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # ARQUITETURA/nucleo/agente.py
@@ -147,12 +147,12 @@ class CanalFake:
         self.enviados.append((destinatario, texto))
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_agente.py -v`
 Expected: PASS (3 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ARQUITETURA/nucleo/agente.py ARQUITETURA/nucleo/tests/test_agente.py
@@ -184,7 +184,7 @@ git commit -m "feat: tipos base do loop do agente (EstadoConversa/Canal/falhas) 
     `requer_confirmacao: bool`. Efeitos: manda mensagens via
     `canal.enviar`; muta `estado.historico`/`estado.pendente` in-place.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # adicionar ao final de ARQUITETURA/nucleo/tests/test_agente.py
@@ -322,12 +322,12 @@ def test_tool_use_paralelo_todos_executam_e_pareiam():
     assert canal.enviados == [("chat1", "prontinho")]
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_agente.py -v`
 Expected: FAIL with `ImportError: cannot import name 'processar_turno'`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # adicionar ao final de ARQUITETURA/nucleo/agente.py
@@ -407,12 +407,12 @@ def processar_turno(
     canal.enviar(destinatario, "Nao consegui concluir agora -- tenta reformular?")
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_agente.py -v`
 Expected: PASS (8 tests total: 3 da Task 1 + 5 desta task)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ARQUITETURA/nucleo/agente.py ARQUITETURA/nucleo/tests/test_agente.py
@@ -443,7 +443,7 @@ git commit -m "feat: processar_turno - loop de tool-calls com validacao e paream
     retry, **mantém `pendente`/`historico` intactos** (retry direto
     com "sim" de novo repete a MESMA ação).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # adicionar ao final de ARQUITETURA/nucleo/tests/test_agente.py
@@ -497,12 +497,12 @@ def test_resolver_pendencia_falha_transitoria_preserva_pendencia():
     assert "ModuleNotFoundError" not in canal.enviados[0][1]
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_agente.py -v`
 Expected: FAIL with `ImportError: cannot import name 'resolver_pendencia'`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # adicionar ao final de ARQUITETURA/nucleo/agente.py
@@ -541,12 +541,12 @@ def resolver_pendencia(
         # Pendente/historico NAO zerados -- retry direto com "sim" repete a MESMA acao.
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_agente.py -v`
 Expected: PASS (12 tests total)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ARQUITETURA/nucleo/agente.py ARQUITETURA/nucleo/tests/test_agente.py
