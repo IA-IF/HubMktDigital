@@ -287,6 +287,23 @@ def _pesquisar_tecnica(tema: str, site: str) -> dict:
     return {"resumo": texto, "registrado_em": registro["arquivo"]}
 
 
+def _normalizar_palavras_chave(entrada: dict) -> dict:
+    """A API da Anthropic nao valida o tipo dos itens de um array do
+    input_schema -- o LLM as vezes manda `palavras_chave` como lista de
+    strings em vez de {"texto": ..., "tipo_correspondencia": ...}. Sem
+    isso, `_resumo_proposta` (e a criacao real depois) quebram com
+    'string indices must be integers' ao acessar kw['texto']."""
+    palavras_chave = entrada.get("palavras_chave")
+    if not isinstance(palavras_chave, list):
+        return entrada
+    normalizado = dict(entrada)
+    normalizado["palavras_chave"] = [
+        kw if isinstance(kw, dict) else {"texto": str(kw), "tipo_correspondencia": "BROAD"}
+        for kw in palavras_chave
+    ]
+    return normalizado
+
+
 def _executar_bloco_tool(
     bloco_tool, site_atual: str | None, catalogo_por_nome: dict,
     chat_id: str, telegram_transport,
@@ -338,7 +355,8 @@ def _executar_bloco_tool(
 
     tool_meta = catalogo_por_nome.get(bloco_tool.name) or _tool_por_nome(bloco_tool.name)
     if tool_meta and tool_meta.get("requer_confirmacao"):
-        pendencia = {"tipo": "campanha", "input": bloco_tool.input}
+        entrada = _normalizar_palavras_chave(bloco_tool.input)
+        pendencia = {"tipo": "campanha", "input": entrada}
         resultado = {"ok": True, "aviso": "proposta preparada, aguardando confirmacao do humano"}
         return resultado, pendencia, None
     if tool_meta is None:
