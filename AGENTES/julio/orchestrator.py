@@ -514,18 +514,43 @@ def _texto_fix_help() -> str:
     )
 
 
+def _texto(valor) -> str:
+    """Coerce qualquer valor pra string exibivel -- o LLM nao segue o
+    input_schema com 100% de fidelidade de tipo, entao esta view nunca
+    deve confiar que um campo veio no tipo esperado (mesma causa raiz do
+    bug de palavras_chave: ver _normalizar_palavras_chave)."""
+    if valor is None:
+        return "(nao informado)"
+    if isinstance(valor, list):
+        return " | ".join(_texto(item) for item in valor)
+    if isinstance(valor, dict):
+        return valor.get("texto", str(valor))
+    return str(valor)
+
+
+def _numero_brl(valor) -> str:
+    try:
+        return f"{float(valor):.2f}"
+    except (TypeError, ValueError):
+        return _texto(valor)
+
+
 def _resumo_proposta(site: str, p: dict) -> str:
     nome_site = config.SITE_NOMES.get(site, site)
-    kws = ", ".join(f"{k['texto']} [{k.get('tipo_correspondencia', 'BROAD')}]" for k in p["palavras_chave"])
+    palavras_chave = p.get("palavras_chave") or []
+    kws = ", ".join(
+        f"{_texto(k)} [{k.get('tipo_correspondencia', 'BROAD')}]" if isinstance(k, dict) else _texto(k)
+        for k in palavras_chave
+    )
     linhas = [
         f"PROPOSTA DE CAMPANHA — site: {nome_site} — confirma? (responda sim ou nao)",
-        f"Nome: {p['nome_campanha']}",
-        f"Orcamento diario: R$ {p['orcamento_diario_brl']:.2f}",
-        f"Lance inicial: R$ {p['lance_inicial_brl']:.2f}",
+        f"Nome: {_texto(p.get('nome_campanha'))}",
+        f"Orcamento diario: R$ {_numero_brl(p.get('orcamento_diario_brl'))}",
+        f"Lance inicial: R$ {_numero_brl(p.get('lance_inicial_brl'))}",
         f"Palavras-chave: {kws}",
-        f"URL final: {p['url_final']}",
-        "Titulos: " + " | ".join(p["titulos"]),
-        "Descricoes: " + " | ".join(p["descricoes"]),
+        f"URL final: {_texto(p.get('url_final'))}",
+        "Titulos: " + _texto(p.get("titulos")),
+        "Descricoes: " + _texto(p.get("descricoes")),
         "",
         "A campanha sera criada PAUSADA — alguem precisa ativa-la manualmente "
         "no Google Ads apos revisar.",
