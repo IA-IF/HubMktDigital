@@ -1,8 +1,7 @@
 # Controle e Status do Bot na EC2 Implementation Plan
 
-> **STATUS: IMPLEMENTADO em 2026-07-27** (código real, ver "Arquivos
-> alterados" no fim). Deploy na EC2 ainda pendente — próximo passo é
-> operacional, não código.
+> **STATUS: IMPLEMENTADO, DEPLOYADO E TESTADO EM PRODUÇÃO em 2026-07-27**
+> — ver "Testado de verdade em produção" no fim. Nada pendente.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -82,20 +81,32 @@ ambíguo qual instância está respondendo no Telegram.
   `status_server_port()` (default 8765), `ambiente()` (`AMBIENTE` do
   `.env`, default `"local"`), `texto_status()` (hash curto do commit via
   `git rev-parse` + ambiente).
-- **Modify** `AGENTES/julio/orchestrator.py` e
-  `AGENTES/julio/elis_orchestrator.py` — comando `/status` em cada um
-  (mesmo texto, via `config.texto_status()`), respondido direto no
-  Telegram.
+- **Modify** `AGENTES/julio/orchestrator.py` (comando único depois da
+  fusão Julio+Elis — `elis_orchestrator.py` não existe mais) — comando
+  `/status` via `config.texto_status()`, respondido direto no Telegram.
 - **Modify** `REDIS/.env.example` — `AMBIENTE`, `STATUS_TOKEN`,
   `STATUS_SERVER_PORT` documentados.
 - **Modify** `infra/ec2/README.md` — como subir o `status_server.py` na
   EC2 (`nohup`) e exemplos de `curl` pros 3 endpoints.
 
-## Falta (operacional, não código)
+## Testado de verdade em produção (2026-07-27)
 
-- [ ] Definir `STATUS_TOKEN` real e `AMBIENTE=EC2` no `REDIS/.env` da
-  EC2 (nunca commitado) e passar o token pro gestor fora do código.
-- [ ] Subir `status_server.py` na EC2 pela primeira vez (comando já
-  documentado em `infra/ec2/README.md`).
-- [ ] Testar os 3 endpoints contra a EC2 real e o `/status` contra o bot
-  real no Telegram.
+- `git push` + deploy real na EC2 (`infra/ec2/deploy.ps1`) — bot que
+  estava **parado** (confirmado por SSH antes de mexer) subiu com o
+  código novo, confirmado depois via Redis (estado real gravado pro
+  chat_id do usuário testando no Telegram de verdade).
+- `STATUS_TOKEN` real gerado (`secrets.token_urlsafe(32)`) e gravado só
+  no `REDIS/.env` da EC2 (nunca commitado) via SSH.
+- `status_server.py` subido na EC2 (processo separado, PID confirmado
+  vivo por `ps aux`).
+- **Security group da EC2 não tinha a porta 8765 aberta** — achado no
+  processo, corrigido com confirmação explícita do usuário
+  (`aws ec2 authorize-security-group-ingress`, porta 8765, mesma faixa
+  0.0.0.0/0 das outras portas públicas do projeto — decisão de proteger
+  por token, não por IP, já tomada antes).
+- **Os 3 endpoints testados via `curl` reais contra a EC2 pública**:
+  `GET /status` sem token → `401`; com token → `{"bot_vivo": true,
+  "ambiente": "EC2"}`; `POST /parar` → bot morreu de verdade
+  (`bot_vivo: false` confirmado); `POST /iniciar` → bot voltou
+  (`bot_vivo: true` confirmado) — ciclo completo de recuperação sem SSH
+  validado ponta a ponta.
