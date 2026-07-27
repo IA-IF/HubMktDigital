@@ -40,3 +40,20 @@ class RepositorioEstadoRedis:
     def salvar(self, chat_id: str, estado: EstadoConversa) -> None:
         dados = {"historico": estado.historico, "pendente": estado.pendente}
         self._cliente.set(f"{self._prefixo}{chat_id}", json.dumps(dados, ensure_ascii=False))
+
+
+def carregar_resumo(cliente_redis, chat_id: str, prefixo: str = "resumo:") -> str | None:
+    return cliente_redis.get(f"{prefixo}{chat_id}")
+
+
+def salvar_resumo(cliente_redis, chat_id: str, texto: str, prefixo: str = "resumo:") -> None:
+    cliente_redis.set(f"{prefixo}{chat_id}", texto)
+
+
+def montar_system_com_resumo(system_base: str, resumo: str | None) -> str:
+    """Ponto único de montagem do system prompt com o resumo de
+    conversa -- qualquer chamador que passe por aqui usa a memória de
+    volta automaticamente, sem depender de lembrar de ligar isso."""
+    if not resumo:
+        return system_base
+    return f"{system_base}\n\n=== Resumo da conversa ate agora ===\n{resumo}"

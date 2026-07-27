@@ -60,3 +60,33 @@ def test_repositorio_redis_usa_prefixo_customizado():
     repo = RepositorioEstadoRedis(cliente, prefixo="outro:")
     repo.salvar("chat1", EstadoConversa())
     assert "outro:chat1" in cliente._dados
+
+
+from ARQUITETURA.nucleo.memoria import (
+    carregar_resumo,
+    montar_system_com_resumo,
+    salvar_resumo,
+)
+
+
+def test_carregar_resumo_none_quando_nunca_salvo():
+    cliente = ClienteRedisFake()
+    assert carregar_resumo(cliente, "chat1") is None
+
+
+def test_salvar_e_carregar_resumo():
+    cliente = ClienteRedisFake()
+    salvar_resumo(cliente, "chat1", "cliente pediu campanha pro patinho cubo")
+    assert carregar_resumo(cliente, "chat1") == "cliente pediu campanha pro patinho cubo"
+
+
+def test_montar_system_sem_resumo_devolve_base_intacto():
+    assert montar_system_com_resumo("Voce e o Julio.", None) == "Voce e o Julio."
+    assert montar_system_com_resumo("Voce e o Julio.", "") == "Voce e o Julio."
+
+
+def test_montar_system_com_resumo_anexa_secao():
+    resultado = montar_system_com_resumo("Voce e o Julio.", "pendente: confirmar campanha X")
+    assert "Voce e o Julio." in resultado
+    assert "pendente: confirmar campanha X" in resultado
+    assert resultado.index("Voce e o Julio.") < resultado.index("pendente: confirmar campanha X")
