@@ -287,6 +287,67 @@ def _pesquisar_tecnica(tema: str, site: str) -> dict:
     return {"resumo": texto, "registrado_em": registro["arquivo"]}
 
 
+def _executar_bloco_tool(
+    bloco_tool, site_atual: str | None, catalogo_por_nome: dict,
+    chat_id: str, telegram_transport,
+) -> tuple[dict, dict | None, str | None]:
+    """Executa um unico tool_use block. Devolve (resultado, pendencia,
+    site_novo). `pendencia` preenchida significa que essa acao precisa de
+    confirmacao humana antes de prosseguir."""
+    if bloco_tool.name == "selecionar_site":
+        site_novo = bloco_tool.input["site"]
+        resultado = {"ok": True, "site": site_novo, "aviso": "site definido, prossiga com o pedido original"}
+        return resultado, None, site_novo
+
+    if bloco_tool.name == "registrar_pedido_projeto":
+        telegram_transport.enviar(chat_id, "Anotado! Deixa eu preparar um rascunho tecnico disso...")
+        registro = pedidos_projeto.registrar(
+            bloco_tool.input.get("pedido", ""), bloco_tool.input.get("contexto", "")
+        )
+        if registro["status"] == "rascunho_pronto":
+            pendencia = {"tipo": "pedido_projeto", "id": registro["id"]}
+            resultado = {"ok": True, "aviso": "rascunho preparado, aguardando confirmacao do humano"}
+            return resultado, pendencia, None
+        resultado = {
+            "status": _STATUS_PEDIDO_HUMANO.get(registro["status"], registro["status"]),
+            "erro": registro.get("erro"),
+        }
+        return resultado, None, None
+
+    if bloco_tool.name == "listar_pedidos_projeto":
+        resultado = {
+            "pedidos": [
+                {
+                    "pedido": p["pedido"],
+                    "status": _STATUS_PEDIDO_HUMANO.get(p["status"], p["status"]),
+                    "criado_em": p["criado_em"],
+                }
+                for p in pedidos_projeto.listar()
+            ]
+        }
+        return resultado, None, None
+
+    if bloco_tool.name == "atualizar_perfil_cliente":
+        perfil_cliente.salvar_campo(site_atual, bloco_tool.input["campo"], bloco_tool.input["valor"])
+        return {"ok": True}, None, None
+
+    if bloco_tool.name == "pesquisar_tecnica_campanha":
+        telegram_transport.enviar(chat_id, "Pesquisando tecnicas na internet, um instante...")
+        resultado = _pesquisar_tecnica(bloco_tool.input["tema"], site_atual)
+        return resultado, None, None
+
+    tool_meta = catalogo_por_nome.get(bloco_tool.name) or _tool_por_nome(bloco_tool.name)
+    if tool_meta and tool_meta.get("requer_confirmacao"):
+        pendencia = {"tipo": "campanha", "input": bloco_tool.input}
+        resultado = {"ok": True, "aviso": "proposta preparada, aguardando confirmacao do humano"}
+        return resultado, pendencia, None
+    if tool_meta is None:
+        return {"erro": f"ferramenta desconhecida: {bloco_tool.name}"}, None, None
+    if site_atual is None:
+        return {"erro": "nenhum site selecionado ainda -- pergunte qual antes de chamar essa ferramenta de novo"}, None, None
+    return _executar_tool_site(tool_meta, bloco_tool.input, site_atual), None, None
+
+
 def _perguntar(
     historico: list[dict], site: str | None, chat_id: str, telegram_transport
 ) -> tuple[str | None, dict | None, str | None, list[dict]]:
@@ -314,74 +375,47 @@ def _perguntar(
             model=config.claude_model(), max_tokens=2000,
             system=_sistema(site_atual), tools=tools, messages=mensagens,
         )
-        bloco_tool = next((b for b in resposta.content if b.type == "tool_use"), None)
+        blocos_tool = [b for b in resposta.content if b.type == "tool_use"]
         bloco_texto = next((b.text for b in resposta.content if b.type == "text"), None)
         turno_assistant = {"role": "assistant", "content": [b.model_dump() for b in resposta.content]}
         mensagens.append(turno_assistant)
         novos_turnos.append(turno_assistant)
 
-        if bloco_tool is None:
+        if not blocos_tool:
             return bloco_texto, None, site_atual if site_atual != site else None, novos_turnos
 
-        if bloco_tool.name == "selecionar_site":
-            site_atual = bloco_tool.input["site"]
-            resultado = {"ok": True, "site": site_atual, "aviso": "site definido, prossiga com o pedido original"}
-
-        elif bloco_tool.name == "registrar_pedido_projeto":
-            telegram_transport.enviar(chat_id, "Anotado! Deixa eu preparar um rascunho tecnico disso...")
-            registro = pedidos_projeto.registrar(
-                bloco_tool.input.get("pedido", ""), bloco_tool.input.get("contexto", "")
-            )
-            if registro["status"] == "rascunho_pronto":
-                pendencia = {"tipo": "pedido_projeto", "id": registro["id"]}
-                return None, pendencia, site_atual if site_atual != site else None, novos_turnos
-            resultado = {
-                "status": _STATUS_PEDIDO_HUMANO.get(registro["status"], registro["status"]),
-                "erro": registro.get("erro"),
-            }
-
-        elif bloco_tool.name == "listar_pedidos_projeto":
-            resultado = {
-                "pedidos": [
-                    {
-                        "pedido": p["pedido"],
-                        "status": _STATUS_PEDIDO_HUMANO.get(p["status"], p["status"]),
-                        "criado_em": p["criado_em"],
-                    }
-                    for p in pedidos_projeto.listar()
-                ]
-            }
-
-        elif bloco_tool.name == "atualizar_perfil_cliente":
-            perfil_cliente.salvar_campo(site_atual, bloco_tool.input["campo"], bloco_tool.input["valor"])
-            resultado = {"ok": True}
-
-        elif bloco_tool.name == "pesquisar_tecnica_campanha":
-            telegram_transport.enviar(chat_id, "Pesquisando tecnicas na internet, um instante...")
-            resultado = _pesquisar_tecnica(bloco_tool.input["tema"], site_atual)
-
-        else:
-            tool_meta = catalogo_por_nome.get(bloco_tool.name) or _tool_por_nome(bloco_tool.name)
-            if tool_meta and tool_meta.get("requer_confirmacao"):
-                pendencia = {"tipo": "campanha", "input": bloco_tool.input}
-                return None, pendencia, site_atual if site_atual != site else None, novos_turnos
-            if tool_meta is None:
-                resultado = {"erro": f"ferramenta desconhecida: {bloco_tool.name}"}
-            elif site_atual is None:
-                resultado = {"erro": "nenhum site selecionado ainda -- pergunte qual antes de chamar essa ferramenta de novo"}
+        # A API pode devolver VARIOS tool_use num so turno (chamadas
+        # paralelas, ex: usuario responde 2 perguntas numa mensagem so).
+        # Cada tool_use precisa de um tool_result pareado na proxima
+        # mensagem -- senao a API rejeita o historico inteiro (400) na
+        # proxima chamada. Por isso processamos TODOS aqui, mesmo quando
+        # um deles vira pendencia (nesse caso os restantes so recebem um
+        # resultado placeholder, e retornamos a pendencia no final).
+        pendencia_encontrada = None
+        resultados_tool = []
+        for bloco_tool in blocos_tool:
+            if pendencia_encontrada is not None:
+                resultado = {"info": "aguardando confirmacao do humano sobre a acao anterior"}
             else:
-                resultado = _executar_tool_site(tool_meta, bloco_tool.input, site_atual)
-
-        turno_resultado = {
-            "role": "user",
-            "content": [{
+                resultado, pendencia, site_novo = _executar_bloco_tool(
+                    bloco_tool, site_atual, catalogo_por_nome, chat_id, telegram_transport
+                )
+                if site_novo is not None:
+                    site_atual = site_novo
+                if pendencia is not None:
+                    pendencia_encontrada = pendencia
+            resultados_tool.append({
                 "type": "tool_result",
                 "tool_use_id": bloco_tool.id,
                 "content": json.dumps(resultado, ensure_ascii=False),
-            }],
-        }
+            })
+
+        turno_resultado = {"role": "user", "content": resultados_tool}
         mensagens.append(turno_resultado)
         novos_turnos.append(turno_resultado)
+
+        if pendencia_encontrada is not None:
+            return None, pendencia_encontrada, site_atual if site_atual != site else None, novos_turnos
 
     return "Desculpa, não consegui concluir essa consulta agora — tenta reformular?", None, site_atual if site_atual != site else None, novos_turnos
 
