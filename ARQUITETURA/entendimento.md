@@ -1,7 +1,17 @@
 # Entendimento (ponto de partida da nova frente)
 
-Isso não é um plano — é o meu entendimento atual do objetivo e dos
-problemas de fundo, pra servir de ponto de partida da conversa de
+> **Status (2026-07-27):** Plano 1 escrito e executado — ver
+> `docs/superpowers/plans/2026-07-27-nucleo-validacao-e-harness.md`
+> (spec + checklist, todas as tasks marcadas `[x]`) e o código em
+> `ARQUITETURA/nucleo/` (`validacao_tool.py` + `fake_anthropic.py`, 14
+> testes passando, `pytest ARQUITETURA/ -v`). Isso cobre os pontos 2 e
+> 7 da lista no fim deste documento. Nada em `AGENTES/julio/` foi
+> tocado. Próximo plano ainda não escrito — falta decidir entre
+> memória Redis real, canal-agnóstico, execução não-bloqueante, ou
+> otimização das TOOLS (pontos 1, 3, 5, 6 abaixo).
+
+Isso não é um plano fechado — é o meu entendimento atual do objetivo e
+dos problemas de fundo, pra servir de ponto de partida da conversa de
 redesenho. Vem de quatro fontes: o brief original em `REDIS/CLAUDE.md`
 (escrito antes de qualquer linha de código), o histórico de frustração
 em `elis.md`, o que eu observei de dentro do código e ao vivo,
