@@ -1,14 +1,24 @@
 # Entendimento (ponto de partida da nova frente)
 
-> **Status (2026-07-27):** Plano 1 escrito e executado — ver
-> `docs/superpowers/plans/2026-07-27-nucleo-validacao-e-harness.md`
-> (spec + checklist, todas as tasks marcadas `[x]`) e o código em
-> `ARQUITETURA/nucleo/` (`validacao_tool.py` + `fake_anthropic.py`, 14
-> testes passando, `pytest ARQUITETURA/ -v`). Isso cobre os pontos 2 e
-> 7 da lista no fim deste documento. Nada em `AGENTES/julio/` foi
-> tocado. Próximo plano ainda não escrito — falta decidir entre
-> memória Redis real, canal-agnóstico, execução não-bloqueante, ou
-> otimização das TOOLS (pontos 1, 3, 5, 6 abaixo).
+> **Status (2026-07-27):** Dois planos escritos e executados:
+> - Plano 1 — `docs/superpowers/plans/2026-07-27-nucleo-validacao-e-harness.md`:
+>   `validacao_tool.py` + `fake_anthropic.py` (contrato de validação +
+>   harness sem token).
+> - Plano 2 — `docs/superpowers/plans/2026-07-27-nucleo-agente-core.md`:
+>   `agente.py` (`processar_turno`/`resolver_pendencia`) — loop
+>   canal-agnóstico, pareamento de tool_use paralelo, e retry que
+>   preserva contexto na falha transitória (distingue `FalhaPermanente`
+>   de `FalhaTransitoria`).
+>
+> Ambos com checklist 100% marcado `[x]` e código em
+> `ARQUITETURA/nucleo/` (26 testes passando, `pytest ARQUITETURA/ -v`).
+> Isso cobre os pontos 2, 4, 5 e 7 da lista no fim deste documento.
+> Nada em `AGENTES/julio/` foi tocado — o loop ainda não está ligado a
+> Redis/Telegram/tools reais de propósito (`executar_tool` e `Canal`
+> são injetados, com fakes nos testes). Falta: memória Redis real
+> lida de volta, execução não-bloqueante de verdade, integração com o
+> catálogo real de tools, e a otimização das TOOLS em si contra a doc
+> oficial (pontos 1, 3, 6 abaixo).
 
 Isso não é um plano fechado — é o meu entendimento atual do objetivo e
 dos problemas de fundo, pra servir de ponto de partida da conversa de
