@@ -368,6 +368,10 @@ def processar_mensagem(chat_id: str, texto: str, telegram_transport) -> None:
         _perguntar_qual_site(chat_id, "", telegram_transport)
         return
 
+    if texto.strip().lower() == "/status":
+        telegram_transport.enviar(chat_id, config.texto_status())
+        return
+
     if texto.strip().lower() == "/fix_help":
         telegram_transport.enviar(chat_id, _texto_fix_help())
         return

@@ -1,7 +1,8 @@
 # Controle e Status do Bot na EC2 Implementation Plan
 
-> **STATUS: RASCUNHO — requisitos ainda em levantamento com o usuário
-> (ver `elis.md`), não pronto pra virar tasks executáveis.**
+> **STATUS: IMPLEMENTADO em 2026-07-27** (código real, ver "Arquivos
+> alterados" no fim). Deploy na EC2 ainda pendente — próximo passo é
+> operacional, não código.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -64,3 +65,37 @@ ambíguo qual instância está respondendo no Telegram.
   em log de acesso; header não).
 - **Independente dos outros 3 planos** — confirmado, nenhuma dependência
   de código entre eles.
+
+## Arquivos alterados (implementação, 2026-07-27)
+
+- **Create** `AGENTES/julio/bot_processo.py` — `matar_bot()`,
+  `subir_bot()`, `bot_vivo()` extraídos de `reiniciar_bot.py` (mesmo
+  comportamento, agora reusável por `status_server.py` também).
+- **Modify** `AGENTES/julio/reiniciar_bot.py` — usa
+  `bot_processo.{matar_bot,subir_bot,bot_vivo}` em vez de funções
+  locais duplicadas.
+- **Create** `AGENTES/julio/status_server.py` — servidor HTTP stdlib
+  (`http.server`, zero dependência nova), processo separado do bot:
+  `GET /status` (bot_vivo + ambiente), `POST /iniciar`, `POST /parar`,
+  todos exigindo header `X-Status-Token` igual a `config.status_token()`.
+- **Modify** `AGENTES/julio/julio_config.py` — `status_token()`,
+  `status_server_port()` (default 8765), `ambiente()` (`AMBIENTE` do
+  `.env`, default `"local"`), `texto_status()` (hash curto do commit via
+  `git rev-parse` + ambiente).
+- **Modify** `AGENTES/julio/orchestrator.py` e
+  `AGENTES/julio/elis_orchestrator.py` — comando `/status` em cada um
+  (mesmo texto, via `config.texto_status()`), respondido direto no
+  Telegram.
+- **Modify** `REDIS/.env.example` — `AMBIENTE`, `STATUS_TOKEN`,
+  `STATUS_SERVER_PORT` documentados.
+- **Modify** `infra/ec2/README.md` — como subir o `status_server.py` na
+  EC2 (`nohup`) e exemplos de `curl` pros 3 endpoints.
+
+## Falta (operacional, não código)
+
+- [ ] Definir `STATUS_TOKEN` real e `AMBIENTE=EC2` no `REDIS/.env` da
+  EC2 (nunca commitado) e passar o token pro gestor fora do código.
+- [ ] Subir `status_server.py` na EC2 pela primeira vez (comando já
+  documentado em `infra/ec2/README.md`).
+- [ ] Testar os 3 endpoints contra a EC2 real e o `/status` contra o bot
+  real no Telegram.

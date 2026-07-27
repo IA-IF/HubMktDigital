@@ -200,6 +200,10 @@ def processar_mensagem(chat_id: str, texto: str, telegram_transport) -> None:
         )
         return
 
+    if texto.strip().lower() == "/status":
+        telegram_transport.enviar(chat_id, config.texto_status())
+        return
+
     estado = _carregar_estado(chat_id)
 
     if estado.get("pedido_pendente_aplicar") is not None:

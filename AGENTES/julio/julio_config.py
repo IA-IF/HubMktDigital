@@ -10,6 +10,7 @@ arquivo que o llm_router ja usa — nao duplicado, so carregado de novo aqui
 (load_dotenv de novo no mesmo arquivo e inofensivo).
 """
 import os
+import subprocess
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -101,3 +102,31 @@ def telegram_bot_token() -> str:
 def telegram_authorized_chat_ids() -> set[str]:
     bruto = os.getenv("TELEGRAM_AUTHORIZED_CHAT_IDS", "").strip()
     return {c.strip() for c in bruto.split(",") if c.strip()}
+
+
+def status_token() -> str:
+    """Token do endpoint HTTP de start/stop/status na EC2 (status_server.py)
+    -- ver plano docs/superpowers/plans/2026-07-27-status-controle-bot-ec2.md."""
+    return _obrigatoria("STATUS_TOKEN")
+
+
+def status_server_port() -> int:
+    return int(os.getenv("STATUS_SERVER_PORT", "8765"))
+
+
+def ambiente() -> str:
+    """"EC2" ou "local" -- setado manualmente em REDIS/.env de cada
+    maquina (default "local"), pra separar qual instancia esta
+    respondendo no Telegram."""
+    return os.getenv("AMBIENTE", "local").strip()
+
+
+def texto_status() -> str:
+    """Versao (hash curto do commit atual) + ambiente, pro comando
+    /status do bot -- calculado na hora, nada gravado em deploy."""
+    resultado = subprocess.run(
+        ["git", "rev-parse", "--short", "HEAD"], cwd=HUB_ROOT,
+        capture_output=True, text=True,
+    )
+    versao = resultado.stdout.strip() if resultado.returncode == 0 else "desconhecida"
+    return f"Versao: {versao}\nAmbiente: {ambiente()}"
