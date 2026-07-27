@@ -47,12 +47,6 @@ def global_md_default() -> Path:
     return PACKAGE_ROOT / "GLOBAL.default.md"
 
 
-def regras_negocio(site: str) -> Path:
-    """Briefing de negocio do site (publico, orcamento, ROAS-alvo,
-    produtos em foco etc) — ver SITES/<site>/RULES.md."""
-    return HUB_ROOT / "SITES" / site / "RULES.md"
-
-
 def status_projeto_md() -> Path:
     """Contexto fixo da Elis -- ver AGENTES/julio/STATUS_PROJETO.md."""
     return PACKAGE_ROOT / "STATUS_PROJETO.md"

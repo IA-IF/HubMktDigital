@@ -48,6 +48,7 @@ import julio_config as config
 import memoria_redis
 import pedidos
 import pedidos_projeto
+import perfil_cliente
 
 MAX_TURNOS_FERRAMENTA = 6
 MODELO_RESUMO = "claude-haiku-4-5-20251001"
@@ -128,6 +129,40 @@ DESCRICAO_PERSONALIDADE = (
     "ideia, sem voce ter mostrado como ficaria e ele ter concordado."
 )
 
+SCHEMA_ATUALIZAR_PERFIL = {
+    "type": "object",
+    "properties": {
+        "campo": {"type": "string", "enum": perfil_cliente.CAMPOS},
+        "valor": {"type": "string"},
+    },
+    "required": ["campo", "valor"],
+}
+
+DESCRICAO_ATUALIZAR_PERFIL = (
+    "Chame quando o humano disser algo que preenche um campo do perfil "
+    "do cliente do site atual (quem e o cliente, o que vende, pra quem "
+    "vende, publico-alvo, orcamento diario, ROAS-alvo, produtos em "
+    "foco). So chame com o que ele disse explicitamente, nunca invente "
+    "um valor. Pergunte um campo faltando SO quando uma tarefa real "
+    "precisar dele (ex: montar proposta de campanha) -- nunca faça uma "
+    "entrevista completa de uma vez."
+)
+
+SCHEMA_PESQUISAR_TECNICA = {
+    "type": "object",
+    "properties": {
+        "tema": {"type": "string", "description": "Tema da pesquisa (ex: 'negative keywords pra ecommerce de alimentos')."},
+    },
+    "required": ["tema"],
+}
+
+DESCRICAO_PESQUISAR_TECNICA = (
+    "Chame SO quando pedirem explicitamente pra pesquisar/buscar "
+    "tecnicas de campanha de alta conversao pra Google Ads na internet "
+    "(ex: 'pesquisa tecnicas novas pra aumentar conversao'). Nunca chame "
+    "proativamente, so sob demanda."
+)
+
 
 def _sistema(site: str | None) -> str:
     status_projeto = config.status_projeto_md().read_text(encoding="utf-8")
@@ -162,18 +197,26 @@ def _sistema(site: str | None) -> str:
     if site is None:
         return base
     nome = config.SITE_NOMES.get(site, site)
+    perfil = perfil_cliente.carregar(site)
+    faltando = perfil_cliente.campos_faltando(site)
+    linhas_perfil = [f"- {c}: {perfil[c]}" for c in perfil_cliente.CAMPOS if c in perfil]
+    bloco_perfil = "\n".join(linhas_perfil) if linhas_perfil else "(perfil ainda vazio)"
     return (
         f"{base}\n\n"
         f"=== Site desta conversa: '{nome}' (ja selecionado, nao confunda "
         "com outro) ===\n"
-        "IMPORTANTE sobre o RULES.md do site (briefing abaixo): coisas "
-        "como 'pausar keyword com gasto > R$50' sao acoes de um pipeline "
-        "automatico separado, agendado, nao executadas por voce. Use o "
-        "briefing so como CONTEXTO (publico, orcamento, ROAS-alvo) pra "
-        "preencher uma proposta de campanha com bom senso. Se o usuario "
-        "pedir uma acao que o briefing menciona mas que nao e nenhuma das "
-        "suas ferramentas disponiveis -- voce NAO PODE fazer isso. Nao "
-        "diga 'posso fazer': use `registrar_pedido_futuro`."
+        f"Perfil de cliente conhecido (Redis, nao RULES.md -- esse arquivo "
+        f"nao existe mais):\n{bloco_perfil}\n"
+        f"Campos ainda faltando: {', '.join(faltando) if faltando else 'nenhum'}. "
+        "So pergunte um campo faltando quando uma tarefa REAL precisar dele "
+        "(ex: montar proposta de campanha precisa de orcamento/ROAS-alvo) -- "
+        "nunca faça entrevista completa de uma vez. Quando o humano responder, "
+        "chame `atualizar_perfil_cliente`.\n\n"
+        "Use o perfil so como CONTEXTO pra preencher uma proposta de "
+        "campanha com bom senso -- nao e uma lista de acoes automaticas. "
+        "Se o usuario pedir uma acao que nao e nenhuma das suas ferramentas "
+        "disponiveis -- voce NAO PODE fazer isso. Nao diga 'posso fazer': "
+        "use `registrar_pedido_futuro`."
     )
 
 
@@ -208,6 +251,42 @@ def _ferramentas_base() -> list[dict]:
     ]
 
 
+def _ferramentas_site() -> list[dict]:
+    """So fazem sentido com um site ja selecionado (perfil de cliente e
+    pesquisa de tecnica sao por site)."""
+    return [
+        {"name": "atualizar_perfil_cliente", "description": DESCRICAO_ATUALIZAR_PERFIL, "input_schema": SCHEMA_ATUALIZAR_PERFIL},
+        {"name": "pesquisar_tecnica_campanha", "description": DESCRICAO_PESQUISAR_TECNICA, "input_schema": SCHEMA_PESQUISAR_TECNICA},
+    ]
+
+
+def _pesquisar_tecnica(tema: str, site: str) -> dict:
+    """Pesquisa na internet (web search nativo da API Anthropic, sem
+    Firecrawl -- ver decisao no plano) e registra o resultado como tarefa
+    via `pedidos.registrar` (mesmo mecanismo de `registrar_pedido_futuro`),
+    nao como spec markdown automatico."""
+    client = anthropic.Anthropic(api_key=config.anthropic_api_key())
+    resposta = client.messages.create(
+        model=config.claude_model(), max_tokens=1500,
+        tools=[{"type": "web_search_20250305", "name": "web_search", "max_uses": 3}],
+        messages=[{
+            "role": "user",
+            "content": (
+                f"Pesquise tecnicas reais de alta conversao pra campanhas de "
+                f"Google Ads sobre: {tema}. Foque em algo aplicavel a um "
+                f"e-commerce ja existente (nao negocio de servico local sem "
+                f"site). Resuma em ate 5 recomendacoes objetivas e curtas, "
+                f"cada uma dizendo se depende de configuracao no Google Ads/"
+                f"GA4 que precisa ser verificada antes (ex: publico, "
+                f"segmentacao, evento de conversao)."
+            ),
+        }],
+    )
+    texto = "\n".join(b.text for b in resposta.content if b.type == "text")
+    registro = pedidos.registrar(site, f"Pesquisa de tecnica de campanha: {tema}", texto)
+    return {"resumo": texto, "registrado_em": registro["arquivo"]}
+
+
 def _perguntar(
     historico: list[dict], site: str | None, chat_id: str, telegram_transport
 ) -> tuple[str | None, dict | None, str | None, list[dict]]:
@@ -226,7 +305,7 @@ def _perguntar(
     for _ in range(MAX_TURNOS_FERRAMENTA):
         candidatos = _tools_candidatas(ultima_mensagem_usuario) if site_atual else []
         catalogo_por_nome = {c["name"]: c for c in candidatos}
-        tools = _ferramentas_base() + [
+        tools = _ferramentas_base() + (_ferramentas_site() if site_atual else []) + [
             {"name": c["name"], "description": c["description"], "input_schema": c["input_schema"]}
             for c in candidatos
         ]
@@ -272,6 +351,14 @@ def _perguntar(
                     for p in pedidos_projeto.listar()
                 ]
             }
+
+        elif bloco_tool.name == "atualizar_perfil_cliente":
+            perfil_cliente.salvar_campo(site_atual, bloco_tool.input["campo"], bloco_tool.input["valor"])
+            resultado = {"ok": True}
+
+        elif bloco_tool.name == "pesquisar_tecnica_campanha":
+            telegram_transport.enviar(chat_id, "Pesquisando tecnicas na internet, um instante...")
+            resultado = _pesquisar_tecnica(bloco_tool.input["tema"], site_atual)
 
         else:
             tool_meta = catalogo_por_nome.get(bloco_tool.name) or _tool_por_nome(bloco_tool.name)

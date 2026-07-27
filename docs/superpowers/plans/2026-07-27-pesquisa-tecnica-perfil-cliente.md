@@ -1,7 +1,7 @@
 # Pesquisa de Técnicas de Campanha + Perfil de Cliente (Redis) Implementation Plan
 
-> **STATUS: RASCUNHO — requisitos ainda em levantamento com o usuário
-> (ver `elis.md`), não pronto pra virar tasks executáveis.**
+> **STATUS: IMPLEMENTADO e testado de ponta a ponta com Redis/Anthropic/
+> web search reais em 2026-07-27** — ver "Testado de verdade" no fim.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -157,3 +157,40 @@ perfil quando uma tarefa real precisa dele e ele está vazio no Redis,
 em vez de forçar uma entrevista completa na primeira vez que o site é
 selecionado. Menos fricção pro gestor, e o perfil vai se completando
 organicamente conforme o uso real do bot precisa dos dados.
+
+## Arquivos alterados (implementação, 2026-07-27)
+
+- **Create** `AGENTES/julio/perfil_cliente.py` — hash Redis por site
+  (`cliente:<slug>:perfil`), 7 campos (`CAMPOS`): os 4 do template antigo
+  + `quem_e_cliente`/`o_que_vende`/`pra_quem_vende` que a Elis pediu.
+  `carregar`, `salvar_campo`, `campos_faltando`.
+- **Modify** `AGENTES/julio/orchestrator.py` — `_sistema()` monta o
+  bloco de site a partir do perfil em Redis (não mais `RULES.md`),
+  informando ao modelo quais campos faltam e a regra de só perguntar
+  quando uma tarefa real precisar. 2 tools novas, só disponíveis com
+  site selecionado (`_ferramentas_site()`): `atualizar_perfil_cliente`
+  (grava um campo que o humano confirmou) e `pesquisar_tecnica_campanha`
+  (web search nativo da API Anthropic — `web_search_20250305` — resume
+  em até 5 recomendações e registra como tarefa via `pedidos.registrar`,
+  o mesmo mecanismo de `registrar_pedido_futuro`).
+- **Modify** `AGENTES/julio/julio_config.py` — removido
+  `regras_negocio()` (lia `RULES.md`, não é mais chamado por nada).
+- **Delete** `SITES/{3gfoods,adoro,integrafoods,_template}/RULES.md` —
+  vazios, substituídos pelo perfil em Redis (legado removido de
+  verdade, não só parado de usar).
+
+## Testado de verdade (2026-07-27, contra Redis/Anthropic reais)
+
+- `atualizar_perfil_cliente`: mensagem "quero falar da adoro" → modelo
+  chamou `selecionar_site` sozinho (texto livre, sem número); "o ROAS
+  alvo da adoro é 4x, pode anotar" → modelo chamou
+  `atualizar_perfil_cliente` → confirmado lendo direto do Redis
+  (`perfil_cliente.carregar("adoro")` devolveu `{"roas_alvo": "4x"}`).
+- `pesquisar_tecnica_campanha`: "pesquisa técnicas novas de negative
+  keywords pra ecommerce de alimentos" → chamou `web_search` de
+  verdade, devolveu 5 recomendações reais e específicas (termos de
+  receita/delivery a negativar, listas por nível conta/campanha, tipo
+  de correspondência) → confirmado que a tarefa foi escrita em
+  `data/pedidos-futuros.md` de verdade.
+- Chaves de teste e o registro de teste no backlog foram removidos
+  depois (Redis e arquivo local, ambos limpos).
