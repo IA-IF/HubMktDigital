@@ -287,6 +287,55 @@ def _pesquisar_tecnica(tema: str, site: str) -> dict:
     return {"resumo": texto, "registrado_em": registro["arquivo"]}
 
 
+_TIPO_JSON_PARA_PYTHON = {
+    "string": str,
+    "number": (int, float),
+    "integer": int,
+    "array": list,
+    "object": dict,
+    "boolean": bool,
+}
+
+
+def _corrigir_tipos_input(entrada: dict, schema: dict) -> dict:
+    """O LLM as vezes serializa um campo array/object em DUAS camadas --
+    manda a string JSON em vez da lista/objeto de verdade (visto em
+    producao: `palavras_chave` chegou como texto tipo '[{"texto": ...}]'
+    em vez de lista). Tenta desserializar antes de validar."""
+    propriedades = schema.get("properties", {})
+    corrigido = dict(entrada)
+    for campo, valor in entrada.items():
+        esperado = propriedades.get(campo, {}).get("type")
+        if esperado in ("array", "object") and isinstance(valor, str):
+            try:
+                corrigido[campo] = json.loads(valor)
+            except json.JSONDecodeError:
+                pass  # deixa como string mesmo; a validacao de tipo abaixo pega isso
+    return corrigido
+
+
+def _validar_input_schema(entrada: dict, schema: dict) -> list[str]:
+    """Validacao minima e generica contra o input_schema de uma tool --
+    a API da Anthropic so USA o schema como sugestao pro LLM, nunca
+    garante que o `tool_use.input` de fato bate com "required"/"type".
+    Roda antes de qualquer tool `requer_confirmacao` virar pendencia, pra
+    dar ao LLM a chance de corrigir sozinho (dentro do mesmo loop de
+    tool-calls) em vez do humano ver uma proposta quebrada."""
+    propriedades = schema.get("properties", {})
+    problemas = []
+    for campo in schema.get("required", []):
+        if campo not in entrada or entrada[campo] in (None, "", []):
+            problemas.append(f"{campo}: obrigatorio e ausente")
+            continue
+        tipo_esperado = _TIPO_JSON_PARA_PYTHON.get(propriedades.get(campo, {}).get("type"))
+        if tipo_esperado and not isinstance(entrada[campo], tipo_esperado):
+            problemas.append(
+                f"{campo}: deveria ser {propriedades[campo]['type']}, "
+                f"veio {type(entrada[campo]).__name__} ({entrada[campo]!r})"
+            )
+    return problemas
+
+
 def _normalizar_palavras_chave(entrada: dict) -> dict:
     """A API da Anthropic nao valida o tipo dos itens de um array do
     input_schema -- o LLM as vezes manda `palavras_chave` como lista de
@@ -355,7 +404,16 @@ def _executar_bloco_tool(
 
     tool_meta = catalogo_por_nome.get(bloco_tool.name) or _tool_por_nome(bloco_tool.name)
     if tool_meta and tool_meta.get("requer_confirmacao"):
-        entrada = _normalizar_palavras_chave(bloco_tool.input)
+        schema = tool_meta.get("input_schema", {})
+        entrada = _corrigir_tipos_input(bloco_tool.input, schema)
+        entrada = _normalizar_palavras_chave(entrada)
+        problemas = _validar_input_schema(entrada, schema)
+        if problemas:
+            resultado = {
+                "erro": "input invalido pra montar a proposta -- corrija e chame a ferramenta de novo",
+                "problemas": problemas,
+            }
+            return resultado, None, None
         pendencia = {"tipo": "campanha", "input": entrada}
         resultado = {"ok": True, "aviso": "proposta preparada, aguardando confirmacao do humano"}
         return resultado, pendencia, None
