@@ -1,7 +1,9 @@
 # Fusão Julio+Elis e Fluxo de Conversa Implementation Plan
 
-> **STATUS: RASCUNHO — requisitos ainda em levantamento com o usuário
-> (ver `elis.md`), não pronto pra virar tasks executáveis.**
+> **STATUS: IMPLEMENTADO em 2026-07-27** (código real, ver "Arquivos
+> alterados" no fim). **Não testado contra o Telegram/Redis reais** —
+> este ambiente não tem acesso a esses serviços; testar antes de subir
+> na EC2 é o próximo passo.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -147,3 +149,64 @@ lado. Pra este plano, especificamente:
   (`orchestrator.py` é tudo síncrono); introduzir isso só pra essa etapa
   seria o tipo de complexidade que o projeto não tem hoje. Roda depois
   da resposta final, antes de salvar o turno.
+
+## Desvio da decisão de schema, na implementação real
+
+A decisão acima previa `redisvl.SearchIndex` (busca vetorial) pro
+histórico. Na hora de implementar, simplifiquei pra `redis` puro
+(get/set de uma chave JSON por chat, sem embedding) — motivo: carregar o
+modelo de embedding (`sentence-transformers`) a CADA mensagem pra
+indexar o turno adicionaria latência real em toda resposta do bot, só
+pra uma capacidade (busca semântica sobre histórico antigo) que ninguém
+pediu ainda. `estado:<chat_id>` guarda o estado completo (site,
+histórico de turnos, pendências), `resumo:<chat_id>` guarda o resumo
+vivo que o agente especialista mantém. Busca vetorial sobre histórico
+fica como extensão futura, se/quando alguém precisar de fato buscar "o
+que a gente falou sobre X" — a estrutura de chave já comporta migrar pra
+`SearchIndex` depois sem quebrar nada.
+
+## Arquivos alterados (implementação, 2026-07-27)
+
+- **Rewrite** `AGENTES/julio/orchestrator.py` — um orchestrator só,
+  cobrindo marketing (tools por site via `discover_tool`) e projeto
+  (`registrar_pedido_projeto`/`listar_pedidos_projeto`, sempre
+  disponíveis, sem depender de site). Site deixa de ser um menu numerado
+  obrigatório: vira uma tool `selecionar_site` (enum das 3 slugs) que o
+  modelo só chama quando o humano diz explicitamente qual site — mantém
+  a regra dura "nunca adivinhar site" enquanto aceita linguagem natural
+  ("quero falar da adoro"), não só número.
+- **Create** `AGENTES/julio/memoria_redis.py` — `carregar_estado`/
+  `salvar_estado`/`carregar_resumo`/`salvar_resumo`, substituindo os
+  JSONs locais por chat.
+- **Delete** `AGENTES/julio/elis_orchestrator.py`,
+  `AGENTES/julio/GLOBAL_ELIS.md` — fundidos no orchestrator/GLOBAL.md
+  únicos.
+- **Modify** `AGENTES/julio/GLOBAL.md` (e `GLOBAL.default.md`) — regras
+  de personalidade da Elis (não usar jargão técnico, confirmar
+  entendimento antes de registrar pedido) incorporadas nas regras gerais
+  do Julio.
+- **Modify** `AGENTES/julio/julio_config.py` — removidos
+  `agente_ativo()`, `global_elis_md()`, `ORDEM_MENU_SITE` (mortos depois
+  da fusão).
+- **Modify** `AGENTES/julio/main_telegram.py` — chama
+  `orchestrator.processar_mensagem` direto, sem escolher entre 2
+  agentes.
+- **Modify** `AGENTES/julio/pedidos_projeto.py` — docstring atualizado
+  (não referencia mais `elis_orchestrator.py`).
+- **Modify** `REDIS/.env.example` — removido `AGENTE_ATIVO`.
+- **Modify** `entendendno.md` — trecho do fluxo `/start` antigo (menu
+  numerado, 2 agentes) marcado explicitamente como histórico
+  (pré-fusão), pra nenhuma sessão futura ler como comportamento atual.
+
+## Falta (não dá pra verificar neste ambiente)
+
+- [ ] Testar contra Redis real (`REDIS_URL` de verdade) — este ambiente
+  não tem acesso; `py_compile` confirma que o código é sintaticamente
+  válido, não que o fluxo funciona ponta a ponta.
+- [ ] Testar contra o Telegram real — confirmar que `selecionar_site`
+  é chamado de forma confiável pelo modelo quando o usuário menciona um
+  site em texto livre, e que o fluxo de pendência (campanha e pedido de
+  projeto) ainda funciona depois da unificação em `estado["pendente"]`.
+- [ ] `STATUS_PROJETO.md` já está escrito de forma agnóstica (fala só
+  "o Julio", não menciona a separação antiga) — conferido, não precisou
+  de ajuste.

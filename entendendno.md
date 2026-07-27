@@ -90,7 +90,15 @@ ssh -i "C:/Users/rezen/.ssh/IF-AWS.pem" ubuntu@15.229.178.221
 
 
 
-/start no telegram: o que acontece? (traço real do codigo hoje)
+>>> HISTORICO (pre-fusao Julio+Elis, 2026-07-27) — o trecho abaixo
+>>> descreve o /start com menu numerado fechado e os 2 agentes separados
+>>> (Julio/Elis, AGENTE_ATIVO) que EXISTIAM ATE 2026-07-27. Depois da
+>>> fusao (ver docs/superpowers/plans/2026-07-27-fusao-agente-fluxo-conversa.md
+>>> e o commit da fusao): 1 agente so, sem menu numerado (aceita site em
+>>> texto livre via tool `selecionar_site`), sem AGENTE_ATIVO. NAO LER
+>>> isto como comportamento atual — so como registro de como era antes.
+
+/start no telegram: o que acontecia (traço do codigo ANTES da fusao)
 
 TODOS os arquivos abaixo (main_telegram.py, orchestrator.py,
 telegram_transport.py) moram em AGENTES/julio/ — NENHUM deles ta na

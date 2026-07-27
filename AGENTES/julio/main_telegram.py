@@ -1,7 +1,7 @@
-"""Bot conversacional (Telegram) que roda UM dos dois agentes de conversa
-do projeto -- Julio (marketing de site, orchestrator.py) ou Elis
-(desenvolvimento do proprio projeto, elis_orchestrator.py) -- escolhido
-por AGENTE_ATIVO em REDIS/.env (ver julio_config.agente_ativo()).
+"""Bot conversacional (Telegram) -- um agente so (Julio, orchestrator.py),
+cobrindo marketing de site E desenvolvimento do proprio projeto (ver
+commit da fusao Julio+Elis, 2026-07-27). Antes eram 2 agentes alternados
+por AGENTE_ATIVO; isso nao existe mais.
 
 Roda como processo continuo (long polling no Telegram), UM SO PROCESSO.
 So chat_ids na whitelist (TELEGRAM_AUTHORIZED_CHAT_IDS em REDIS/.env)
@@ -19,7 +19,6 @@ import time
 
 import requests
 
-import elis_orchestrator
 import julio_config as config
 import orchestrator
 import telegram_transport
@@ -33,10 +32,9 @@ def rodar_loop() -> None:
             "menos um chat_id autorizado antes de rodar o bot."
         )
 
-    agente = config.agente_ativo()
-    processar_mensagem = orchestrator.processar_mensagem if agente == "julio" else elis_orchestrator.processar_mensagem
+    processar_mensagem = orchestrator.processar_mensagem
 
-    print(f"Agente ativo: {agente}. Chat_ids autorizados: {autorizados}")
+    print(f"Chat_ids autorizados: {autorizados}")
     offset = None
     while True:
         try:

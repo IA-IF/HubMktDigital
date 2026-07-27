@@ -1,46 +1,42 @@
-"""O Julio: conversa com o humano no Telegram sobre MARKETING de um site
-e aciona os outros agentes (GA4/Ads/Search Console/catalogo). Irmao da
-Elis (ver elis_orchestrator.py), que cuida do desenvolvimento do proprio
-projeto -- so um dos dois fica ativo por vez, escolhido por
-AGENTE_ATIVO em REDIS/.env (ver julio_config.agente_ativo(),
-main_telegram.py).
+"""O Julio: um agente so de conversa no Telegram, cobrindo as duas coisas
+que antes eram dois agentes separados (Julio/marketing + Elis/projeto,
+ver commit da fusao) -- marketing de site (GA4/Ads/Search Console/
+catalogo) E evolucao do proprio HubMktDigital (registrar/aplicar pedido
+de mudanca no projeto). So um bot, mais inteligente, decide pelo teor da
+mensagem qual dominio se aplica -- ver plano
+docs/superpowers/plans/2026-07-27-fusao-agente-fluxo-conversa.md.
 
 O client Anthropic e instanciado direto (nao via LLMRouter.ask*): o
-router adiciona cache semantico, mas so ajuda em chamadas cujo prompt
-se repete — aqui o historico da conversa muda a cada mensagem, entao
+router adiciona cache semantico, mas so ajuda em chamadas cujo prompt se
+repete -- aqui o historico da conversa muda a cada mensagem, entao
 cachear nunca acertaria (mesmo racional documentado em
 ../llm_router/router.py sobre ask_with_history nunca ser cacheada). Um
 tool-loop tambem precisa do objeto de resposta completo (content blocks,
 tool_use), que os metodos simplificados do router nao expõem.
 
 Fluxo:
-  0. Toda conversa nova comeca sem site definido — o Julio manda um menu
-     numerado fechado (1/2/3, Etapa 1 do inteligencia.md) e SO aceita
-     resposta por numero, nunca apelido em texto livre (elimina ambiguidade
-     de match parcial entre os 3 sites, ver `_site_por_opcao`). Ele NUNCA
-     assume um site por padrao: um unico bot atende aos 3, e confundir a
-     conta errada tem custo real. Pra trocar de site no meio da conversa,
-     mande "/site".
-  1. Com o site definido, cada mensagem passa primeiro por
-     `discover_tool.descobrir` (Etapa 2 do inteligencia.md: busca vetorial
-     no catalogo de TOOLS/**/tool.json no Redis) pra trazer so as tools
-     candidatas aquela mensagem — nunca o catalogo inteiro. Mensagem sem
-     candidato relevante (ex: "oi") vira `tools=[]`, resposta em texto puro.
-     Se a busca vetorial falhar (Redis fora do ar), `_tools_candidatas`
-     cai pro catalogo fixo lido direto de TOOLS/**/tool.json (sempre
-     atualizado, nunca precisa editar este arquivo quando uma tool nova
-     entra). Cada tool.json diz TUDO que o orquestrador precisa pra rodar
-     ela (`script`, `modo_entrada`) e se precisa pausar pra confirmacao
-     humana antes (`requer_confirmacao`) — ver `agentes.rodar_tool` e
-     `_executar_tool_leitura`. Regra inegociavel do prompt: nunca
-     inventar resposta nem fingir ter feito algo (por isso existe a tool
-     `registrar_pedido_futuro`).
-  2. Resposta "sim" a uma proposta pendente de uma tool com
-     `requer_confirmacao` (hoje so `criar_campanha`) -> roda a tool de
-     verdade NO SITE ESCOLHIDO. Qualquer outra coisa cancela a proposta.
+  0. Toda conversa comeca sem site definido, mas isso NAO bloqueia falar
+     sobre o projeto (registrar_pedido_projeto/listar_pedidos_projeto
+     ficam sempre disponiveis, sem depender de site). So quando o pedido
+     e sobre marketing de um site e nenhum foi escolhido, o Julio pede
+     em texto livre ("qual site: Integra Foods, 3G Foods ou Adoro?") e
+     so fixa o site quando o humano disser isso EXPLICITAMENTE (tool
+     `selecionar_site`, nunca inferido por adivinhacao de palavra —
+     regra dura do projeto, ver CLAUDE.md "Site sempre explicito").
+     Aceita nome/apelido em texto livre, nao so numero — o menu fechado
+     de antes era limitante demais (ver elis.md).
+  1. Com o site definido, cada mensagem passa por `discover_tool.descobrir`
+     (busca vetorial no catalogo de TOOLS/**/tool.json no Redis) pra
+     trazer so as tools candidatas aquela mensagem -- nunca o catalogo
+     inteiro. Cada tool.json diz tudo que o orquestrador precisa pra
+     rodar ela e se precisa pausar pra confirmacao humana antes
+     (`requer_confirmacao`) -- ver `agentes.rodar_tool`.
+  2. Resposta "sim" a uma pendencia (proposta de campanha OU pedido de
+     mudanca no projeto com rascunho pronto) resolve ela; qualquer outra
+     coisa cancela.
 
-Estado da conversa (site + historico + proposta pendente) e persistido em
-data/telegram_conversas/<chat_id>.json para sobreviver a reinicios.
+Estado da conversa persiste no Redis (memoria_redis.py), nao mais em
+JSON local por chat -- um historico so, nao mais um por agente.
 """
 import json
 
@@ -49,14 +45,65 @@ import anthropic
 import agentes
 import discover_tool
 import julio_config as config
+import memoria_redis
 import pedidos
+import pedidos_projeto
 
-MAX_TURNOS_FERRAMENTA = 4
+MAX_TURNOS_FERRAMENTA = 6
+MODELO_RESUMO = "claude-haiku-4-5-20251001"
 
-# Schemas/descricoes das tools de LEITURA/ACAO (analise_vendas,
-# catalogo_produtos, criar_campanha, registrar_pedido_futuro, etc) NAO
-# ficam mais aqui -- moram no tool.json de cada uma, em TOOLS/. Ver
-# discover_tool.catalogar_tools()/descobrir() e agentes.rodar_tool().
+SITES_VALIDOS = list(config.SITE_NOMES.keys())
+
+SCHEMA_SELECIONAR_SITE = {
+    "type": "object",
+    "properties": {
+        "site": {"type": "string", "enum": SITES_VALIDOS, "description": "Slug do site."},
+    },
+    "required": ["site"],
+}
+
+DESCRICAO_SELECIONAR_SITE = (
+    "Chame SO quando o humano disser EXPLICITAMENTE com qual site ele "
+    "quer trabalhar (Integra Foods, 3G Foods ou Adoro) -- nunca adivinhe "
+    "por contexto vago. Depois de chamar, repita o pedido original dele "
+    "usando as ferramentas daquele site."
+)
+
+SCHEMA_PEDIDO_PROJETO = {
+    "type": "object",
+    "properties": {
+        "pedido": {"type": "string", "description": "Resumo objetivo do que foi pedido, 1-2 frases."},
+        "contexto": {"type": "string", "description": "Detalhes adicionais relevantes. Opcional."},
+    },
+    "required": ["pedido"],
+}
+
+DESCRICAO_PEDIDO_PROJETO = (
+    "Chame quando descreverem algo que querem MUDAR ou ADICIONAR no "
+    "PROPRIO HubMktDigital (o projeto/bot em si) -- ex: 'quero que o bot "
+    "tambem avise sobre X'. Nao confundir com pedido de marketing de um "
+    "site (isso usa outras ferramentas, ou `registrar_pedido_futuro` se "
+    "nenhuma servir). Nao chame so pra responder pergunta sobre o que ja "
+    "existe -- isso voce ja sabe pelo contexto desta conversa."
+)
+
+SCHEMA_LISTAR_PEDIDOS = {"type": "object", "properties": {}, "required": []}
+
+DESCRICAO_LISTAR_PEDIDOS = (
+    "Chame quando perguntarem o status de pedidos de mudanca no PROPRIO "
+    "projeto ja feitos antes (ex: 'como estao meus pedidos')."
+)
+
+_STATUS_PEDIDO_HUMANO = {
+    "registrado": "na fila",
+    "rascunho_pronto": "rascunho pronto, aguardando confirmacao pra aplicar",
+    "aplicando": "aplicando agora",
+    "aplicado": "aplicado, ja esta no ar",
+    "erro": "registrado, precisa de atencao manual",
+    "erro_aplicar": "erro ao aplicar, rascunho preservado pra tentar de novo",
+    "erro_aplicar_revertido": "tentei aplicar mas revertido automaticamente por seguranca",
+    "erro_critico_bot_parado": "erro critico ao aplicar, precisa de atencao humana urgente",
+}
 
 SCHEMA_PERSONALIDADE = {
     "type": "object",
@@ -81,59 +128,56 @@ DESCRICAO_PERSONALIDADE = (
     "ideia, sem voce ter mostrado como ficaria e ele ter concordado."
 )
 
-def _sistema(site: str) -> str:
+
+def _sistema(site: str | None) -> str:
+    status_projeto = config.status_projeto_md().read_text(encoding="utf-8")
+    base = (
+        "Voce e o Julio. Cobre DOIS dominios -- decida pelo teor da "
+        "mensagem qual se aplica, sem perguntar qual dominio, so pelo "
+        "conteudo:\n"
+        "(1) MARKETING de um dos 3 sites que voce atende (Integra Foods, "
+        "3G Foods, Adoro) -- trafego, campanhas, GA4/Ads/Search Console/"
+        "catalogo.\n"
+        "(2) O PROPRIO PROJETO HubMktDigital (o bot/agente em si) -- "
+        "explicar o que ja existe/falta (contexto abaixo) e registrar "
+        "pedidos de mudanca via `registrar_pedido_projeto`.\n\n"
+        "Regra geral pro dominio (1): prefira AGIR a PERGUNTAR -- se uma "
+        "ferramenta disponivel nesta chamada tem um jeito razoavel de "
+        "rodar com o que voce ja sabe, chame antes de fazer perguntas de "
+        "qualificacao. Ferramenta que precisa de confirmacao humana antes "
+        "de agir de verdade so deve ser chamada com informacao completa. "
+        "REGRA INEGOCIAVEL (vale pros dois dominios): nunca invente "
+        "resposta nem finja ter feito algo que voce nao tem capacidade de "
+        "fazer -- se nao existe ferramenta pra isso, use "
+        "`registrar_pedido_futuro` (marketing) ou `registrar_pedido_projeto` "
+        "(projeto).\n\n"
+        "REGRA DURA sobre site: nunca adivinhe qual site esta em jogo. Se "
+        "a mensagem for sobre marketing e nenhum site foi escolhido "
+        "ainda nesta conversa, pergunte em texto livre qual dos 3 "
+        "(Integra Foods, 3G Foods ou Adoro) antes de qualquer ferramenta "
+        "de marketing -- so chame `selecionar_site` quando o humano tiver "
+        "dito isso explicitamente.\n\n"
+        f"=== Status do projeto (o que ja existe, o que falta) ===\n{status_projeto}"
+    )
+    if site is None:
+        return base
     nome = config.SITE_NOMES.get(site, site)
     return (
-        f"Voce e o Julio, agente de marketing. Esta conversa e sobre a "
-        f"'{nome}' — nao confunda com os outros sites/clientes que voce "
-        "tambem atende. Conversando pelo Telegram com o responsavel de "
-        "marketing. Regra geral: prefira AGIR a PERGUNTAR — se uma "
-        "ferramenta disponivel nesta chamada (ver `tools`) tem um jeito "
-        "razoavel de rodar com o que voce ja sabe (usando os defaults "
-        "dela), chame antes de fazer perguntas de qualificacao. Ferramenta "
-        "que precisa de confirmacao humana antes de agir de verdade (ver "
-        "descricao dela) so deve ser chamada com informacao completa — "
-        "pergunte ao usuario so o que realmente faltar, sem re-confirmar "
-        "o que ele ja disse. Se o pedido nao se encaixa em NENHUMA "
-        "ferramenta disponivel, use `registrar_pedido_futuro` — REGRA "
-        "INEGOCIAVEL: nunca invente uma resposta ou finja ter feito algo "
-        "que voce nao tem capacidade de fazer.\n\n"
+        f"{base}\n\n"
+        f"=== Site desta conversa: '{nome}' (ja selecionado, nao confunda "
+        "com outro) ===\n"
         "IMPORTANTE sobre o RULES.md do site (briefing abaixo): coisas "
         "como 'pausar keyword com gasto > R$50' sao acoes de um pipeline "
-        "automatico separado, agendado, nao executadas por voce, Julio. "
-        "Use o briefing so como CONTEXTO (publico, orcamento, ROAS-alvo) "
-        "pra preencher uma proposta de campanha com bom senso. Se o "
-        "usuario pedir uma acao que o briefing menciona mas que nao e "
-        "nenhuma das suas ferramentas disponiveis (pausar keyword, ajustar "
-        "lance, mudar orcamento de campanha existente, etc.) — voce NAO "
-        "PODE fazer isso. Nao diga 'posso fazer' nem confirme a acao: use "
-        "`registrar_pedido_futuro` e explique que ainda nao tem essa "
-        "capacidade."
+        "automatico separado, agendado, nao executadas por voce. Use o "
+        "briefing so como CONTEXTO (publico, orcamento, ROAS-alvo) pra "
+        "preencher uma proposta de campanha com bom senso. Se o usuario "
+        "pedir uma acao que o briefing menciona mas que nao e nenhuma das "
+        "suas ferramentas disponiveis -- voce NAO PODE fazer isso. Nao "
+        "diga 'posso fazer': use `registrar_pedido_futuro`."
     )
 
 
-def _site_por_opcao(texto: str) -> str | None:
-    """Etapa 1 do inteligencia.md: selecao SEMPRE por menu numerado fechado
-    (1/2/3), nunca por apelido em texto livre -- elimina ambiguidade de
-    match parcial entre os 3 sites."""
-    try:
-        indice = int(texto.strip()) - 1
-    except ValueError:
-        return None
-    if indice < 0 or indice >= len(config.ORDEM_MENU_SITE):
-        return None
-    return config.ORDEM_MENU_SITE[indice]
-
-
-def _perguntar_qual_site(chat_id: str, motivo: str, telegram_transport) -> None:
-    linhas = [f"{i + 1} {slug}" for i, slug in enumerate(config.ORDEM_MENU_SITE)]
-    telegram_transport.enviar(
-        chat_id,
-        f"{motivo}selecione o site\n" + "\n".join(linhas),
-    )
-
-
-def _executar_tool_leitura(tool: dict, entrada: dict, site: str) -> dict:
+def _executar_tool_site(tool: dict, entrada: dict, site: str) -> dict:
     if tool["name"] == "registrar_pedido_futuro":
         return pedidos.registrar(site, entrada.get("pedido", ""), entrada.get("contexto", ""))
     try:
@@ -143,10 +187,6 @@ def _executar_tool_leitura(tool: dict, entrada: dict, site: str) -> dict:
 
 
 def _tool_por_nome(nome: str) -> dict | None:
-    """Le TOOLS/**/tool.json direto do disco (sem depender do Redis) e
-    acha a tool pelo nome -- usado quando precisamos do registro
-    completo (script/modo_entrada) fora do fluxo de discover_tool, ex:
-    na confirmacao de uma proposta pendente."""
     for tool in discover_tool.catalogar_tools():
         if tool["name"] == nome:
             return tool
@@ -154,41 +194,46 @@ def _tool_por_nome(nome: str) -> dict | None:
 
 
 def _tools_candidatas(mensagem: str) -> list[dict]:
-    """Devolve os registros COMPLETOS (name/description/input_schema/
-    script/modo_entrada/...) das tools candidatas a essa mensagem —
-    busca vetorial no Redis (Etapa 2 do inteligencia.md); se o Redis
-    estiver fora do ar, cai pro catalogo fixo lido direto de
-    TOOLS/**/tool.json (nunca precisa editar este arquivo pra isso)."""
     try:
         return discover_tool.descobrir(mensagem)
     except Exception:  # noqa: BLE001 — Redis fora do ar: cai pro catalogo fixo
         return discover_tool.catalogar_tools()
 
 
-def _perguntar(historico: list[dict], site: str) -> tuple[str | None, dict | None, list[dict]]:
-    client = anthropic.Anthropic(api_key=config.anthropic_api_key())
-    global_regras = config.global_md().read_text(encoding="utf-8")
-    regras_site = config.regras_negocio(site).read_text(encoding="utf-8")
-    sistema = (
-        f"{_sistema(site)}\n\n"
-        f"=== GLOBAL.md (personalidade, vale pra qualquer site) ===\n{global_regras}\n\n"
-        f"=== RULES.md do site atual ===\n{regras_site}"
-    )
-    ultima_mensagem_usuario = historico[-1]["content"]
-    candidatos = _tools_candidatas(ultima_mensagem_usuario)
-    catalogo_por_nome = {c["name"]: c for c in candidatos}
-    tools = [
-        {"name": c["name"], "description": c["description"], "input_schema": c["input_schema"]}
-        for c in candidatos
+def _ferramentas_base() -> list[dict]:
+    return [
+        {"name": "selecionar_site", "description": DESCRICAO_SELECIONAR_SITE, "input_schema": SCHEMA_SELECIONAR_SITE},
+        {"name": "registrar_pedido_projeto", "description": DESCRICAO_PEDIDO_PROJETO, "input_schema": SCHEMA_PEDIDO_PROJETO},
+        {"name": "listar_pedidos_projeto", "description": DESCRICAO_LISTAR_PEDIDOS, "input_schema": SCHEMA_LISTAR_PEDIDOS},
     ]
+
+
+def _perguntar(
+    historico: list[dict], site: str | None, chat_id: str, telegram_transport
+) -> tuple[str | None, dict | None, str | None, list[dict]]:
+    """Devolve (bloco_texto, pendencia, site_novo, novos_turnos).
+    `pendencia` e {"tipo": "campanha", "input": ...} ou
+    {"tipo": "pedido_projeto", "id": ...}. `site_novo` vem preenchido se
+    `selecionar_site` foi chamado nesta rodada (o chamador salva no
+    estado)."""
+    client = anthropic.Anthropic(api_key=config.anthropic_api_key())
+    site_atual = site
+    ultima_mensagem_usuario = historico[-1]["content"]
 
     mensagens = list(historico)
     novos_turnos: list[dict] = []
 
     for _ in range(MAX_TURNOS_FERRAMENTA):
+        candidatos = _tools_candidatas(ultima_mensagem_usuario) if site_atual else []
+        catalogo_por_nome = {c["name"]: c for c in candidatos}
+        tools = _ferramentas_base() + [
+            {"name": c["name"], "description": c["description"], "input_schema": c["input_schema"]}
+            for c in candidatos
+        ]
+
         resposta = client.messages.create(
             model=config.claude_model(), max_tokens=2000,
-            system=sistema, tools=tools, messages=mensagens,
+            system=_sistema(site_atual), tools=tools, messages=mensagens,
         )
         bloco_tool = next((b for b in resposta.content if b.type == "tool_use"), None)
         bloco_texto = next((b.text for b in resposta.content if b.type == "text"), None)
@@ -197,16 +242,49 @@ def _perguntar(historico: list[dict], site: str) -> tuple[str | None, dict | Non
         novos_turnos.append(turno_assistant)
 
         if bloco_tool is None:
-            return bloco_texto, None, novos_turnos
+            return bloco_texto, None, site_atual if site_atual != site else None, novos_turnos
 
-        tool_meta = catalogo_por_nome.get(bloco_tool.name) or _tool_por_nome(bloco_tool.name)
-        if tool_meta and tool_meta.get("requer_confirmacao"):
-            return None, bloco_tool.input, novos_turnos
+        if bloco_tool.name == "selecionar_site":
+            site_atual = bloco_tool.input["site"]
+            resultado = {"ok": True, "site": site_atual, "aviso": "site definido, prossiga com o pedido original"}
 
-        if tool_meta is None:
-            resultado = {"erro": f"ferramenta desconhecida: {bloco_tool.name}"}
+        elif bloco_tool.name == "registrar_pedido_projeto":
+            telegram_transport.enviar(chat_id, "Anotado! Deixa eu preparar um rascunho tecnico disso...")
+            registro = pedidos_projeto.registrar(
+                bloco_tool.input.get("pedido", ""), bloco_tool.input.get("contexto", "")
+            )
+            if registro["status"] == "rascunho_pronto":
+                pendencia = {"tipo": "pedido_projeto", "id": registro["id"]}
+                return None, pendencia, site_atual if site_atual != site else None, novos_turnos
+            resultado = {
+                "status": _STATUS_PEDIDO_HUMANO.get(registro["status"], registro["status"]),
+                "erro": registro.get("erro"),
+            }
+
+        elif bloco_tool.name == "listar_pedidos_projeto":
+            resultado = {
+                "pedidos": [
+                    {
+                        "pedido": p["pedido"],
+                        "status": _STATUS_PEDIDO_HUMANO.get(p["status"], p["status"]),
+                        "criado_em": p["criado_em"],
+                    }
+                    for p in pedidos_projeto.listar()
+                ]
+            }
+
         else:
-            resultado = _executar_tool_leitura(tool_meta, bloco_tool.input, site)
+            tool_meta = catalogo_por_nome.get(bloco_tool.name) or _tool_por_nome(bloco_tool.name)
+            if tool_meta and tool_meta.get("requer_confirmacao"):
+                pendencia = {"tipo": "campanha", "input": bloco_tool.input}
+                return None, pendencia, site_atual if site_atual != site else None, novos_turnos
+            if tool_meta is None:
+                resultado = {"erro": f"ferramenta desconhecida: {bloco_tool.name}"}
+            elif site_atual is None:
+                resultado = {"erro": "nenhum site selecionado ainda -- pergunte qual antes de chamar essa ferramenta de novo"}
+            else:
+                resultado = _executar_tool_site(tool_meta, bloco_tool.input, site_atual)
+
         turno_resultado = {
             "role": "user",
             "content": [{
@@ -218,7 +296,7 @@ def _perguntar(historico: list[dict], site: str) -> tuple[str | None, dict | Non
         mensagens.append(turno_resultado)
         novos_turnos.append(turno_resultado)
 
-    return "Desculpa, não consegui concluir essa consulta agora — tenta reformular?", None, novos_turnos
+    return "Desculpa, não consegui concluir essa consulta agora — tenta reformular?", None, site_atual if site_atual != site else None, novos_turnos
 
 
 _MARCADOR_PERSONALIDADE = "## Personalidade / comportamento\n\n"
@@ -282,6 +360,8 @@ def _ler_personalidade_default() -> str:
 def _texto_fix_help() -> str:
     return (
         "Comandos fixos disponiveis:\n\n"
+        "/status — versao e ambiente (EC2/local) do bot.\n"
+        "/site — trocar de site no meio da conversa.\n"
         "/fix_help — mostra esta lista.\n"
         "/fix_redis — reindexa o catalogo de tools no Redis (discover_tool), "
         "incluindo qualquer TOOLS/**/tool.json novo ou alterado desde a "
@@ -314,58 +394,79 @@ def _resumo_proposta(site: str, p: dict) -> str:
     return "\n".join(linhas)
 
 
-def _caminho_estado(chat_id: str):
-    pasta = config.DATA_DIR / "telegram_conversas"
-    pasta.mkdir(parents=True, exist_ok=True)
-    return pasta / f"{chat_id}.json"
-
-
 def _estado_vazio() -> dict:
     return {
-        "site": None, "historico": [], "proposta_pendente": None,
+        "site": None, "historico": [], "pendente": None,
         "ajustando_personalidade": False, "personalidade_pendente": None,
         "historico_personalidade": [],
     }
 
 
 def _carregar_estado(chat_id: str) -> dict:
-    caminho = _caminho_estado(chat_id)
-    if not caminho.exists():
-        return _estado_vazio()
-    return json.loads(caminho.read_text(encoding="utf-8"))
+    return memoria_redis.carregar_estado(chat_id, _estado_vazio())
 
 
 def _salvar_estado(chat_id: str, estado: dict) -> None:
-    _caminho_estado(chat_id).write_text(
-        json.dumps(estado, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
+    memoria_redis.salvar_estado(chat_id, estado)
+
+
+def _atualizar_resumo(chat_id: str, texto_usuario: str, texto_resposta: str) -> None:
+    """Agente especialista em extrair contexto -- chamada extra, barata
+    (Haiku), sincrona, no fim de cada turno real. Mantem um resumo vivo
+    de pendencias/contexto da conversa em Redis (ver elis.md: "camada
+    usando redis e um agente especialista em extrair o contexto"). Erro
+    aqui nunca deve derrubar a resposta principal ao usuario."""
+    try:
+        client = anthropic.Anthropic(api_key=config.anthropic_api_key())
+        resumo_atual = memoria_redis.carregar_resumo(chat_id)
+        resposta = client.messages.create(
+            model=MODELO_RESUMO, max_tokens=300,
+            system=(
+                "Mantenha um resumo curto (max 5 linhas) do que esta em "
+                "aberto/pendente nesta conversa com um agente de marketing/"
+                "projeto. Responda SO o resumo atualizado, sem comentario."
+            ),
+            messages=[{
+                "role": "user",
+                "content": (
+                    f"Resumo anterior:\n{resumo_atual or '(vazio)'}\n\n"
+                    f"Novo turno -- usuario: {texto_usuario}\n"
+                    f"Novo turno -- resposta: {texto_resposta or '(acao sem texto)'}\n\n"
+                    "Resumo atualizado:"
+                ),
+            }],
+        )
+        texto = next((b.text for b in resposta.content if b.type == "text"), "")
+        if texto.strip():
+            memoria_redis.salvar_resumo(chat_id, texto.strip())
+    except Exception:  # noqa: BLE001 — resumo e conveniencia, nunca derruba a resposta
+        pass
 
 
 def processar_mensagem(chat_id: str, texto: str, telegram_transport) -> None:
     estado = _carregar_estado(chat_id)
 
     if texto.strip().lower() in ("/start", "/reiniciar"):
-        estado = _estado_vazio()
-        _salvar_estado(chat_id, estado)
+        _salvar_estado(chat_id, _estado_vazio())
         telegram_transport.enviar(
             chat_id,
-            "Oi! Sou o Julio, seu agente de marketing. Atendo a Integra "
-            "Foods, a 3G Foods e a Adoro — pra nao arriscar mexer na conta "
-            "errada, preciso saber com qual estamos trabalhando antes de "
-            "qualquer coisa. (Manda /fix_help pra ver os comandos fixos.)",
+            "Oi! Sou o Julio. Cuido do marketing da Integra Foods, 3G "
+            "Foods e Adoro, e tambem do desenvolvimento do proprio "
+            "HubMktDigital. Pode falar direto o que precisa — se for "
+            "sobre marketing de um site, so pergunto qual assim que "
+            "precisar. (Manda /fix_help pra ver os comandos fixos.)",
         )
-        _perguntar_qual_site(chat_id, "", telegram_transport)
         return
 
     if texto.strip().lower() in ("/site", "/trocar-site"):
         estado["site"] = None
         estado["historico"] = []
-        estado["proposta_pendente"] = None
+        estado["pendente"] = None
         estado["ajustando_personalidade"] = False
         estado["personalidade_pendente"] = None
         estado["historico_personalidade"] = []
         _salvar_estado(chat_id, estado)
-        _perguntar_qual_site(chat_id, "", telegram_transport)
+        telegram_transport.enviar(chat_id, "Ok, qual site: Integra Foods, 3G Foods ou Adoro?")
         return
 
     if texto.strip().lower() == "/status":
@@ -451,56 +552,67 @@ def processar_mensagem(chat_id: str, texto: str, telegram_transport) -> None:
         _salvar_estado(chat_id, estado)
         return
 
-    if estado["proposta_pendente"] is not None:
+    if estado["pendente"] is not None:
+        pendente = estado["pendente"]
         resposta = texto.strip().lower()
-        if resposta in ("sim", "s", "yes", "confirmo"):
-            proposta = estado["proposta_pendente"]
-            telegram_transport.enviar(chat_id, "Criando campanha no Google Ads (PAUSADA)...")
-            try:
-                tool = _tool_por_nome("criar_campanha")
-                resultado = agentes.criar_campanha_ads(tool, proposta, estado["site"])
+        confirmou = resposta in ("sim", "s", "yes", "confirmo")
+
+        if pendente["tipo"] == "campanha":
+            if confirmou:
+                telegram_transport.enviar(chat_id, "Criando campanha no Google Ads (PAUSADA)...")
+                try:
+                    tool = _tool_por_nome("criar_campanha")
+                    resultado = agentes.criar_campanha_ads(tool, pendente["input"], estado["site"])
+                    telegram_transport.enviar(
+                        chat_id,
+                        "Campanha criada com sucesso!\n"
+                        f"{resultado['campanha_resource']}\n"
+                        f"Status: {resultado['status']}",
+                    )
+                except Exception as exc:  # noqa: BLE001 — informar o erro ao usuario
+                    telegram_transport.enviar(chat_id, f"Erro ao criar a campanha: {exc}")
+            else:
+                telegram_transport.enviar(chat_id, "Proposta cancelada. Pode me contar o que quer mudar.")
+        else:  # pedido_projeto
+            if confirmou:
                 telegram_transport.enviar(
                     chat_id,
-                    "Campanha criada com sucesso!\n"
-                    f"{resultado['campanha_resource']}\n"
-                    f"Status: {resultado['status']}",
+                    "Aplicando agora — o bot vai reiniciar sozinho em instantes. "
+                    "Se algo der errado, ele desfaz e volta sozinho tambem.",
                 )
-            except Exception as exc:  # noqa: BLE001 — informar o erro ao usuario
-                telegram_transport.enviar(chat_id, f"Erro ao criar a campanha: {exc}")
-            estado["proposta_pendente"] = None
-            estado["historico"] = []
-            _salvar_estado(chat_id, estado)
-        else:
-            estado["proposta_pendente"] = None
-            estado["historico"] = []
-            telegram_transport.enviar(chat_id, "Proposta cancelada. Pode me contar o que quer mudar.")
-            _salvar_estado(chat_id, estado)
-        return
+                pedidos_projeto.aplicar(pendente["id"])
+            else:
+                telegram_transport.enviar(
+                    chat_id,
+                    "Ok, nao apliquei — o rascunho continua pronto, pode pedir pra aplicar mais tarde.",
+                )
 
-    if estado["site"] is None:
-        site = _site_por_opcao(texto)
-        if site is None:
-            _perguntar_qual_site(chat_id, "Opcao invalida. ", telegram_transport)
-            return
-        estado["site"] = site
+        estado["pendente"] = None
+        # O historico salvo termina num tool_use sem tool_result
+        # correspondente -- a API da Anthropic exige o par na mensagem
+        # seguinte, entao zera aqui (nas duas respostas).
+        estado["historico"] = []
         _salvar_estado(chat_id, estado)
-        nome_site = config.SITE_NOMES.get(site, site)
-        telegram_transport.enviar(
-            chat_id,
-            f"Show, vamos tratar da {nome_site}. Pode perguntar sobre "
-            "trafego/desempenho do site ou pedir pra eu montar uma campanha "
-            "nova de Google Ads.",
-        )
         return
 
     estado["historico"].append({"role": "user", "content": texto})
-    bloco_texto, tool_input, novos_turnos = _perguntar(estado["historico"], estado["site"])
+    bloco_texto, pendencia, site_novo, novos_turnos = _perguntar(
+        estado["historico"], estado["site"], chat_id, telegram_transport
+    )
     estado["historico"].extend(novos_turnos)
+    if site_novo is not None:
+        estado["site"] = site_novo
 
-    if tool_input is not None:
-        estado["proposta_pendente"] = tool_input
-        telegram_transport.enviar(chat_id, _resumo_proposta(estado["site"], tool_input))
+    if pendencia is not None:
+        if pendencia["tipo"] == "campanha":
+            telegram_transport.enviar(chat_id, _resumo_proposta(estado["site"], pendencia["input"]))
+        else:
+            telegram_transport.enviar(
+                chat_id, "Preparei um rascunho tecnico pro seu pedido. Aplicar agora? (sim/nao)"
+            )
+        estado["pendente"] = pendencia
     elif bloco_texto:
         telegram_transport.enviar(chat_id, bloco_texto)
 
     _salvar_estado(chat_id, estado)
+    _atualizar_resumo(chat_id, texto, bloco_texto)
