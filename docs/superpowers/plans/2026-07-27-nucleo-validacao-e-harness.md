@@ -74,7 +74,7 @@ orquestrador antes de aceitar um `tool_use.input` como válido.
     lista de problemas não for vazia, levanta `InputInvalido(problemas)`;
     senão devolve o `entrada` corrigido.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # ARQUITETURA/nucleo/tests/test_validacao_tool.py
@@ -149,12 +149,12 @@ def test_preparar_input_levanta_quando_invalido():
     assert any("palavras_chave" in p for p in problemas)
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_validacao_tool.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'ARQUITETURA.nucleo.validacao_tool'`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # ARQUITETURA/nucleo/validacao_tool.py
@@ -229,12 +229,12 @@ def preparar_input(entrada: dict, schema: dict) -> dict:
     return corrigido
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_validacao_tool.py -v`
 Expected: PASS (8 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ARQUITETURA/nucleo/__init__.py ARQUITETURA/nucleo/validacao_tool.py ARQUITETURA/nucleo/tests/__init__.py ARQUITETURA/nucleo/tests/test_validacao_tool.py
@@ -275,7 +275,7 @@ git commit -m "feat: contrato de validacao/reparo de tool input (nucleo v2)"
     (`AGENTES/julio/orchestrator.py`, sessão de hoje); (c) devolve a
     resposta roteirizada.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # ARQUITETURA/nucleo/tests/test_fake_anthropic.py
@@ -355,12 +355,12 @@ def test_cliente_fake_pega_tool_use_paralelo_sem_par():
         cliente.messages.create(messages=mensagens)
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_fake_anthropic.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'ARQUITETURA.nucleo.fake_anthropic'`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # ARQUITETURA/nucleo/fake_anthropic.py
@@ -438,12 +438,12 @@ class ClienteAnthropicFake:
         self.messages = _Messages(list(respostas))
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_fake_anthropic.py -v`
 Expected: PASS (6 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ARQUITETURA/nucleo/fake_anthropic.py ARQUITETURA/nucleo/tests/test_fake_anthropic.py
