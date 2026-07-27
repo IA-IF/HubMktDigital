@@ -1,6 +1,6 @@
 # Entendimento (ponto de partida da nova frente)
 
-> **Status (2026-07-27):** Dois planos escritos e executados:
+> **Status (2026-07-27):** Três planos escritos e executados:
 > - Plano 1 — `docs/superpowers/plans/2026-07-27-nucleo-validacao-e-harness.md`:
 >   `validacao_tool.py` + `fake_anthropic.py` (contrato de validação +
 >   harness sem token).
@@ -9,16 +9,24 @@
 >   canal-agnóstico, pareamento de tool_use paralelo, e retry que
 >   preserva contexto na falha transitória (distingue `FalhaPermanente`
 >   de `FalhaTransitoria`).
+> - Plano 3 — `docs/superpowers/plans/2026-07-27-nucleo-memoria-redis.md`:
+>   `memoria.py` (`RepositorioEstado`/`RepositorioEstadoRedis`,
+>   `carregar_resumo`/`salvar_resumo`/`montar_system_com_resumo`) —
+>   persistência real de `EstadoConversa` e o resumo de conversa
+>   **lido de volta** no system prompt (o bug concreto de hoje: era só
+>   escrito, nunca consumido).
 >
-> Ambos com checklist 100% marcado `[x]` e código em
-> `ARQUITETURA/nucleo/` (26 testes passando, `pytest ARQUITETURA/ -v`).
-> Isso cobre os pontos 2, 4, 5 e 7 da lista no fim deste documento.
-> Nada em `AGENTES/julio/` foi tocado — o loop ainda não está ligado a
-> Redis/Telegram/tools reais de propósito (`executar_tool` e `Canal`
-> são injetados, com fakes nos testes). Falta: memória Redis real
-> lida de volta, execução não-bloqueante de verdade, integração com o
-> catálogo real de tools, e a otimização das TOOLS em si contra a doc
-> oficial (pontos 1, 3, 6 abaixo).
+> Os três com checklist 100% marcado `[x]` e código em
+> `ARQUITETURA/nucleo/` (35 testes passando, `pytest ARQUITETURA/ -v`).
+> Isso cobre os pontos 2, 3, 4, 5 e 7 da lista no fim deste documento.
+> Nada em `AGENTES/julio/` foi tocado. O Redis de produção (Redis Cloud
+> compartilhado com o bot antigo) foi **zerado** a pedido do usuário
+> (2026-07-27) — schema/dados do `AGENTES/julio/` eram considerados
+> legado; o bot antigo, se reativado, precisa de `/fix_redis` pra
+> reindexar o catálogo de tools antes de voltar a funcionar. Falta:
+> execução não-bloqueante de verdade, integração com o catálogo real
+> de tools (`discover_tool`/`TOOLS/*`), e a otimização das TOOLS em si
+> contra a doc oficial (pontos 1 e 6 abaixo).
 
 Isso não é um plano fechado — é o meu entendimento atual do objetivo e
 dos problemas de fundo, pra servir de ponto de partida da conversa de
