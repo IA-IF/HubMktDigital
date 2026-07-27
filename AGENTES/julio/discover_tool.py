@@ -86,12 +86,18 @@ def reindexar() -> int:
     return len(registros)
 
 
-def descobrir(mensagem: str, top_k: int = 3) -> list[dict]:
+def descobrir(mensagem: str, top_k: int = 5) -> list[dict]:
     """Busca vetorial: devolve ate top_k tools (tool.json completo de cada
     uma: name/plataforma/description/script/modo_entrada/input_schema/...)
     cuja descricao e mais proxima semanticamente da mensagem. Mensagem sem
     nenhum candidato relevante (ex: "oi") devolve lista vazia — nao forcamos
     top_k fixo abaixo do limiar de relevancia.
+
+    top_k=5 (nao 3): teste real de 2026-07-27 achou "quero ver o trafego
+    da adoro" cortando `analise_vendas` (GA4) fora por ser o 4o colocado
+    (distancia 0.58, bem dentro do LIMIAR_DISTANCIA=0.7) -- top_k=3 era
+    pequeno demais pro catalogo atual (7 tools), cortava candidato
+    relevante antes do limiar de distancia entrar em acao.
     """
     client = _redis_client()
     vectorizer = HFTextVectorizer()
