@@ -158,3 +158,53 @@ def test_tool_use_paralelo_todos_executam_e_pareiam():
     )
     assert chamadas == [{"a": 1, "b": 1}, {"a": 2, "b": 2}]
     assert canal.enviados == [("chat1", "prontinho")]
+
+
+from ARQUITETURA.nucleo.agente import resolver_pendencia
+
+PENDENTE_EXEMPLO = {"tool_use_id": "toolu_1", "name": "criar_campanha", "input": {"nome": "X"}}
+
+
+def test_resolver_pendencia_nao_confirma_cancela():
+    canal = CanalFake()
+    estado = EstadoConversa(historico=[{"role": "user", "content": "oi"}], pendente=PENDENTE_EXEMPLO)
+    resolver_pendencia(estado, confirmou=False, executar_tool=lambda n, e: {}, destinatario="chat1", canal=canal)
+    assert estado.pendente is None
+    assert estado.historico == []
+    assert "cancel" in canal.enviados[0][1].lower()
+
+
+def test_resolver_pendencia_confirma_sucesso():
+    canal = CanalFake()
+    estado = EstadoConversa(pendente=PENDENTE_EXEMPLO)
+    resolver_pendencia(
+        estado, confirmou=True,
+        executar_tool=lambda n, e: {"ok": True}, destinatario="chat1", canal=canal,
+    )
+    assert estado.pendente is None
+    assert estado.historico == []
+    assert len(canal.enviados) == 1
+
+
+def test_resolver_pendencia_falha_permanente_cancela_e_explica():
+    canal = CanalFake()
+    estado = EstadoConversa(pendente=PENDENTE_EXEMPLO)
+
+    def executar(nome, entrada):
+        raise FalhaPermanente("titulo excede 30 caracteres")
+
+    resolver_pendencia(estado, confirmou=True, executar_tool=executar, destinatario="chat1", canal=canal)
+    assert estado.pendente is None
+    assert "titulo excede 30 caracteres" in canal.enviados[0][1]
+
+
+def test_resolver_pendencia_falha_transitoria_preserva_pendencia():
+    canal = CanalFake()
+    estado = EstadoConversa(pendente=dict(PENDENTE_EXEMPLO))
+
+    def executar(nome, entrada):
+        raise FalhaTransitoria("ModuleNotFoundError: no module google")
+
+    resolver_pendencia(estado, confirmou=True, executar_tool=executar, destinatario="chat1", canal=canal)
+    assert estado.pendente == PENDENTE_EXEMPLO
+    assert "ModuleNotFoundError" not in canal.enviados[0][1]

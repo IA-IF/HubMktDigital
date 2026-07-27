@@ -115,3 +115,38 @@ def processar_turno(
             return
 
     canal.enviar(destinatario, "Nao consegui concluir agora -- tenta reformular?")
+
+
+def resolver_pendencia(
+    estado: EstadoConversa,
+    confirmou: bool,
+    executar_tool: ExecutorTool,
+    destinatario: str,
+    canal: Canal,
+) -> None:
+    if estado.pendente is None:
+        return
+    pendente = estado.pendente
+
+    if not confirmou:
+        canal.enviar(destinatario, "Ok, cancelado.")
+        estado.pendente = None
+        estado.historico = []
+        return
+
+    try:
+        executar_tool(pendente["name"], pendente["input"])
+        canal.enviar(destinatario, f"Feito: {pendente['name']} executado com sucesso.")
+        estado.pendente = None
+        estado.historico = []
+    except FalhaPermanente as exc:
+        canal.enviar(destinatario, f"Nao consegui: {exc}. Ajusta o pedido e tenta de novo.")
+        estado.pendente = None
+        estado.historico = []
+    except FalhaTransitoria:
+        canal.enviar(
+            destinatario,
+            "Erro tecnico, ja registrado pra investigar. Manda 'sim' de novo pra "
+            "tentar mais uma vez, ou 'nao' pra cancelar.",
+        )
+        # Pendente/historico NAO zerados -- retry direto com "sim" repete a MESMA acao.
