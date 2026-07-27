@@ -438,9 +438,19 @@ def _perguntar(
 
     mensagens = list(historico)
     novos_turnos: list[dict] = []
+    # ultima_mensagem_usuario nunca muda dentro deste loop -- so o site
+    # pode mudar (via `selecionar_site` na 1a iteracao). Cacheado por
+    # site pra nao repetir a busca vetorial (embed + query no Redis) a
+    # cada rodada do mesmo tool-loop, sempre pro mesmo resultado.
+    candidatos_por_site: dict[str, list[dict]] = {}
 
     for _ in range(MAX_TURNOS_FERRAMENTA):
-        candidatos = _tools_candidatas(ultima_mensagem_usuario) if site_atual else []
+        if site_atual:
+            if site_atual not in candidatos_por_site:
+                candidatos_por_site[site_atual] = _tools_candidatas(ultima_mensagem_usuario)
+            candidatos = candidatos_por_site[site_atual]
+        else:
+            candidatos = []
         catalogo_por_nome = {c["name"]: c for c in candidatos}
         tools = _ferramentas_base() + (_ferramentas_site() if site_atual else []) + [
             {"name": c["name"], "description": c["description"], "input_schema": c["input_schema"]}

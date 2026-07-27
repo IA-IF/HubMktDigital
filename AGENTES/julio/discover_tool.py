@@ -51,6 +51,23 @@ def _redis_client() -> redis.Redis:
     return redis.Redis.from_url(llm_config.redis_url(), decode_responses=True)
 
 
+_vectorizer: HFTextVectorizer | None = None
+
+
+def _get_vectorizer() -> HFTextVectorizer:
+    """Cacheado no processo -- HFTextVectorizer() carrega um modelo
+    HuggingFace inteiro do disco pra memoria. `descobrir` e chamado a
+    cada iteracao do loop de tool-calls (nao so uma vez por mensagem),
+    entao sem cache o processo recarregava o modelo varias vezes na
+    mesma mensagem -- na EC2 (908Mi de RAM) isso estourava memoria,
+    entrava em swap thrashing e o bot ficava preso em D state
+    (uninterruptible sleep), parecendo travado pro usuario no Telegram."""
+    global _vectorizer
+    if _vectorizer is None:
+        _vectorizer = HFTextVectorizer()
+    return _vectorizer
+
+
 def catalogar_tools() -> list[dict]:
     """Le todo TOOLS/**/tool.json real e devolve a lista de tools cruas."""
     tools = []
@@ -65,7 +82,7 @@ def reindexar() -> int:
     """Reconstroi o indice do zero a partir do catalogo real. Retorna quantas
     tools foram indexadas."""
     client = _redis_client()
-    vectorizer = HFTextVectorizer()
+    vectorizer = _get_vectorizer()
     index = SearchIndex(_SCHEMA, redis_client=client)
     index.create(overwrite=True, drop=True)
 
@@ -100,7 +117,7 @@ def descobrir(mensagem: str, top_k: int = 5) -> list[dict]:
     relevante antes do limiar de distancia entrar em acao.
     """
     client = _redis_client()
-    vectorizer = HFTextVectorizer()
+    vectorizer = _get_vectorizer()
     index = SearchIndex(_SCHEMA, redis_client=client)
 
     vetor = vectorizer.embed(mensagem)
