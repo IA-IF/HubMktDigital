@@ -6,6 +6,12 @@ construtor.py.
 
 MINIMO_TITULOS = 3
 MINIMO_DESCRICOES = 2
+# Limites reais da API do Google Ads (responsive search ad) -- passar
+# disso faz a mutate de verdade ser rejeitada (GoogleAdsException) DEPOIS
+# de gastar a chamada, com um erro tecnico feio pro usuario ver. Checar
+# aqui pega isso ANTES, sem gastar rede.
+MAX_CHARS_TITULO = 30
+MAX_CHARS_DESCRICAO = 90
 
 
 def brl_para_micros(valor_brl: float) -> int:
@@ -38,9 +44,17 @@ def validar_proposta(proposta: dict) -> list[str]:
     titulos = proposta.get("titulos")
     if not isinstance(titulos, list) or len(titulos) < MINIMO_TITULOS:
         erros.append(f"titulos precisa ter pelo menos {MINIMO_TITULOS} itens (regra do responsive search ad)")
+    elif isinstance(titulos, list):
+        for t in titulos:
+            if isinstance(t, str) and len(t) > MAX_CHARS_TITULO:
+                erros.append(f"titulo excede {MAX_CHARS_TITULO} caracteres ({len(t)}): {t!r}")
 
     descricoes = proposta.get("descricoes")
     if not isinstance(descricoes, list) or len(descricoes) < MINIMO_DESCRICOES:
         erros.append(f"descricoes precisa ter pelo menos {MINIMO_DESCRICOES} itens (regra do responsive search ad)")
+    elif isinstance(descricoes, list):
+        for d in descricoes:
+            if isinstance(d, str) and len(d) > MAX_CHARS_DESCRICAO:
+                erros.append(f"descricao excede {MAX_CHARS_DESCRICAO} caracteres ({len(d)}): {d!r}")
 
     return erros

@@ -801,6 +801,17 @@ def processar_mensagem(chat_id: str, texto: str, telegram_transport) -> None:
                         f"{resultado['campanha_resource']}\n"
                         f"Status: {resultado['status']}",
                     )
+                except agentes.PropostaInvalida as exc:
+                    # Mensagem sempre limpa (vem da validacao da propria tool, ex:
+                    # "titulo excede 30 caracteres") -- seguro mostrar direto, e um
+                    # "sim" de novo NAO resolve (o problema e o conteudo da proposta,
+                    # nao algo transitorio), entao cancela e deixa o humano pedir de
+                    # novo com o texto ajustado.
+                    telegram_transport.enviar(
+                        chat_id,
+                        f"Não consegui criar a campanha: {exc}\n\n"
+                        "Ajusta o que foi apontado e pede a campanha de novo.",
+                    )
                 except Exception as exc:  # noqa: BLE001 — log tecnico, nunca expor exececao crua
                     print(f"[erro criar_campanha] chat={chat_id} site={estado['site']}: {exc}")
                     telegram_transport.enviar(
@@ -809,10 +820,12 @@ def processar_mensagem(chat_id: str, texto: str, telegram_transport) -> None:
                         "investigar). A proposta continua pronta -- manda 'sim' de novo pra "
                         "tentar mais uma vez, ou 'nao' pra cancelar.",
                     )
-                    # Mantem a proposta viva -- diferente de sucesso/cancelamento, aqui NAO
-                    # zeramos pendente/historico: um simples "sim" de novo repete a MESMA
-                    # chamada direto, sem depender do LLM decidir de novo o que fazer (evita
-                    # cair em registrar_pedido_projeto/pedido_futuro so por confusao apos erro).
+                    # Mantem a proposta viva -- diferente de sucesso/cancelamento/proposta
+                    # invalida, aqui NAO zeramos pendente/historico: um simples "sim" de
+                    # novo repete a MESMA chamada direto (falha provavelmente transitoria
+                    # ou ja corrigida no codigo/infra), sem depender do LLM decidir de novo
+                    # o que fazer (evita cair em registrar_pedido_projeto/pedido_futuro so
+                    # por confusao apos erro).
                     _salvar_estado(chat_id, estado)
                     return
             else:

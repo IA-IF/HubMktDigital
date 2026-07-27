@@ -68,14 +68,25 @@ def rodar_tool(tool: dict, site: str, params: dict) -> dict:
     return _rodar(script, argv)
 
 
+class PropostaInvalida(RuntimeError):
+    """Proposta rejeitada pela validacao PROPRIA da tool (ex: titulo do
+    anuncio acima do limite de caracteres do Google Ads) -- mensagem
+    sempre limpa e acionavel, seguro mostrar direto ao usuario (diferente
+    de uma excecao inesperada, que pode carregar traceback tecnico)."""
+
+
 def criar_campanha_ads(tool: dict, proposta: dict, site: str) -> dict:
     """Cria a campanha de verdade no Google Ads (sempre PAUSADA).
 
-    Levanta RuntimeError se a validacao ou a criacao falharem -- quem chama
-    decide o que contar ao usuario.
+    Levanta PropostaInvalida se a VALIDACAO falhar (mensagem segura pro
+    usuario) ou RuntimeError se a criacao em si falhar por outro motivo
+    (pode conter detalhe tecnico -- quem chama decide o que contar ao
+    usuario, mas nao deve mostrar direto).
     """
     resposta = rodar_tool(tool, site, proposta)
     if not resposta.get("ok"):
-        erro = "; ".join(resposta.get("erros", [])) or resposta.get("erro", "erro desconhecido")
-        raise RuntimeError(erro)
+        erros = resposta.get("erros")
+        if erros:
+            raise PropostaInvalida("; ".join(erros))
+        raise RuntimeError(resposta.get("erro", "erro desconhecido"))
     return resposta
