@@ -56,9 +56,17 @@ def rodar_loop() -> None:
             try:
                 processar_mensagem(chat_id, mensagem["text"], telegram_transport)
             except Exception as exc:  # noqa: BLE001 — nao derrubar o loop por erro de 1 msg
+                # Log tecnico completo so no console/arquivo -- nunca mostrar exececao
+                # crua (tipo/traceback Python) pro usuario de negocio no Telegram. Isso
+                # ja confundiu o LLM em conversas seguintes (viu "ModuleNotFoundError"
+                # e tentou "consertar o projeto" em vez de so tentar de novo).
                 print(f"Erro processando mensagem de {chat_id}: {exc}")
                 try:
-                    telegram_transport.enviar(chat_id, f"Erro interno: {exc}")
+                    telegram_transport.enviar(
+                        chat_id,
+                        "Deu um erro tecnico aqui do meu lado processando sua mensagem -- "
+                        "ja registrei pra investigar. Pode tentar de novo?",
+                    )
                 except requests.RequestException:
                     pass
 

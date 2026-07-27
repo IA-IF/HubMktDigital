@@ -801,8 +801,20 @@ def processar_mensagem(chat_id: str, texto: str, telegram_transport) -> None:
                         f"{resultado['campanha_resource']}\n"
                         f"Status: {resultado['status']}",
                     )
-                except Exception as exc:  # noqa: BLE001 — informar o erro ao usuario
-                    telegram_transport.enviar(chat_id, f"Erro ao criar a campanha: {exc}")
+                except Exception as exc:  # noqa: BLE001 — log tecnico, nunca expor exececao crua
+                    print(f"[erro criar_campanha] chat={chat_id} site={estado['site']}: {exc}")
+                    telegram_transport.enviar(
+                        chat_id,
+                        "Não consegui criar a campanha agora (erro tecnico, ja registrado pra "
+                        "investigar). A proposta continua pronta -- manda 'sim' de novo pra "
+                        "tentar mais uma vez, ou 'nao' pra cancelar.",
+                    )
+                    # Mantem a proposta viva -- diferente de sucesso/cancelamento, aqui NAO
+                    # zeramos pendente/historico: um simples "sim" de novo repete a MESMA
+                    # chamada direto, sem depender do LLM decidir de novo o que fazer (evita
+                    # cair em registrar_pedido_projeto/pedido_futuro so por confusao apos erro).
+                    _salvar_estado(chat_id, estado)
+                    return
             else:
                 telegram_transport.enviar(chat_id, "Proposta cancelada. Pode me contar o que quer mudar.")
         else:  # pedido_projeto
