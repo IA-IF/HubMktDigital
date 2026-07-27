@@ -1,9 +1,10 @@
 # Fusão Julio+Elis e Fluxo de Conversa Implementation Plan
 
-> **STATUS: IMPLEMENTADO em 2026-07-27** (código real, ver "Arquivos
-> alterados" no fim). **Não testado contra o Telegram/Redis reais** —
-> este ambiente não tem acesso a esses serviços; testar antes de subir
-> na EC2 é o próximo passo.
+> **STATUS: IMPLEMENTADO e testado com Redis/Anthropic reais em
+> 2026-07-27** (ver "Testado de verdade" no fim). Só o transporte
+> Telegram em si não foi exercitado (sem token de teste isolado neste
+> ambiente) — o resto do fluxo (estado, tools, dado real de GA4) rodou
+> de ponta a ponta contra os serviços reais do projeto.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -198,15 +199,35 @@ que a gente falou sobre X" — a estrutura de chave já comporta migrar pra
   numerado, 2 agentes) marcado explicitamente como histórico
   (pré-fusão), pra nenhuma sessão futura ler como comportamento atual.
 
-## Falta (não dá pra verificar neste ambiente)
+## Testado de verdade (2026-07-27, contra os serviços reais do projeto)
 
-- [ ] Testar contra Redis real (`REDIS_URL` de verdade) — este ambiente
-  não tem acesso; `py_compile` confirma que o código é sintaticamente
-  válido, não que o fluxo funciona ponta a ponta.
-- [ ] Testar contra o Telegram real — confirmar que `selecionar_site`
-  é chamado de forma confiável pelo modelo quando o usuário menciona um
-  site em texto livre, e que o fluxo de pendência (campanha e pedido de
-  projeto) ainda funciona depois da unificação em `estado["pendente"]`.
-- [ ] `STATUS_PROJETO.md` já está escrito de forma agnóstica (fala só
-  "o Julio", não menciona a separação antiga) — conferido, não precisou
-  de ajuste.
+- **Redis real** (`REDIS_URL` de `REDIS/.env`, não mockado): roundtrip
+  de `memoria_redis.carregar_estado`/`salvar_estado`/`carregar_resumo`/
+  `salvar_resumo` — salvou, leu de volta, bateu. Chaves de teste
+  removidas depois.
+- **`julio_config`**: `anthropic_api_key()`, `telegram_bot_token()` e
+  `texto_status()` (via `git rev-parse` real) confirmados presentes/
+  funcionando. `status_token()` corretamente ainda não definido (campo
+  novo, falta preencher antes de subir `status_server.py`).
+- **Fluxo completo `processar_mensagem`** com Anthropic real (não
+  mockado) e `FakeTransport` capturando a saída: `/start` → mensagem
+  livre sem site ("oi, tudo bem?") respondeu em texto, sem tentar
+  nenhuma tool → mensagem "quero ver o trafego da adoro dos ultimos 7
+  dias" **chamou `selecionar_site` sozinho** (site nunca foi dito por
+  número, só por nome em texto livre) e depois **rodou a tool real de
+  GA4** contra a conta da Adoro, devolvendo funil de conversão/canais/
+  AOV com dado real (83 sessões, 9 compras, AOV R$ 825, etc.).
+- **Achado no processo**: a 1ª tentativa desse teste voltou "ferramenta
+  não disponível" — `discover_tool.descobrir()` (top_k=3, não mudado
+  por este plano) cortava `analise_vendas` (GA4) fora por ser o 4º
+  colocado, distância 0.58 (dentro do limiar 0.7). Corrigido à parte
+  (`discover_tool.py`, top_k 3→5, commit `a8341a5`) — não é regressão
+  desta fusão, é um problema pré-existente que o teste real expôs.
+- **Não testado**: o transporte Telegram em si (long polling,
+  `telegram_transport.py`) — não tem token de teste isolado neste
+  ambiente, só o `TELEGRAM_BOT_TOKEN` de produção. O resto do fluxo (tudo
+  que roda antes de chamar `telegram_transport.enviar`) foi exercitado
+  de ponta a ponta com um transporte falso capturando a saída.
+- `STATUS_PROJETO.md` já está escrito de forma agnóstica (fala só "o
+  Julio", não menciona a separação antiga) — conferido, não precisou de
+  ajuste.
