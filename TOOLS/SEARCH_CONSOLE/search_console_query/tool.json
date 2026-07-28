@@ -1,0 +1,16 @@
+{
+  "name": "search_console_query",
+  "plataforma": "SEARCH_CONSOLE",
+  "description": "Executa QUALQUER metodo de leitura da API do Search Console (searchanalytics.query, sitemaps.list/get, sites.list/get) -- recurso/metodo/parametros escolhidos por voce. Consulte search_console_consultar_schema primeiro pra saber os parametros exatos.",
+  "script": "TOOLS/SEARCH_CONSOLE/search_console_query/query.py",
+  "modo_entrada": "stdin",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "recurso": {"type": "string", "description": "Ex: 'searchanalytics', 'sitemaps', 'sites'."},
+      "metodo": {"type": "string", "description": "Ex: 'query', 'list', 'get'."},
+      "parametros": {"type": "object", "description": "Parametros do metodo (ver search_console_consultar_schema). siteUrl e preenchido automaticamente se omitido."}
+    },
+    "required": ["recurso", "metodo"]
+  }
+}

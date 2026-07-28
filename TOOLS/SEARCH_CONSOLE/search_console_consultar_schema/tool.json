@@ -1,0 +1,12 @@
+{
+  "name": "search_console_consultar_schema",
+  "plataforma": "SEARCH_CONSOLE",
+  "description": "Consulta os recursos, metodos e parametros REAIS da API do Search Console (searchanalytics.query, sitemaps.*, sites.*). Chame ANTES de usar search_console_query pra saber os parametros exatos de cada metodo.",
+  "script": "TOOLS/SEARCH_CONSOLE/search_console_consultar_schema/consultar_schema.py",
+  "modo_entrada": "argv",
+  "input_schema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  }
+}
