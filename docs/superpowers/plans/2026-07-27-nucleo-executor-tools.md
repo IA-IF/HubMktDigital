@@ -63,7 +63,7 @@ credencial nenhuma do Google.
     - `nome_tool` ausente em `tool_por_nome` → `raise
       FalhaPermanente(f"ferramenta desconhecida: {nome_tool}")`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # ARQUITETURA/nucleo/tests/test_executor_tools.py
@@ -146,12 +146,12 @@ def test_executor_levanta_falha_permanente_pra_tool_desconhecida(tmp_path):
         executar("nao_existe", {})
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_executor_tools.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'ARQUITETURA.nucleo.executor_tools'`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # ARQUITETURA/nucleo/executor_tools.py
@@ -210,12 +210,12 @@ def criar_executor_tool(hub_root: Path, tool_por_nome: dict[str, dict], site: st
     return executar
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_executor_tools.py -v`
 Expected: PASS (5 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ARQUITETURA/nucleo/executor_tools.py ARQUITETURA/nucleo/tests/test_executor_tools.py
