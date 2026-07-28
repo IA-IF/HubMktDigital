@@ -3,7 +3,6 @@ from validacao import brl_para_micros, validar_proposta
 PROPOSTA_VALIDA = {
     "nome_campanha": "Whey Protein — Julho",
     "orcamento_diario_brl": 50.0,
-    "lance_inicial_brl": 2.5,
     "url_final": "https://integrafoods.com.br/produto/whey-protein",
     "palavras_chave": [{"texto": "whey protein"}, {"texto": "proteina em po"}],
     "titulos": ["Whey Protein Integra Foods", "Proteina de qualidade", "Compre agora"],
@@ -54,3 +53,11 @@ def test_validar_proposta_poucas_descricoes_acusa_erro():
     proposta = {**PROPOSTA_VALIDA, "descricoes": ["So uma descricao"]}
     erros = validar_proposta(proposta)
     assert any("descricoes" in erro for erro in erros)
+
+
+def test_validar_proposta_nao_exige_lance_inicial_brl():
+    """Campanha usa Smart Bidding (maximize_conversions) -- nao ha mais
+    lance manual por grupo de anuncio, entao esse campo nao e mais
+    validado (nem usado)."""
+    proposta = {k: v for k, v in PROPOSTA_VALIDA.items() if k != "lance_inicial_brl"}
+    assert validar_proposta(proposta) == []

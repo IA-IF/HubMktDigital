@@ -1,7 +1,7 @@
 {
   "name": "criar_campanha",
   "plataforma": "ADWORDS",
-  "description": "Cria uma campanha de Search completa no Google Ads (orcamento, campanha, targeting Brasil/PT-BR, grupo de anuncio, palavras-chave, anuncio responsivo) sempre PAUSADA. So chamar depois de confirmacao explicita do humano na conversa — ativar a campanha e sempre acao manual, fora desta tool.",
+  "description": "Cria uma campanha de Search completa no Google Ads (orcamento, campanha em Smart Bidding Maximize Conversions, targeting Brasil/PT-BR, grupo de anuncio, palavras-chave, anuncio responsivo) sempre PAUSADA. So chamar depois de confirmacao explicita do humano na conversa — ativar a campanha e sempre acao manual, fora desta tool.",
   "script": "TOOLS/ADWORDS/criar_campanha/criar_campanha.py",
   "modo_entrada": "stdin",
   "requer_confirmacao": true,
@@ -10,7 +10,6 @@
     "properties": {
       "nome_campanha": {"type": "string", "description": "Nome da campanha no Google Ads."},
       "orcamento_diario_brl": {"type": "number", "description": "Orcamento diario em reais."},
-      "lance_inicial_brl": {"type": "number", "description": "Lance de CPC inicial do grupo de anuncio, em reais."},
       "url_final": {"type": "string", "description": "URL de destino do anuncio (ex: pagina do produto, ver tool catalogo_produtos)."},
       "palavras_chave": {
         "type": "array",
@@ -27,6 +26,6 @@
       "titulos": {"type": "array", "items": {"type": "string"}, "description": "Pelo menos 3 titulos (headlines) do anuncio responsivo."},
       "descricoes": {"type": "array", "items": {"type": "string"}, "description": "Pelo menos 2 descricoes do anuncio responsivo."}
     },
-    "required": ["nome_campanha", "orcamento_diario_brl", "lance_inicial_brl", "url_final", "palavras_chave", "titulos", "descricoes"]
+    "required": ["nome_campanha", "orcamento_diario_brl", "url_final", "palavras_chave", "titulos", "descricoes"]
   }
 }

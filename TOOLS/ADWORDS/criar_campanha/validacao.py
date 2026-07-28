@@ -26,10 +26,9 @@ def validar_proposta(proposta: dict) -> list[str]:
         if not proposta.get(campo):
             erros.append(f"campo obrigatorio ausente: {campo}")
 
-    for campo in ("orcamento_diario_brl", "lance_inicial_brl"):
-        valor = proposta.get(campo)
-        if not isinstance(valor, (int, float)) or valor <= 0:
-            erros.append(f"{campo} precisa ser um numero maior que zero")
+    valor_orcamento = proposta.get("orcamento_diario_brl")
+    if not isinstance(valor_orcamento, (int, float)) or valor_orcamento <= 0:
+        erros.append("orcamento_diario_brl precisa ser um numero maior que zero")
 
     url_final = proposta.get("url_final")
     if url_final and not url_final.startswith("http"):

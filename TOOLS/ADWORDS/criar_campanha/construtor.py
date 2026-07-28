@@ -21,6 +21,12 @@ def _criar_orcamento(client: GoogleAdsClient, cid: str, nome: str, valor_diario_
     budget.name = f"{nome} — orcamento"
     budget.amount_micros = brl_para_micros(valor_diario_brl)
     budget.delivery_method = client.enums.BudgetDeliveryMethodEnum.STANDARD
+    # explicitly_shared default e True (orcamento pra compartilhar entre
+    # campanhas) -- cada chamada aqui cria 1 orcamento dedicado pra 1
+    # campanha so, e Smart Bidding no nivel da campanha exige orcamento
+    # NAO compartilhado (senao a API rejeita com
+    # BIDDING_STRATEGY_TYPE_INCOMPATIBLE_WITH_SHARED_BUDGET).
+    budget.explicitly_shared = False
     resposta = service.mutate_campaign_budgets(customer_id=cid, operations=[op])
     return resposta.results[0].resource_name
 
@@ -38,7 +44,12 @@ def _criar_campanha(client: GoogleAdsClient, cid: str, nome: str, budget_resourc
     campanha.contains_eu_political_advertising = (
         client.enums.EuPoliticalAdvertisingStatusEnum.DOES_NOT_CONTAIN_EU_POLITICAL_ADVERTISING
     )
-    campanha.manual_cpc.enhanced_cpc_enabled = False
+    # Smart Bidding orientado a conversao -- sem historico de conversao
+    # ainda, entao sem target_cpa/bid ceiling (deixa o algoritmo aprender
+    # livre dentro do orcamento). Objetivo do projeto e campanha que gere
+    # conversao de verdade (ver ARQUITETURA/entendimento.md); manual_cpc
+    # (bidding anterior) nao otimiza pra conversao nenhuma.
+    campanha.maximize_conversions = {}
     campanha.network_settings.target_google_search = True
     campanha.network_settings.target_search_network = False
     campanha.network_settings.target_content_network = False
@@ -60,8 +71,10 @@ def _criar_targeting(client: GoogleAdsClient, cid: str, campanha_resource: str) 
     service.mutate_campaign_criteria(customer_id=cid, operations=[op_geo, op_idioma])
 
 
-def _criar_grupo_anuncio(client: GoogleAdsClient, cid: str, campanha_resource: str,
-                          nome: str, lance_inicial_brl: float) -> str:
+def _criar_grupo_anuncio(client: GoogleAdsClient, cid: str, campanha_resource: str, nome: str) -> str:
+    """Sem cpc_bid_micros -- bid manual por grupo de anuncio nao se
+    aplica com a campanha em Smart Bidding (maximize_conversions),
+    quem decide o lance e o algoritmo da API."""
     service = client.get_service("AdGroupService")
     op = client.get_type("AdGroupOperation")
     grupo = op.create
@@ -69,7 +82,6 @@ def _criar_grupo_anuncio(client: GoogleAdsClient, cid: str, campanha_resource: s
     grupo.campaign = campanha_resource
     grupo.status = client.enums.AdGroupStatusEnum.ENABLED
     grupo.type_ = client.enums.AdGroupTypeEnum.SEARCH_STANDARD
-    grupo.cpc_bid_micros = brl_para_micros(lance_inicial_brl)
     resposta = service.mutate_ad_groups(customer_id=cid, operations=[op])
     return resposta.results[0].resource_name
 
@@ -118,9 +130,7 @@ def executar_criacao(client: GoogleAdsClient, cid: str, proposta: dict) -> dict:
     budget_resource = _criar_orcamento(client, cid, nome, proposta["orcamento_diario_brl"])
     campanha_resource = _criar_campanha(client, cid, nome, budget_resource)
     _criar_targeting(client, cid, campanha_resource)
-    grupo_resource = _criar_grupo_anuncio(
-        client, cid, campanha_resource, f"{nome} — grupo 1", proposta["lance_inicial_brl"]
-    )
+    grupo_resource = _criar_grupo_anuncio(client, cid, campanha_resource, f"{nome} — grupo 1")
     _criar_keywords(client, cid, grupo_resource, proposta["palavras_chave"])
     _criar_anuncio(
         client, cid, grupo_resource,
