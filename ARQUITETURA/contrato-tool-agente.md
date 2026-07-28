@@ -65,11 +65,41 @@ otimização:
 3. Nenhuma tool deve ter lógica do tipo "se o cliente tem X, usa
    estratégia Y" — esse é raciocínio do agente. A tool só recebe "usa
    estratégia Y" (já decidida) e executa.
-4. Presunções de escopo do PROJETO (ex: geo=Brasil, idioma=PT-BR — os 3
-   sites são todos brasileiros) são diferentes de estratégia de
-   CAMPANHA — ainda vale listar essas separadamente e confirmar que
-   são mesmo escopo fixo do projeto, não algo que devia variar por
-   campanha/cliente.
+4. Presunções de escopo do PROJETO (ex: idioma=PT-BR — os 3 sites são
+   todos brasileiros) são diferentes de estratégia de CAMPANHA — ainda
+   vale listar essas separadamente e confirmar que são mesmo escopo
+   fixo do projeto, não algo que devia variar por campanha/cliente.
+   **Já pegou um caso real** (ver seção abaixo): geo estava listado
+   como "presunção de escopo" (Brasil inteiro) quando na verdade é
+   decisão de CAMPANHA — segmentação por CEP/raio é um pedido de
+   campanha legítimo que o hardcode atual simplesmente não permite.
+
+## Regra adicional: parâmetro extensível > campo nomeado, pra decisões em aberto
+
+Achado em 2026-07-27 (pedido de teste: "criar anúncio com segmentação
+por CEP"): expor UMA decisão como parâmetro nomeado (o fix do bidding)
+resolve aquele caso, mas **decisões de campanha são abertas por
+natureza** — geo, dispositivo, horário de veiculação, demografia,
+audiência, proximidade, e mais. Se cada uma virar um campo nomeado
+adicionado um de cada vez conforme o gap aparece, o problema nunca
+acaba — é a mesma espiral de "isso não tá coberto" de novo, só que
+parâmetro por parâmetro em vez de comportamento por comportamento.
+
+**A API real já resolve isso**: `CampaignCriterion` é UM tipo
+extensível com ~40 tipos de critério possíveis (`location`,
+`proximity`, `device`, `ad_schedule`, `language`, `user_list`, etc.)
+through um mecanismo só. Uma tool como `criar_campanha` deveria espelhar
+essa forma — um parâmetro genérico tipo `criterios: [{tipo: ..., ...}]`
+que o agente populate com QUALQUER tipo de critério que a API real
+suporta — em vez de um campo nomeado por decisão que alguém (eu)
+precisou adivinhar de antemão que seria pedida.
+
+**Regra prática**: quando a decisão que falta expor pertence a um
+conjunto ABERTO/extensível de opções (a API tem um "tipo" com várias
+variantes) — não crie um campo nomeado por variante. Espelhe a
+extensibilidade da própria API no schema da tool. Campo nomeado só faz
+sentido pra decisões binárias/fechadas (ex: confirmar ou não, ativo/
+pausado).
 
 ## Impacto nos planos de otimização das TOOLS
 
