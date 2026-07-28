@@ -101,3 +101,43 @@ def test_montar_system_com_resumo_anexa_secao():
     assert "Voce e o Julio." in resultado
     assert "pendente: confirmar campanha X" in resultado
     assert resultado.index("Voce e o Julio.") < resultado.index("pendente: confirmar campanha X")
+
+
+from ARQUITETURA.nucleo.memoria import (
+    carregar_perfil_cliente,
+    carregar_site,
+    montar_system_com_perfil,
+    salvar_site,
+)
+
+
+def test_carregar_site_none_quando_nunca_selecionado():
+    cliente = ClienteRedisFake()
+    assert carregar_site(cliente, "chat1") is None
+
+
+def test_salvar_e_carregar_site():
+    cliente = ClienteRedisFake()
+    salvar_site(cliente, "chat1", "3gfoods")
+    assert carregar_site(cliente, "chat1") == "3gfoods"
+
+
+def test_carregar_perfil_cliente_vazio_quando_nunca_salvo():
+    class ClienteRedisFakeHash(ClienteRedisFake):
+        def hgetall(self, chave):
+            return {}
+    cliente = ClienteRedisFakeHash()
+    assert carregar_perfil_cliente(cliente, "3gfoods") == {}
+
+
+def test_montar_system_sem_site_nao_mostra_perfil():
+    resultado = montar_system_com_perfil("Base.", None, {}, ["roas_alvo"])
+    assert resultado == "Base."
+
+
+def test_montar_system_com_site_mostra_perfil_e_campos_faltando():
+    perfil = {"roas_alvo": "400%"}
+    resultado = montar_system_com_perfil("Base.", "3gfoods", perfil, ["roas_alvo", "publico_alvo"])
+    assert "Base." in resultado
+    assert "roas_alvo: 400%" in resultado
+    assert "publico_alvo" in resultado
