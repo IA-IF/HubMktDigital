@@ -136,30 +136,30 @@
 >   não por estar certo); validação de input (`preparar_input`) só
 >   roda pra tools `requer_confirmacao`, não pra todas.
 >
-> **Achado novo, mais profundo que o do bidding (2026-07-27, teste do
-> usuário: "e se eu pedir segmentação por CEP num anúncio?"):**
-> confirmado que não funcionaria hoje — `construtor.py` só implementa
-> geo em nível de país (Brasil fixo, hardcoded) e não expõe NENHUM
-> parâmetro de targeting. Pior que "não suportado": o system prompt do
-> núcleo não tem regra nenhuma contra ignorar silenciosamente um
-> requisito não suportado (ao contrário do antigo `AGENTES/julio`, que
-> tinha essa regra explícita). Isso generalizou o
-> `contrato-tool-agente.md`: decisões de campanha são abertas por
-> natureza (geo, dispositivo, horário, demografia, proximidade...) —
-> resolver campo nomeado por campo nomeado conforme o gap aparece é a
-> MESMA espiral de antes. A tool devia expor um parâmetro extensível
-> (`criterios: [{tipo, ...}]`, espelhando o próprio `CampaignCriterion`
-> da API real, que tem ~40 variantes através de um mecanismo só) em
-> vez de enumerar campo por campo. Ver seção correspondente no
-> documento do contrato pro detalhe completo.
+> **Achado do CEP (2026-07-27), corrigido no mesmo dia:** primeira
+> resposta ("expor `criterios: [{tipo,...}]` genérico, espelhando os
+> ~40 tipos de `CampaignCriterion`") ainda ficou presa no exemplo — o
+> usuário testou de novo trocando CEP por "público que entrou num
+> funil de venda X" e isso quebra a ideia (não é um critério pra
+> escolher de um enum, é um recurso — audiência/UserList — que talvez
+> nem exista ainda e precisa ser CRIADO por outra operação de API
+> inteira antes). **Causa real: `criar_campanha` é uma tool
+> MONOLÍTICA** (orçamento+campanha+bidding+targeting+grupo+keywords+
+> anúncio numa chamada atômica só) — nenhum schema, por mais rico,
+> cobre um requisito que precisa de um PASSO que não existe no fluxo
+> ainda. **Fix correto: decompor a tool em peças pequenas e
+> componíveis**; a inteligência de compor os passos certos (incluindo
+> não previstos) é do AGENTE, não do schema. Ver
+> `ARQUITETURA/contrato-tool-agente.md` (versão final, já corrigida).
 >
 > **Veredito da auditoria:** direção correta — o que era incerto agora
-> tem evidência real (não suposição), e os gaps confirmados têm
-> caminho pequeno e conhecido, não redesenho. Ordem proposta pro que
-> falta: (1) os 2 bugs pequenos, (2) site + perfil de cliente (mesmo
-> padrão, resolvem juntos), (3) parâmetro extensível de critérios +
-> bidding-alvo no `criar_campanha` (aplicação real do contrato), (4)
-> negative keywords, (5) auditoria GA4/GTM/Search Console.
+> tem evidência real (não suposição). Gaps de site/perfil de cliente
+> têm caminho pequeno conhecido. O achado do `criar_campanha`
+> monolítico é mais profundo — decompor em tools pequenas é trabalho
+> real, não um patch. Ordem proposta: (1) os 2 bugs pequenos, (2) site
+> + perfil de cliente, (3) decompor `criar_campanha` em tools
+> componíveis (aplicação real e completa do contrato), (4) auditoria
+> GA4/GTM/Search Console com a mesma lente.
 
 Isso não é um plano fechado — é o meu entendimento atual do objetivo e
 dos problemas de fundo, pra servir de ponto de partida da conversa de
