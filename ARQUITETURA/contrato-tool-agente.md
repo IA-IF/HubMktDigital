@@ -74,32 +74,49 @@ otimização:
    decisão de CAMPANHA — segmentação por CEP/raio é um pedido de
    campanha legítimo que o hardcode atual simplesmente não permite.
 
-## Regra adicional: parâmetro extensível > campo nomeado, pra decisões em aberto
+## Regra adicional (corrigida): decompor a tool, não só enriquecer o schema
 
-Achado em 2026-07-27 (pedido de teste: "criar anúncio com segmentação
-por CEP"): expor UMA decisão como parâmetro nomeado (o fix do bidding)
-resolve aquele caso, mas **decisões de campanha são abertas por
-natureza** — geo, dispositivo, horário de veiculação, demografia,
-audiência, proximidade, e mais. Se cada uma virar um campo nomeado
-adicionado um de cada vez conforme o gap aparece, o problema nunca
-acaba — é a mesma espiral de "isso não tá coberto" de novo, só que
-parâmetro por parâmetro em vez de comportamento por comportamento.
+Primeira versão deste achado (2026-07-27, pedido de teste: "criar
+anúncio com segmentação por CEP") propôs um parâmetro genérico
+`criterios: [{tipo, ...}]` espelhando os ~40 tipos de `CampaignCriterion`
+da API real, em vez de campo nomeado por decisão. **Essa correção
+ainda ficou presa no exemplo** — o usuário testou de novo trocando CEP
+por "público que entrou num funil de venda X" e isso quebra a ideia:
+não é um critério que já existe pra escolher de um enum, é um recurso
+que talvez nem exista ainda (um `UserList`/audiência baseada em
+comportamento no GA4) e que precisa ser CRIADO antes, por uma operação
+de API completamente diferente — não é parâmetro nenhum de
+`criar_campanha`, é um PASSO A MAIS, em outra tool.
 
-**A API real já resolve isso**: `CampaignCriterion` é UM tipo
-extensível com ~40 tipos de critério possíveis (`location`,
-`proximity`, `device`, `ad_schedule`, `language`, `user_list`, etc.)
-through um mecanismo só. Uma tool como `criar_campanha` deveria espelhar
-essa forma — um parâmetro genérico tipo `criterios: [{tipo: ..., ...}]`
-que o agente populate com QUALQUER tipo de critério que a API real
-suporta — em vez de um campo nomeado por decisão que alguém (eu)
-precisou adivinhar de antemão que seria pedida.
+**A causa real:** `criar_campanha` hoje é uma tool MONOLÍTICA — orçamento
++ campanha + bidding + targeting + grupo de anúncio + keywords + anúncio,
+tudo numa chamada atômica só (`executar_criacao` em `construtor.py`).
+Nenhum schema, por mais extensível/genérico que seja, cobre um espaço de
+requisitos aberto quando o requisito pode exigir um PASSO que nem existe
+no fluxo da tool ainda (criar uma audiência antes de referenciá-la, por
+exemplo). Enriquecer o schema de uma tool monolítica sempre vai ficar
+"um passo atrás" do próximo pedido não previsto.
 
-**Regra prática**: quando a decisão que falta expor pertence a um
-conjunto ABERTO/extensível de opções (a API tem um "tipo" com várias
-variantes) — não crie um campo nomeado por variante. Espelhe a
-extensibilidade da própria API no schema da tool. Campo nomeado só faz
-sentido pra decisões binárias/fechadas (ex: confirmar ou não, ativo/
-pausado).
+**Regra correta:** decompor a tool em peças pequenas e componíveis
+(criar orçamento, criar campanha com bidding, adicionar critério de
+targeting — genérico, qualquer tipo — criar grupo de anúncio, adicionar
+keywords, criar anúncio, e SEPARADAMENTE: criar/consultar audiência,
+etc.) — cada uma sua própria tool, executando fielmente UM passo. A
+inteligência de compor os passos certos, na ordem certa, incluindo
+passos que ninguém previu de antemão (checar se a audiência já existe,
+criar se não existir, só então criar a campanha referenciando ela) é
+trabalho do AGENTE, não algo que um schema — por mais rico — consegue
+enumerar de antemão. Isso é literalmente o mesmo princípio do contrato
+(agente decide, tool executa) aplicado um nível acima: não é só o
+VALOR de um campo que é decisão do agente, é a PRÓPRIA SEQUÊNCIA de
+chamadas a fazer.
+
+**Regra prática:** ao desenhar ou revisar qualquer tool, perguntar "essa
+tool faz UMA coisa, ou várias coisas amarradas numa chamada só?". Se faz
+várias, cada uma que puder ser útil sozinha (ou reaproveitada por outro
+fluxo) deve virar tool própria. `requer_confirmacao` continua sendo por
+tool (algumas etapas, tipo criar recursos reais, precisam de confirmação;
+consultar/listar não precisa).
 
 ## Impacto nos planos de otimização das TOOLS
 
