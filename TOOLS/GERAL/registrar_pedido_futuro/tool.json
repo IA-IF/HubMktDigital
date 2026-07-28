@@ -2,7 +2,8 @@
   "name": "registrar_pedido_futuro",
   "plataforma": "geral",
   "description": "Chame quando o usuario pedir algo que nenhuma outra ferramenta resolve. Regra inegociavel: nunca inventar resposta nem fingir ter executado algo. Registra o pedido pra ser analisado depois, fora desta conversa.",
-  "modo_entrada": "local",
+  "script": "TOOLS/GERAL/registrar_pedido_futuro/registrar.py",
+  "modo_entrada": "stdin",
   "input_schema": {
     "type": "object",
     "properties": {
