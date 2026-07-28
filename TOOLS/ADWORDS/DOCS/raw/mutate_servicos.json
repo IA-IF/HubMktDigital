@@ -1,0 +1,1809 @@
+{
+  "CampaignService": {
+    "modulo": "google.ads.googleads.v24.services.services.campaign_service.client",
+    "metodos": {
+      "accessible_bidding_strategy_path": {
+        "signature": "(customer_id: str, bidding_strategy_id: str) -> str",
+        "docstring": "Returns a fully-qualified accessible_bidding_strategy string."
+      },
+      "asset_set_path": {
+        "signature": "(customer_id: str, asset_set_id: str) -> str",
+        "docstring": "Returns a fully-qualified asset_set string."
+      },
+      "bidding_strategy_path": {
+        "signature": "(customer_id: str, bidding_strategy_id: str) -> str",
+        "docstring": "Returns a fully-qualified bidding_strategy string."
+      },
+      "campaign_budget_path": {
+        "signature": "(customer_id: str, campaign_budget_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_budget string."
+      },
+      "campaign_group_path": {
+        "signature": "(customer_id: str, campaign_group_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_group string."
+      },
+      "campaign_label_path": {
+        "signature": "(customer_id: str, campaign_id: str, label_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_label string."
+      },
+      "campaign_path": {
+        "signature": "(customer_id: str, campaign_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign string."
+      },
+      "conversion_action_path": {
+        "signature": "(customer_id: str, conversion_action_id: str) -> str",
+        "docstring": "Returns a fully-qualified conversion_action string."
+      },
+      "enable_p_max_brand_guidelines": {
+        "signature": "(self, request: Union[google.ads.googleads.v24.services.types.campaign_service.EnablePMaxBrandGuidelinesRequest, dict, NoneType] = None, *, customer_id: Optional[str] = None, operations: Optional[MutableSequence[google.ads.googleads.v24.services.types.campaign_service.EnableOperation]] = None, retry: Union[google.api_core.retry.retry_unary.Retry, google.api_core.gapic_v1.method._MethodDefault, NoneType] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, timeout: Union[float, object] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, metadata: Sequence[Tuple[str, Union[str, bytes]]] = ()) -> google.ads.googleads.v24.services.types.campaign_service.EnablePMaxBrandGuidelinesResponse",
+        "docstring": "Enables Brand Guidelines for Performance Max campaigns.\n\nList of thrown errors: `AuthenticationError <>`__\n`AssetError <>`__ `AssetLinkError <>`__\n`AuthorizationError <>`__ `BrandGuidelinesMigrationError <>`__\n`CampaignError <>`__ `HeaderError <>`__ `InternalError <>`__\n`MutateError <>`__ `QuotaError <>`__ `RequestError <>`__\n`ResourceCountLimitExceededError <>`__\n\nArgs:\n    request (Union[google.ads.googleads.v24.services.types.EnablePMaxBrandGuidelinesRequest, dict]):\n        The request object. Request to enable Brand Guidelines\n        for a Performance Max campaign.\n    customer_id (str):\n        Required. The ID of the customer\n        whose campaigns are being enabled.\n\n        This corresponds to the ``customer_id`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    operations (MutableSequence[google.ads.googleads.v24.services.types.EnableOperation]):\n        Required. The list of individual\n        campaign operations. A maximum of 10\n        enable operations can be executed in a\n        request.\n\n        This corresponds to the ``operations`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    retry (google.api_core.retry.Retry): Designation of what errors, if any,\n        should be retried.\n    timeout (float): The timeout for this request.\n    metadata (Sequence[Tuple[str, Union[str, bytes]]]): Key/value pairs which should be\n        sent along with the request as metadata. Normally, each value must be of type `str`,\n        but for metadata keys ending with the suffix `-bin`, the corresponding values must\n        be of type `bytes`.\n\nReturns:\n    google.ads.googleads.v24.services.types.EnablePMaxBrandGuidelinesResponse:\n        Brand Guidelines campaign enablement\n        response."
+      },
+      "mutate_campaigns": {
+        "signature": "(self, request: Union[google.ads.googleads.v24.services.types.campaign_service.MutateCampaignsRequest, dict, NoneType] = None, *, customer_id: Optional[str] = None, operations: Optional[MutableSequence[google.ads.googleads.v24.services.types.campaign_service.CampaignOperation]] = None, retry: Union[google.api_core.retry.retry_unary.Retry, google.api_core.gapic_v1.method._MethodDefault, NoneType] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, timeout: Union[float, object] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, metadata: Sequence[Tuple[str, Union[str, bytes]]] = ()) -> google.ads.googleads.v24.services.types.campaign_service.MutateCampaignsResponse",
+        "docstring": "Creates, updates, or removes campaigns. Operation statuses are\nreturned.\n\nList of thrown errors: `AdxError <>`__\n`AuthenticationError <>`__ `AuthorizationError <>`__\n`BiddingError <>`__ `BiddingStrategyError <>`__\n`CampaignBudgetError <>`__ `CampaignError <>`__\n`ContextError <>`__ `DatabaseError <>`__ `DateError <>`__\n`DateRangeError <>`__ `DistinctError <>`__ `FieldError <>`__\n`FieldMaskError <>`__ `HeaderError <>`__ `IdError <>`__\n`InternalError <>`__ `ListOperationError <>`__\n`MutateError <>`__ `NewResourceCreationError <>`__\n`NotAllowlistedError <>`__ `NotEmptyError <>`__ `NullError <>`__\n`OperationAccessDeniedError <>`__ `OperatorError <>`__\n`QuotaError <>`__ `RangeError <>`__ `RegionCodeError <>`__\n`RequestError <>`__ `ResourceCountLimitExceededError <>`__\n`SettingError <>`__ `SizeLimitError <>`__\n`StringFormatError <>`__ `StringLengthError <>`__\n`UrlFieldError <>`__\n\nArgs:\n    request (Union[google.ads.googleads.v24.services.types.MutateCampaignsRequest, dict]):\n        The request object. Request message for\n        [CampaignService.MutateCampaigns][google.ads.googleads.v24.services.CampaignService.MutateCampaigns].\n    customer_id (str):\n        Required. The ID of the customer\n        whose campaigns are being modified.\n\n        This corresponds to the ``customer_id`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    operations (MutableSequence[google.ads.googleads.v24.services.types.CampaignOperation]):\n        Required. The list of operations to\n        perform on individual campaigns.\n\n        This corresponds to the ``operations`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    retry (google.api_core.retry.Retry): Designation of what errors, if any,\n        should be retried.\n    timeout (float): The timeout for this request.\n    metadata (Sequence[Tuple[str, Union[str, bytes]]]): Key/value pairs which should be\n        sent along with the request as metadata. Normally, each value must be of type `str`,\n        but for metadata keys ending with the suffix `-bin`, the corresponding values must\n        be of type `bytes`.\n\nReturns:\n    google.ads.googleads.v24.services.types.MutateCampaignsResponse:\n        Response message for campaign mutate."
+      },
+      "parse_accessible_bidding_strategy_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a accessible_bidding_strategy path into its component segments."
+      },
+      "parse_asset_set_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a asset_set path into its component segments."
+      },
+      "parse_bidding_strategy_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a bidding_strategy path into its component segments."
+      },
+      "parse_campaign_budget_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_budget path into its component segments."
+      },
+      "parse_campaign_group_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_group path into its component segments."
+      },
+      "parse_campaign_label_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_label path into its component segments."
+      },
+      "parse_campaign_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign path into its component segments."
+      },
+      "parse_conversion_action_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a conversion_action path into its component segments."
+      }
+    }
+  },
+  "CampaignBudgetService": {
+    "modulo": "google.ads.googleads.v24.services.services.campaign_budget_service.client",
+    "metodos": {
+      "campaign_budget_path": {
+        "signature": "(customer_id: str, campaign_budget_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_budget string."
+      },
+      "mutate_campaign_budgets": {
+        "signature": "(self, request: Union[google.ads.googleads.v24.services.types.campaign_budget_service.MutateCampaignBudgetsRequest, dict, NoneType] = None, *, customer_id: Optional[str] = None, operations: Optional[MutableSequence[google.ads.googleads.v24.services.types.campaign_budget_service.CampaignBudgetOperation]] = None, retry: Union[google.api_core.retry.retry_unary.Retry, google.api_core.gapic_v1.method._MethodDefault, NoneType] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, timeout: Union[float, object] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, metadata: Sequence[Tuple[str, Union[str, bytes]]] = ()) -> google.ads.googleads.v24.services.types.campaign_budget_service.MutateCampaignBudgetsResponse",
+        "docstring": "Creates, updates, or removes campaign budgets. Operation\nstatuses are returned.\n\nList of thrown errors: `AuthenticationError <>`__\n`AuthorizationError <>`__ `CampaignBudgetError <>`__\n`DatabaseError <>`__ `DistinctError <>`__ `FieldError <>`__\n`FieldMaskError <>`__ `HeaderError <>`__ `InternalError <>`__\n`MutateError <>`__ `NewResourceCreationError <>`__\n`OperationAccessDeniedError <>`__ `QuotaError <>`__\n`RangeError <>`__ `RequestError <>`__\n`ResourceCountLimitExceededError <>`__ `StringLengthError <>`__\n\nArgs:\n    request (Union[google.ads.googleads.v24.services.types.MutateCampaignBudgetsRequest, dict]):\n        The request object. Request message for\n        [CampaignBudgetService.MutateCampaignBudgets][google.ads.googleads.v24.services.CampaignBudgetService.MutateCampaignBudgets].\n    customer_id (str):\n        Required. The ID of the customer\n        whose campaign budgets are being\n        modified.\n\n        This corresponds to the ``customer_id`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    operations (MutableSequence[google.ads.googleads.v24.services.types.CampaignBudgetOperation]):\n        Required. The list of operations to\n        perform on individual campaign budgets.\n\n        This corresponds to the ``operations`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    retry (google.api_core.retry.Retry): Designation of what errors, if any,\n        should be retried.\n    timeout (float): The timeout for this request.\n    metadata (Sequence[Tuple[str, Union[str, bytes]]]): Key/value pairs which should be\n        sent along with the request as metadata. Normally, each value must be of type `str`,\n        but for metadata keys ending with the suffix `-bin`, the corresponding values must\n        be of type `bytes`.\n\nReturns:\n    google.ads.googleads.v24.services.types.MutateCampaignBudgetsResponse:\n        Response message for campaign budget\n        mutate."
+      },
+      "parse_campaign_budget_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_budget path into its component segments."
+      }
+    }
+  },
+  "AdGroupService": {
+    "modulo": "google.ads.googleads.v24.services.services.ad_group_service.client",
+    "metodos": {
+      "ad_group_label_path": {
+        "signature": "(customer_id: str, ad_group_id: str, label_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_label string."
+      },
+      "ad_group_path": {
+        "signature": "(customer_id: str, ad_group_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group string."
+      },
+      "campaign_path": {
+        "signature": "(customer_id: str, campaign_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign string."
+      },
+      "mutate_ad_groups": {
+        "signature": "(self, request: Union[google.ads.googleads.v24.services.types.ad_group_service.MutateAdGroupsRequest, dict, NoneType] = None, *, customer_id: Optional[str] = None, operations: Optional[MutableSequence[google.ads.googleads.v24.services.types.ad_group_service.AdGroupOperation]] = None, retry: Union[google.api_core.retry.retry_unary.Retry, google.api_core.gapic_v1.method._MethodDefault, NoneType] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, timeout: Union[float, object] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, metadata: Sequence[Tuple[str, Union[str, bytes]]] = ()) -> google.ads.googleads.v24.services.types.ad_group_service.MutateAdGroupsResponse",
+        "docstring": "Creates, updates, or removes ad groups. Operation statuses are\nreturned.\n\nList of thrown errors: `AdGroupError <>`__ `AdxError <>`__\n`AuthenticationError <>`__ `AuthorizationError <>`__\n`BiddingError <>`__ `BiddingStrategyError <>`__\n`DatabaseError <>`__ `DateError <>`__ `DistinctError <>`__\n`FieldError <>`__ `FieldMaskError <>`__ `HeaderError <>`__\n`IdError <>`__ `InternalError <>`__ `ListOperationError <>`__\n`MultiplierError <>`__ `MutateError <>`__\n`NewResourceCreationError <>`__ `NotEmptyError <>`__\n`NullError <>`__ `OperationAccessDeniedError <>`__\n`OperatorError <>`__ `QuotaError <>`__ `RangeError <>`__\n`RequestError <>`__ `ResourceCountLimitExceededError <>`__\n`SettingError <>`__ `SizeLimitError <>`__\n`StringFormatError <>`__ `StringLengthError <>`__\n`UrlFieldError <>`__\n\nArgs:\n    request (Union[google.ads.googleads.v24.services.types.MutateAdGroupsRequest, dict]):\n        The request object. Request message for\n        [AdGroupService.MutateAdGroups][google.ads.googleads.v24.services.AdGroupService.MutateAdGroups].\n    customer_id (str):\n        Required. The ID of the customer\n        whose ad groups are being modified.\n\n        This corresponds to the ``customer_id`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    operations (MutableSequence[google.ads.googleads.v24.services.types.AdGroupOperation]):\n        Required. The list of operations to\n        perform on individual ad groups.\n\n        This corresponds to the ``operations`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    retry (google.api_core.retry.Retry): Designation of what errors, if any,\n        should be retried.\n    timeout (float): The timeout for this request.\n    metadata (Sequence[Tuple[str, Union[str, bytes]]]): Key/value pairs which should be\n        sent along with the request as metadata. Normally, each value must be of type `str`,\n        but for metadata keys ending with the suffix `-bin`, the corresponding values must\n        be of type `bytes`.\n\nReturns:\n    google.ads.googleads.v24.services.types.MutateAdGroupsResponse:\n        Response message for an ad group\n        mutate."
+      },
+      "parse_ad_group_label_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_label path into its component segments."
+      },
+      "parse_ad_group_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group path into its component segments."
+      },
+      "parse_campaign_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign path into its component segments."
+      }
+    }
+  },
+  "AdGroupCriterionService": {
+    "modulo": "google.ads.googleads.v24.services.services.ad_group_criterion_service.client",
+    "metodos": {
+      "ad_group_criterion_label_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str, label_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_criterion_label string."
+      },
+      "ad_group_criterion_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_criterion string."
+      },
+      "ad_group_path": {
+        "signature": "(customer_id: str, ad_group_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group string."
+      },
+      "combined_audience_path": {
+        "signature": "(customer_id: str, combined_audience_id: str) -> str",
+        "docstring": "Returns a fully-qualified combined_audience string."
+      },
+      "mobile_app_category_constant_path": {
+        "signature": "(mobile_app_category_id: str) -> str",
+        "docstring": "Returns a fully-qualified mobile_app_category_constant string."
+      },
+      "mutate_ad_group_criteria": {
+        "signature": "(self, request: Union[google.ads.googleads.v24.services.types.ad_group_criterion_service.MutateAdGroupCriteriaRequest, dict, NoneType] = None, *, customer_id: Optional[str] = None, operations: Optional[MutableSequence[google.ads.googleads.v24.services.types.ad_group_criterion_service.AdGroupCriterionOperation]] = None, retry: Union[google.api_core.retry.retry_unary.Retry, google.api_core.gapic_v1.method._MethodDefault, NoneType] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, timeout: Union[float, object] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, metadata: Sequence[Tuple[str, Union[str, bytes]]] = ()) -> google.ads.googleads.v24.services.types.ad_group_criterion_service.MutateAdGroupCriteriaResponse",
+        "docstring": "Creates, updates, or removes criteria. Operation statuses are\nreturned.\n\nList of thrown errors: `AdGroupCriterionError <>`__\n`AdxError <>`__ `AuthenticationError <>`__\n`AuthorizationError <>`__ `BiddingError <>`__\n`BiddingStrategyError <>`__ `CollectionSizeError <>`__\n`ContextError <>`__ `CriterionError <>`__ `DatabaseError <>`__\n`DateError <>`__ `DistinctError <>`__ `FieldError <>`__\n`FieldMaskError <>`__ `HeaderError <>`__ `IdError <>`__\n`InternalError <>`__ `MultiplierError <>`__ `MutateError <>`__\n`NewResourceCreationError <>`__ `NotEmptyError <>`__\n`NullError <>`__ `OperationAccessDeniedError <>`__\n`OperatorError <>`__ `PolicyViolationError <>`__\n`QuotaError <>`__ `RangeError <>`__ `RequestError <>`__\n`ResourceCountLimitExceededError <>`__ `SizeLimitError <>`__\n`StringFormatError <>`__ `StringLengthError <>`__\n`UrlFieldError <>`__\n\nArgs:\n    request (Union[google.ads.googleads.v24.services.types.MutateAdGroupCriteriaRequest, dict]):\n        The request object. Request message for\n        [AdGroupCriterionService.MutateAdGroupCriteria][google.ads.googleads.v24.services.AdGroupCriterionService.MutateAdGroupCriteria].\n    customer_id (str):\n        Required. ID of the customer whose\n        criteria are being modified.\n\n        This corresponds to the ``customer_id`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    operations (MutableSequence[google.ads.googleads.v24.services.types.AdGroupCriterionOperation]):\n        Required. The list of operations to\n        perform on individual criteria.\n\n        This corresponds to the ``operations`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    retry (google.api_core.retry.Retry): Designation of what errors, if any,\n        should be retried.\n    timeout (float): The timeout for this request.\n    metadata (Sequence[Tuple[str, Union[str, bytes]]]): Key/value pairs which should be\n        sent along with the request as metadata. Normally, each value must be of type `str`,\n        but for metadata keys ending with the suffix `-bin`, the corresponding values must\n        be of type `bytes`.\n\nReturns:\n    google.ads.googleads.v24.services.types.MutateAdGroupCriteriaResponse:\n        Response message for an ad group\n        criterion mutate."
+      },
+      "parse_ad_group_criterion_label_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_criterion_label path into its component segments."
+      },
+      "parse_ad_group_criterion_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_criterion path into its component segments."
+      },
+      "parse_ad_group_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group path into its component segments."
+      },
+      "parse_combined_audience_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a combined_audience path into its component segments."
+      },
+      "parse_mobile_app_category_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a mobile_app_category_constant path into its component segments."
+      },
+      "parse_topic_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a topic_constant path into its component segments."
+      },
+      "topic_constant_path": {
+        "signature": "(topic_id: str) -> str",
+        "docstring": "Returns a fully-qualified topic_constant string."
+      }
+    }
+  },
+  "AdGroupAdService": {
+    "modulo": "google.ads.googleads.v24.services.services.ad_group_ad_service.client",
+    "metodos": {
+      "ad_group_ad_label_path": {
+        "signature": "(customer_id: str, ad_group_id: str, ad_id: str, label_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_ad_label string."
+      },
+      "ad_group_ad_path": {
+        "signature": "(customer_id: str, ad_group_id: str, ad_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_ad string."
+      },
+      "ad_group_path": {
+        "signature": "(customer_id: str, ad_group_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group string."
+      },
+      "ad_path": {
+        "signature": "(customer_id: str, ad_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad string."
+      },
+      "asset_path": {
+        "signature": "(customer_id: str, asset_id: str) -> str",
+        "docstring": "Returns a fully-qualified asset string."
+      },
+      "mutate_ad_group_ads": {
+        "signature": "(self, request: Union[google.ads.googleads.v24.services.types.ad_group_ad_service.MutateAdGroupAdsRequest, dict, NoneType] = None, *, customer_id: Optional[str] = None, operations: Optional[MutableSequence[google.ads.googleads.v24.services.types.ad_group_ad_service.AdGroupAdOperation]] = None, retry: Union[google.api_core.retry.retry_unary.Retry, google.api_core.gapic_v1.method._MethodDefault, NoneType] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, timeout: Union[float, object] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, metadata: Sequence[Tuple[str, Union[str, bytes]]] = ()) -> google.ads.googleads.v24.services.types.ad_group_ad_service.MutateAdGroupAdsResponse",
+        "docstring": "Creates, updates, or removes ads. Operation statuses are\nreturned.\n\nList of thrown errors: `AdCustomizerError <>`__ `AdError <>`__\n`AdGroupAdError <>`__ `AdSharingError <>`__ `AdxError <>`__\n`AssetError <>`__ `AssetLinkError <>`__\n`AuthenticationError <>`__ `AuthorizationError <>`__\n`CollectionSizeError <>`__ `ContextError <>`__\n`DatabaseError <>`__ `DateError <>`__ `DistinctError <>`__\n`FeedAttributeReferenceError <>`__ `FieldError <>`__\n`FieldMaskError <>`__ `FunctionError <>`__\n`FunctionParsingError <>`__ `HeaderError <>`__ `IdError <>`__\n`ImageError <>`__ `InternalError <>`__ `ListOperationError <>`__\n`MediaBundleError <>`__ `MediaFileError <>`__ `MutateError <>`__\n`NewResourceCreationError <>`__ `NotEmptyError <>`__\n`NullError <>`__ `OperationAccessDeniedError <>`__\n`OperatorError <>`__ `PolicyFindingError <>`__\n`PolicyValidationParameterError <>`__\n`PolicyViolationError <>`__ `QuotaError <>`__ `RangeError <>`__\n`RequestError <>`__ `ResourceCountLimitExceededError <>`__\n`SizeLimitError <>`__ `StringFormatError <>`__\n`StringLengthError <>`__ `UrlFieldError <>`__\n\nArgs:\n    request (Union[google.ads.googleads.v24.services.types.MutateAdGroupAdsRequest, dict]):\n        The request object. Request message for\n        [AdGroupAdService.MutateAdGroupAds][google.ads.googleads.v24.services.AdGroupAdService.MutateAdGroupAds].\n    customer_id (str):\n        Required. The ID of the customer\n        whose ads are being modified.\n\n        This corresponds to the ``customer_id`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    operations (MutableSequence[google.ads.googleads.v24.services.types.AdGroupAdOperation]):\n        Required. The list of operations to\n        perform on individual ads.\n\n        This corresponds to the ``operations`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    retry (google.api_core.retry.Retry): Designation of what errors, if any,\n        should be retried.\n    timeout (float): The timeout for this request.\n    metadata (Sequence[Tuple[str, Union[str, bytes]]]): Key/value pairs which should be\n        sent along with the request as metadata. Normally, each value must be of type `str`,\n        but for metadata keys ending with the suffix `-bin`, the corresponding values must\n        be of type `bytes`.\n\nReturns:\n    google.ads.googleads.v24.services.types.MutateAdGroupAdsResponse:\n        Response message for an ad group ad\n        mutate."
+      },
+      "parse_ad_group_ad_label_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_ad_label path into its component segments."
+      },
+      "parse_ad_group_ad_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_ad path into its component segments."
+      },
+      "parse_ad_group_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group path into its component segments."
+      },
+      "parse_ad_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad path into its component segments."
+      },
+      "parse_asset_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a asset path into its component segments."
+      },
+      "remove_automatically_created_assets": {
+        "signature": "(self, request: Union[google.ads.googleads.v24.services.types.ad_group_ad_service.RemoveAutomaticallyCreatedAssetsRequest, dict, NoneType] = None, *, ad_group_ad: Optional[str] = None, assets_with_field_type: Optional[MutableSequence[google.ads.googleads.v24.services.types.ad_group_ad_service.AssetsWithFieldType]] = None, retry: Union[google.api_core.retry.retry_unary.Retry, google.api_core.gapic_v1.method._MethodDefault, NoneType] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, timeout: Union[float, object] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, metadata: Sequence[Tuple[str, Union[str, bytes]]] = ()) -> None",
+        "docstring": "Remove automatically created assets from an ad.\n\nList of thrown errors: `AdError <>`__ `AuthenticationError <>`__\n`AuthorizationError <>`__\n`AutomaticallyCreatedAssetRemovalError <>`__ `HeaderError <>`__\n`InternalError <>`__ `MutateError <>`__ `QuotaError <>`__\n`RequestError <>`__\n\nArgs:\n    request (Union[google.ads.googleads.v24.services.types.RemoveAutomaticallyCreatedAssetsRequest, dict]):\n        The request object. Request message for\n        [AdGroupAdService.RemoveAutomaticallyCreatedAssets][google.ads.googleads.v24.services.AdGroupAdService.RemoveAutomaticallyCreatedAssets].\n    ad_group_ad (str):\n        Required. The resource name of the\n        AdGroupAd from which to remove\n        automatically created assets.\n\n        This corresponds to the ``ad_group_ad`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    assets_with_field_type (MutableSequence[google.ads.googleads.v24.services.types.AssetsWithFieldType]):\n        Required. List of assets with field\n        type to be removed from the AdGroupAd.\n\n        This corresponds to the ``assets_with_field_type`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    retry (google.api_core.retry.Retry): Designation of what errors, if any,\n        should be retried.\n    timeout (float): The timeout for this request.\n    metadata (Sequence[Tuple[str, Union[str, bytes]]]): Key/value pairs which should be\n        sent along with the request as metadata. Normally, each value must be of type `str`,\n        but for metadata keys ending with the suffix `-bin`, the corresponding values must\n        be of type `bytes`."
+      }
+    }
+  },
+  "CampaignCriterionService": {
+    "modulo": "google.ads.googleads.v24.services.services.campaign_criterion_service.client",
+    "metodos": {
+      "campaign_criterion_path": {
+        "signature": "(customer_id: str, campaign_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_criterion string."
+      },
+      "campaign_path": {
+        "signature": "(customer_id: str, campaign_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign string."
+      },
+      "carrier_constant_path": {
+        "signature": "(criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified carrier_constant string."
+      },
+      "combined_audience_path": {
+        "signature": "(customer_id: str, combined_audience_id: str) -> str",
+        "docstring": "Returns a fully-qualified combined_audience string."
+      },
+      "keyword_theme_constant_path": {
+        "signature": "(express_category_id: str, express_sub_category_id: str) -> str",
+        "docstring": "Returns a fully-qualified keyword_theme_constant string."
+      },
+      "mobile_app_category_constant_path": {
+        "signature": "(mobile_app_category_id: str) -> str",
+        "docstring": "Returns a fully-qualified mobile_app_category_constant string."
+      },
+      "mobile_device_constant_path": {
+        "signature": "(criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified mobile_device_constant string."
+      },
+      "mutate_campaign_criteria": {
+        "signature": "(self, request: Union[google.ads.googleads.v24.services.types.campaign_criterion_service.MutateCampaignCriteriaRequest, dict, NoneType] = None, *, customer_id: Optional[str] = None, operations: Optional[MutableSequence[google.ads.googleads.v24.services.types.campaign_criterion_service.CampaignCriterionOperation]] = None, retry: Union[google.api_core.retry.retry_unary.Retry, google.api_core.gapic_v1.method._MethodDefault, NoneType] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, timeout: Union[float, object] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, metadata: Sequence[Tuple[str, Union[str, bytes]]] = ()) -> google.ads.googleads.v24.services.types.campaign_criterion_service.MutateCampaignCriteriaResponse",
+        "docstring": "Creates, updates, or removes criteria. Operation statuses are\nreturned.\n\nList of thrown errors: `AdxError <>`__\n`AuthenticationError <>`__ `AuthorizationError <>`__\n`CampaignCriterionError <>`__ `CollectionSizeError <>`__\n`ContextError <>`__ `CriterionError <>`__ `DatabaseError <>`__\n`DistinctError <>`__ `FieldError <>`__ `FieldMaskError <>`__\n`FunctionError <>`__ `HeaderError <>`__ `IdError <>`__\n`InternalError <>`__ `MutateError <>`__\n`NewResourceCreationError <>`__ `NotEmptyError <>`__\n`NullError <>`__ `OperationAccessDeniedError <>`__\n`OperatorError <>`__ `QuotaError <>`__ `RangeError <>`__\n`RegionCodeError <>`__ `RequestError <>`__\n`ResourceCountLimitExceededError <>`__ `SizeLimitError <>`__\n`StringFormatError <>`__ `StringLengthError <>`__\n\nArgs:\n    request (Union[google.ads.googleads.v24.services.types.MutateCampaignCriteriaRequest, dict]):\n        The request object. Request message for\n        [CampaignCriterionService.MutateCampaignCriteria][google.ads.googleads.v24.services.CampaignCriterionService.MutateCampaignCriteria].\n    customer_id (str):\n        Required. The ID of the customer\n        whose criteria are being modified.\n\n        This corresponds to the ``customer_id`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    operations (MutableSequence[google.ads.googleads.v24.services.types.CampaignCriterionOperation]):\n        Required. The list of operations to\n        perform on individual criteria.\n\n        This corresponds to the ``operations`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    retry (google.api_core.retry.Retry): Designation of what errors, if any,\n        should be retried.\n    timeout (float): The timeout for this request.\n    metadata (Sequence[Tuple[str, Union[str, bytes]]]): Key/value pairs which should be\n        sent along with the request as metadata. Normally, each value must be of type `str`,\n        but for metadata keys ending with the suffix `-bin`, the corresponding values must\n        be of type `bytes`.\n\nReturns:\n    google.ads.googleads.v24.services.types.MutateCampaignCriteriaResponse:\n        Response message for campaign\n        criterion mutate."
+      },
+      "operating_system_version_constant_path": {
+        "signature": "(criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified operating_system_version_constant string."
+      },
+      "parse_campaign_criterion_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_criterion path into its component segments."
+      },
+      "parse_campaign_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign path into its component segments."
+      },
+      "parse_carrier_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a carrier_constant path into its component segments."
+      },
+      "parse_combined_audience_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a combined_audience path into its component segments."
+      },
+      "parse_keyword_theme_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a keyword_theme_constant path into its component segments."
+      },
+      "parse_mobile_app_category_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a mobile_app_category_constant path into its component segments."
+      },
+      "parse_mobile_device_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a mobile_device_constant path into its component segments."
+      },
+      "parse_operating_system_version_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a operating_system_version_constant path into its component segments."
+      },
+      "parse_topic_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a topic_constant path into its component segments."
+      },
+      "topic_constant_path": {
+        "signature": "(topic_id: str) -> str",
+        "docstring": "Returns a fully-qualified topic_constant string."
+      }
+    }
+  },
+  "GoogleAdsService": {
+    "modulo": "google.ads.googleads.v24.services.services.google_ads_service.client",
+    "metodos": {
+      "accessible_bidding_strategy_path": {
+        "signature": "(customer_id: str, bidding_strategy_id: str) -> str",
+        "docstring": "Returns a fully-qualified accessible_bidding_strategy string."
+      },
+      "account_budget_path": {
+        "signature": "(customer_id: str, account_budget_id: str) -> str",
+        "docstring": "Returns a fully-qualified account_budget string."
+      },
+      "account_budget_proposal_path": {
+        "signature": "(customer_id: str, account_budget_proposal_id: str) -> str",
+        "docstring": "Returns a fully-qualified account_budget_proposal string."
+      },
+      "account_link_path": {
+        "signature": "(customer_id: str, account_link_id: str) -> str",
+        "docstring": "Returns a fully-qualified account_link string."
+      },
+      "ad_group_ad_asset_combination_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, ad_id: str, asset_combination_id_low: str, asset_combination_id_high: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_ad_asset_combination_view string."
+      },
+      "ad_group_ad_asset_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, ad_id: str, asset_id: str, field_type: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_ad_asset_view string."
+      },
+      "ad_group_ad_label_path": {
+        "signature": "(customer_id: str, ad_group_id: str, ad_id: str, label_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_ad_label string."
+      },
+      "ad_group_ad_path": {
+        "signature": "(customer_id: str, ad_group_id: str, ad_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_ad string."
+      },
+      "ad_group_asset_path": {
+        "signature": "(customer_id: str, ad_group_id: str, asset_id: str, field_type: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_asset string."
+      },
+      "ad_group_asset_set_path": {
+        "signature": "(customer_id: str, ad_group_id: str, asset_set_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_asset_set string."
+      },
+      "ad_group_audience_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_audience_view string."
+      },
+      "ad_group_bid_modifier_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_bid_modifier string."
+      },
+      "ad_group_criterion_customizer_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str, customizer_attribute_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_criterion_customizer string."
+      },
+      "ad_group_criterion_label_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str, label_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_criterion_label string."
+      },
+      "ad_group_criterion_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_criterion string."
+      },
+      "ad_group_criterion_simulation_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str, type: str, modification_method: str, start_date: str, end_date: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_criterion_simulation string."
+      },
+      "ad_group_customizer_path": {
+        "signature": "(customer_id: str, ad_group_id: str, customizer_attribute_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_customizer string."
+      },
+      "ad_group_label_path": {
+        "signature": "(customer_id: str, ad_group_id: str, label_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_label string."
+      },
+      "ad_group_path": {
+        "signature": "(customer_id: str, ad_group_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group string."
+      },
+      "ad_group_simulation_path": {
+        "signature": "(customer_id: str, ad_group_id: str, type: str, modification_method: str, start_date: str, end_date: str) -> str",
+        "docstring": "Returns a fully-qualified ad_group_simulation string."
+      },
+      "ad_parameter_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str, parameter_index: str) -> str",
+        "docstring": "Returns a fully-qualified ad_parameter string."
+      },
+      "ad_path": {
+        "signature": "(customer_id: str, ad_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad string."
+      },
+      "ad_schedule_view_path": {
+        "signature": "(customer_id: str, campaign_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified ad_schedule_view string."
+      },
+      "age_range_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified age_range_view string."
+      },
+      "ai_max_search_term_ad_combination_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, search_term: str, landing_page: str, headline: str) -> str",
+        "docstring": "Returns a fully-qualified ai_max_search_term_ad_combination_view string."
+      },
+      "android_privacy_shared_key_google_ad_group_path": {
+        "signature": "(customer_id: str, campaign_id: str, ad_group_id: str, android_privacy_interaction_type: str, android_privacy_network_type: str, android_privacy_interaction_date: str) -> str",
+        "docstring": "Returns a fully-qualified android_privacy_shared_key_google_ad_group string."
+      },
+      "android_privacy_shared_key_google_campaign_path": {
+        "signature": "(customer_id: str, campaign_id: str, android_privacy_interaction_type: str, android_privacy_interaction_date: str) -> str",
+        "docstring": "Returns a fully-qualified android_privacy_shared_key_google_campaign string."
+      },
+      "android_privacy_shared_key_google_network_type_path": {
+        "signature": "(customer_id: str, campaign_id: str, android_privacy_interaction_type: str, android_privacy_network_type: str, android_privacy_interaction_date: str) -> str",
+        "docstring": "Returns a fully-qualified android_privacy_shared_key_google_network_type string."
+      },
+      "app_top_combination_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, ad_id: str, asset_combination_category: str) -> str",
+        "docstring": "Returns a fully-qualified app_top_combination_view string."
+      },
+      "applied_incentive_path": {
+        "signature": "(customer_id: str, coupon_code: str) -> str",
+        "docstring": "Returns a fully-qualified applied_incentive string."
+      },
+      "asset_field_type_view_path": {
+        "signature": "(customer_id: str, field_type: str) -> str",
+        "docstring": "Returns a fully-qualified asset_field_type_view string."
+      },
+      "asset_group_asset_path": {
+        "signature": "(customer_id: str, asset_group_id: str, asset_id: str, field_type: str) -> str",
+        "docstring": "Returns a fully-qualified asset_group_asset string."
+      },
+      "asset_group_listing_group_filter_path": {
+        "signature": "(customer_id: str, asset_group_id: str, listing_group_filter_id: str) -> str",
+        "docstring": "Returns a fully-qualified asset_group_listing_group_filter string."
+      },
+      "asset_group_path": {
+        "signature": "(customer_id: str, asset_group_id: str) -> str",
+        "docstring": "Returns a fully-qualified asset_group string."
+      },
+      "asset_group_product_group_view_path": {
+        "signature": "(customer_id: str, asset_group_id: str, listing_group_filter_id: str) -> str",
+        "docstring": "Returns a fully-qualified asset_group_product_group_view string."
+      },
+      "asset_group_signal_path": {
+        "signature": "(customer_id: str, asset_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified asset_group_signal string."
+      },
+      "asset_group_top_combination_view_path": {
+        "signature": "(customer_id: str, asset_group_id: str, asset_combination_category: str) -> str",
+        "docstring": "Returns a fully-qualified asset_group_top_combination_view string."
+      },
+      "asset_path": {
+        "signature": "(customer_id: str, asset_id: str) -> str",
+        "docstring": "Returns a fully-qualified asset string."
+      },
+      "asset_set_asset_path": {
+        "signature": "(customer_id: str, asset_set_id: str, asset_id: str) -> str",
+        "docstring": "Returns a fully-qualified asset_set_asset string."
+      },
+      "asset_set_path": {
+        "signature": "(customer_id: str, asset_set_id: str) -> str",
+        "docstring": "Returns a fully-qualified asset_set string."
+      },
+      "asset_set_type_view_path": {
+        "signature": "(customer_id: str, asset_set_type: str) -> str",
+        "docstring": "Returns a fully-qualified asset_set_type_view string."
+      },
+      "audience_path": {
+        "signature": "(customer_id: str, audience_id: str) -> str",
+        "docstring": "Returns a fully-qualified audience string."
+      },
+      "batch_job_path": {
+        "signature": "(customer_id: str, batch_job_id: str) -> str",
+        "docstring": "Returns a fully-qualified batch_job string."
+      },
+      "bidding_data_exclusion_path": {
+        "signature": "(customer_id: str, seasonality_event_id: str) -> str",
+        "docstring": "Returns a fully-qualified bidding_data_exclusion string."
+      },
+      "bidding_seasonality_adjustment_path": {
+        "signature": "(customer_id: str, seasonality_event_id: str) -> str",
+        "docstring": "Returns a fully-qualified bidding_seasonality_adjustment string."
+      },
+      "bidding_strategy_path": {
+        "signature": "(customer_id: str, bidding_strategy_id: str) -> str",
+        "docstring": "Returns a fully-qualified bidding_strategy string."
+      },
+      "bidding_strategy_simulation_path": {
+        "signature": "(customer_id: str, bidding_strategy_id: str, type: str, modification_method: str, start_date: str, end_date: str) -> str",
+        "docstring": "Returns a fully-qualified bidding_strategy_simulation string."
+      },
+      "billing_setup_path": {
+        "signature": "(customer_id: str, billing_setup_id: str) -> str",
+        "docstring": "Returns a fully-qualified billing_setup string."
+      },
+      "call_view_path": {
+        "signature": "(customer_id: str, call_detail_id: str) -> str",
+        "docstring": "Returns a fully-qualified call_view string."
+      },
+      "campaign_aggregate_asset_view_path": {
+        "signature": "(customer_id: str, campaign_id: str, asset_id: str, asset_link_source: str, field_type: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_aggregate_asset_view string."
+      },
+      "campaign_asset_path": {
+        "signature": "(customer_id: str, campaign_id: str, asset_id: str, field_type: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_asset string."
+      },
+      "campaign_asset_set_path": {
+        "signature": "(customer_id: str, campaign_id: str, asset_set_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_asset_set string."
+      },
+      "campaign_audience_view_path": {
+        "signature": "(customer_id: str, campaign_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_audience_view string."
+      },
+      "campaign_bid_modifier_path": {
+        "signature": "(customer_id: str, campaign_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_bid_modifier string."
+      },
+      "campaign_budget_path": {
+        "signature": "(customer_id: str, campaign_budget_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_budget string."
+      },
+      "campaign_conversion_goal_path": {
+        "signature": "(customer_id: str, campaign_id: str, category: str, source: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_conversion_goal string."
+      },
+      "campaign_criterion_path": {
+        "signature": "(customer_id: str, campaign_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_criterion string."
+      },
+      "campaign_customizer_path": {
+        "signature": "(customer_id: str, campaign_id: str, customizer_attribute_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_customizer string."
+      },
+      "campaign_draft_path": {
+        "signature": "(customer_id: str, base_campaign_id: str, draft_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_draft string."
+      },
+      "campaign_goal_config_path": {
+        "signature": "(customer_id: str, campaign_id: str, unified_goal_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_goal_config string."
+      },
+      "campaign_group_path": {
+        "signature": "(customer_id: str, campaign_group_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_group string."
+      },
+      "campaign_label_path": {
+        "signature": "(customer_id: str, campaign_id: str, label_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_label string."
+      },
+      "campaign_lifecycle_goal_path": {
+        "signature": "(customer_id: str, campaign_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_lifecycle_goal string."
+      },
+      "campaign_path": {
+        "signature": "(customer_id: str, campaign_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign string."
+      },
+      "campaign_search_term_insight_path": {
+        "signature": "(customer_id: str, campaign_id: str, cluster_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_search_term_insight string."
+      },
+      "campaign_search_term_view_path": {
+        "signature": "(customer_id: str, campaign_id: str, query: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_search_term_view string."
+      },
+      "campaign_shared_set_path": {
+        "signature": "(customer_id: str, campaign_id: str, shared_set_id: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_shared_set string."
+      },
+      "campaign_simulation_path": {
+        "signature": "(customer_id: str, campaign_id: str, type: str, modification_method: str, start_date: str, end_date: str) -> str",
+        "docstring": "Returns a fully-qualified campaign_simulation string."
+      },
+      "carrier_constant_path": {
+        "signature": "(criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified carrier_constant string."
+      },
+      "cart_data_sales_view_path": {
+        "signature": "(customer_id: str) -> str",
+        "docstring": "Returns a fully-qualified cart_data_sales_view string."
+      },
+      "change_event_path": {
+        "signature": "(customer_id: str, timestamp_micros: str, command_index: str, mutate_index: str) -> str",
+        "docstring": "Returns a fully-qualified change_event string."
+      },
+      "change_status_path": {
+        "signature": "(customer_id: str, change_status_id: str) -> str",
+        "docstring": "Returns a fully-qualified change_status string."
+      },
+      "channel_aggregate_asset_view_path": {
+        "signature": "(customer_id: str, advertising_channel_type: str, asset_id: str, asset_source: str, field_type: str) -> str",
+        "docstring": "Returns a fully-qualified channel_aggregate_asset_view string."
+      },
+      "click_view_path": {
+        "signature": "(customer_id: str, date: str, gclid: str) -> str",
+        "docstring": "Returns a fully-qualified click_view string."
+      },
+      "combined_audience_path": {
+        "signature": "(customer_id: str, combined_audience_id: str) -> str",
+        "docstring": "Returns a fully-qualified combined_audience string."
+      },
+      "content_criterion_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified content_criterion_view string."
+      },
+      "conversion_action_path": {
+        "signature": "(customer_id: str, conversion_action_id: str) -> str",
+        "docstring": "Returns a fully-qualified conversion_action string."
+      },
+      "conversion_custom_variable_path": {
+        "signature": "(customer_id: str, conversion_custom_variable_id: str) -> str",
+        "docstring": "Returns a fully-qualified conversion_custom_variable string."
+      },
+      "conversion_goal_campaign_config_path": {
+        "signature": "(customer_id: str, campaign_id: str) -> str",
+        "docstring": "Returns a fully-qualified conversion_goal_campaign_config string."
+      },
+      "conversion_value_rule_path": {
+        "signature": "(customer_id: str, conversion_value_rule_id: str) -> str",
+        "docstring": "Returns a fully-qualified conversion_value_rule string."
+      },
+      "conversion_value_rule_set_path": {
+        "signature": "(customer_id: str, conversion_value_rule_set_id: str) -> str",
+        "docstring": "Returns a fully-qualified conversion_value_rule_set string."
+      },
+      "currency_constant_path": {
+        "signature": "(code: str) -> str",
+        "docstring": "Returns a fully-qualified currency_constant string."
+      },
+      "custom_audience_path": {
+        "signature": "(customer_id: str, custom_audience_id: str) -> str",
+        "docstring": "Returns a fully-qualified custom_audience string."
+      },
+      "custom_conversion_goal_path": {
+        "signature": "(customer_id: str, goal_id: str) -> str",
+        "docstring": "Returns a fully-qualified custom_conversion_goal string."
+      },
+      "custom_interest_path": {
+        "signature": "(customer_id: str, custom_interest_id: str) -> str",
+        "docstring": "Returns a fully-qualified custom_interest string."
+      },
+      "customer_asset_path": {
+        "signature": "(customer_id: str, asset_id: str, field_type: str) -> str",
+        "docstring": "Returns a fully-qualified customer_asset string."
+      },
+      "customer_asset_set_path": {
+        "signature": "(customer_id: str, asset_set_id: str) -> str",
+        "docstring": "Returns a fully-qualified customer_asset_set string."
+      },
+      "customer_client_link_path": {
+        "signature": "(customer_id: str, client_customer_id: str, manager_link_id: str) -> str",
+        "docstring": "Returns a fully-qualified customer_client_link string."
+      },
+      "customer_client_path": {
+        "signature": "(customer_id: str, client_customer_id: str) -> str",
+        "docstring": "Returns a fully-qualified customer_client string."
+      },
+      "customer_conversion_goal_path": {
+        "signature": "(customer_id: str, category: str, source: str) -> str",
+        "docstring": "Returns a fully-qualified customer_conversion_goal string."
+      },
+      "customer_customizer_path": {
+        "signature": "(customer_id: str, customizer_attribute_id: str) -> str",
+        "docstring": "Returns a fully-qualified customer_customizer string."
+      },
+      "customer_label_path": {
+        "signature": "(customer_id: str, label_id: str) -> str",
+        "docstring": "Returns a fully-qualified customer_label string."
+      },
+      "customer_lifecycle_goal_path": {
+        "signature": "(customer_id: str) -> str",
+        "docstring": "Returns a fully-qualified customer_lifecycle_goal string."
+      },
+      "customer_manager_link_path": {
+        "signature": "(customer_id: str, manager_customer_id: str, manager_link_id: str) -> str",
+        "docstring": "Returns a fully-qualified customer_manager_link string."
+      },
+      "customer_negative_criterion_path": {
+        "signature": "(customer_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified customer_negative_criterion string."
+      },
+      "customer_path": {
+        "signature": "(customer_id: str) -> str",
+        "docstring": "Returns a fully-qualified customer string."
+      },
+      "customer_search_term_insight_path": {
+        "signature": "(customer_id: str, cluster_id: str) -> str",
+        "docstring": "Returns a fully-qualified customer_search_term_insight string."
+      },
+      "customer_user_access_invitation_path": {
+        "signature": "(customer_id: str, invitation_id: str) -> str",
+        "docstring": "Returns a fully-qualified customer_user_access_invitation string."
+      },
+      "customer_user_access_path": {
+        "signature": "(customer_id: str, user_id: str) -> str",
+        "docstring": "Returns a fully-qualified customer_user_access string."
+      },
+      "customizer_attribute_path": {
+        "signature": "(customer_id: str, customizer_attribute_id: str) -> str",
+        "docstring": "Returns a fully-qualified customizer_attribute string."
+      },
+      "data_link_path": {
+        "signature": "(customer_id: str, product_link_id: str, data_link_id: str) -> str",
+        "docstring": "Returns a fully-qualified data_link string."
+      },
+      "detail_content_suitability_placement_view_path": {
+        "signature": "(customer_id: str, placement_fingerprint: str) -> str",
+        "docstring": "Returns a fully-qualified detail_content_suitability_placement_view string."
+      },
+      "detail_placement_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, base64_placement: str) -> str",
+        "docstring": "Returns a fully-qualified detail_placement_view string."
+      },
+      "detailed_demographic_path": {
+        "signature": "(customer_id: str, detailed_demographic_id: str) -> str",
+        "docstring": "Returns a fully-qualified detailed_demographic string."
+      },
+      "display_keyword_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified display_keyword_view string."
+      },
+      "distance_view_path": {
+        "signature": "(customer_id: str, placeholder_chain_id: str, distance_bucket: str) -> str",
+        "docstring": "Returns a fully-qualified distance_view string."
+      },
+      "domain_category_path": {
+        "signature": "(customer_id: str, campaign_id: str, base64_category: str, language_code: str) -> str",
+        "docstring": "Returns a fully-qualified domain_category string."
+      },
+      "dynamic_search_ads_search_term_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, search_term_fingerprint: str, headline_fingerprint: str, landing_page_fingerprint: str, page_url_fingerprint: str) -> str",
+        "docstring": "Returns a fully-qualified dynamic_search_ads_search_term_view string."
+      },
+      "expanded_landing_page_view_path": {
+        "signature": "(customer_id: str, expanded_final_url_fingerprint: str) -> str",
+        "docstring": "Returns a fully-qualified expanded_landing_page_view string."
+      },
+      "experiment_arm_path": {
+        "signature": "(customer_id: str, trial_id: str, trial_arm_id: str) -> str",
+        "docstring": "Returns a fully-qualified experiment_arm string."
+      },
+      "experiment_path": {
+        "signature": "(customer_id: str, trial_id: str) -> str",
+        "docstring": "Returns a fully-qualified experiment string."
+      },
+      "final_url_expansion_asset_view_path": {
+        "signature": "(customer_id: str, campaign_id: str, asset_id: str, field_type: str, url_fp: str) -> str",
+        "docstring": "Returns a fully-qualified final_url_expansion_asset_view string."
+      },
+      "gender_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified gender_view string."
+      },
+      "geo_target_constant_path": {
+        "signature": "(criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified geo_target_constant string."
+      },
+      "geographic_view_path": {
+        "signature": "(customer_id: str, country_criterion_id: str, location_type: str) -> str",
+        "docstring": "Returns a fully-qualified geographic_view string."
+      },
+      "goal_path": {
+        "signature": "(customer_id: str, unified_goal_id: str) -> str",
+        "docstring": "Returns a fully-qualified goal string."
+      },
+      "group_content_suitability_placement_view_path": {
+        "signature": "(customer_id: str, placement_fingerprint: str) -> str",
+        "docstring": "Returns a fully-qualified group_content_suitability_placement_view string."
+      },
+      "group_placement_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, base64_placement: str) -> str",
+        "docstring": "Returns a fully-qualified group_placement_view string."
+      },
+      "hotel_group_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified hotel_group_view string."
+      },
+      "hotel_performance_view_path": {
+        "signature": "(customer_id: str) -> str",
+        "docstring": "Returns a fully-qualified hotel_performance_view string."
+      },
+      "hotel_reconciliation_path": {
+        "signature": "(customer_id: str, commission_id: str) -> str",
+        "docstring": "Returns a fully-qualified hotel_reconciliation string."
+      },
+      "income_range_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified income_range_view string."
+      },
+      "keyword_plan_ad_group_keyword_path": {
+        "signature": "(customer_id: str, keyword_plan_ad_group_keyword_id: str) -> str",
+        "docstring": "Returns a fully-qualified keyword_plan_ad_group_keyword string."
+      },
+      "keyword_plan_ad_group_path": {
+        "signature": "(customer_id: str, keyword_plan_ad_group_id: str) -> str",
+        "docstring": "Returns a fully-qualified keyword_plan_ad_group string."
+      },
+      "keyword_plan_campaign_keyword_path": {
+        "signature": "(customer_id: str, keyword_plan_campaign_keyword_id: str) -> str",
+        "docstring": "Returns a fully-qualified keyword_plan_campaign_keyword string."
+      },
+      "keyword_plan_campaign_path": {
+        "signature": "(customer_id: str, keyword_plan_campaign_id: str) -> str",
+        "docstring": "Returns a fully-qualified keyword_plan_campaign string."
+      },
+      "keyword_plan_path": {
+        "signature": "(customer_id: str, keyword_plan_id: str) -> str",
+        "docstring": "Returns a fully-qualified keyword_plan string."
+      },
+      "keyword_theme_constant_path": {
+        "signature": "(express_category_id: str, express_sub_category_id: str) -> str",
+        "docstring": "Returns a fully-qualified keyword_theme_constant string."
+      },
+      "keyword_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified keyword_view string."
+      },
+      "label_path": {
+        "signature": "(customer_id: str, label_id: str) -> str",
+        "docstring": "Returns a fully-qualified label string."
+      },
+      "landing_page_view_path": {
+        "signature": "(customer_id: str, unexpanded_final_url_fingerprint: str) -> str",
+        "docstring": "Returns a fully-qualified landing_page_view string."
+      },
+      "language_constant_path": {
+        "signature": "(criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified language_constant string."
+      },
+      "lead_form_submission_data_path": {
+        "signature": "(customer_id: str, lead_form_user_submission_id: str) -> str",
+        "docstring": "Returns a fully-qualified lead_form_submission_data string."
+      },
+      "life_event_path": {
+        "signature": "(customer_id: str, life_event_id: str) -> str",
+        "docstring": "Returns a fully-qualified life_event string."
+      },
+      "local_services_employee_path": {
+        "signature": "(customer_id: str, gls_employee_id: str) -> str",
+        "docstring": "Returns a fully-qualified local_services_employee string."
+      },
+      "local_services_lead_conversation_path": {
+        "signature": "(customer_id: str, local_services_lead_conversation_id: str) -> str",
+        "docstring": "Returns a fully-qualified local_services_lead_conversation string."
+      },
+      "local_services_lead_path": {
+        "signature": "(customer_id: str, local_services_lead_id: str) -> str",
+        "docstring": "Returns a fully-qualified local_services_lead string."
+      },
+      "local_services_verification_artifact_path": {
+        "signature": "(customer_id: str, gls_verification_artifact_id: str) -> str",
+        "docstring": "Returns a fully-qualified local_services_verification_artifact string."
+      },
+      "location_interest_view_path": {
+        "signature": "(customer_id: str, campaign_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified location_interest_view string."
+      },
+      "location_view_path": {
+        "signature": "(customer_id: str, campaign_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified location_view string."
+      },
+      "managed_placement_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified managed_placement_view string."
+      },
+      "matched_location_interest_view_path": {
+        "signature": "(customer_id: str, country_criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified matched_location_interest_view string."
+      },
+      "media_file_path": {
+        "signature": "(customer_id: str, media_file_id: str) -> str",
+        "docstring": "Returns a fully-qualified media_file string."
+      },
+      "mobile_app_category_constant_path": {
+        "signature": "(mobile_app_category_id: str) -> str",
+        "docstring": "Returns a fully-qualified mobile_app_category_constant string."
+      },
+      "mobile_device_constant_path": {
+        "signature": "(criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified mobile_device_constant string."
+      },
+      "multi_party_auth_review_path": {
+        "signature": "(customer_id: str, customer_invitation_id: str) -> str",
+        "docstring": "Returns a fully-qualified multi_party_auth_review string."
+      },
+      "mutate": {
+        "signature": "(self, request: Union[google.ads.googleads.v24.services.types.google_ads_service.MutateGoogleAdsRequest, dict, NoneType] = None, *, customer_id: Optional[str] = None, mutate_operations: Optional[MutableSequence[google.ads.googleads.v24.services.types.google_ads_service.MutateOperation]] = None, retry: Union[google.api_core.retry.retry_unary.Retry, google.api_core.gapic_v1.method._MethodDefault, NoneType] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, timeout: Union[float, object] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, metadata: Sequence[Tuple[str, Union[str, bytes]]] = ()) -> google.ads.googleads.v24.services.types.google_ads_service.MutateGoogleAdsResponse",
+        "docstring": "Executes mutate and actions operations. Mutate operations\ncreate, update, or remove resources. Actions perform custom\noperations. This method supports atomic transactions with\nmultiple types of resources and actions. For example, you can\natomically create a campaign and a campaign budget, or perform\nup to thousands of mutates atomically.\n\nThis method is essentially a wrapper around a series of mutate\nmethods. The only features it offers over calling those methods\ndirectly are:\n\n- Atomic transactions\n- Temp resource names (described below)\n- Somewhat reduced latency over making a series of mutate calls\n\nNote: Only resources that support atomic transactions are\nincluded, so this method can't replace all calls to individual\nservices.\n\nAtomic Transaction Benefits\n---------------------------\n\nAtomicity makes error handling much easier. If you're making a\nseries of changes and one fails, it can leave your account in an\ninconsistent state. With atomicity, you either reach the chosen\nstate directly, or the request fails and you can retry.\n\nTemp Resource Names\n-------------------\n\nTemp resource names are a special type of resource name used to\ncreate a resource and reference that resource in the same\nrequest. For example, if a campaign budget is created with\n``resource_name`` equal to ``customers/123/campaignBudgets/-1``,\nthat resource name can be reused in the ``Campaign.budget``\nfield in the same request. That way, the two resources are\ncreated and linked atomically.\n\nTo create a temp resource name, put a negative number in the\npart of the name that the server would normally allocate.\n\nNote:\n\n- Resources must be created with a temp name before the name can\n  be reused. For example, the previous CampaignBudget+Campaign\n  example would fail if the mutate order was reversed.\n- Temp names are not remembered across requests.\n- There's no limit to the number of temp names in a request.\n- Each temp name must use a unique negative number, even if the\n  resource types differ.\n\nLatency\n-------\n\nIt's important to group mutates by resource type or the request\nmay time out and fail. Latency is roughly equal to a series of\ncalls to individual mutate methods, where each change in\nresource type is a new call. For example, mutating 10 campaigns\nthen 10 ad groups is like 2 calls, while mutating 1 campaign, 1\nad group, 1 campaign, 1 ad group is like 4 calls.\n\nList of thrown errors: `AdCustomizerError <>`__ `AdError <>`__\n`AdGroupAdError <>`__ `AdGroupCriterionError <>`__\n`AdGroupError <>`__ `AssetError <>`__ `AuthenticationError <>`__\n`AuthorizationError <>`__ `BiddingError <>`__\n`CampaignBudgetError <>`__ `CampaignCriterionError <>`__\n`CampaignError <>`__ `CampaignExperimentError <>`__\n`CampaignSharedSetError <>`__ `CollectionSizeError <>`__\n`ContextError <>`__ `ConversionActionError <>`__\n`CriterionError <>`__ `CustomerFeedError <>`__\n`DatabaseError <>`__ `DateError <>`__ `DateRangeError <>`__\n`DistinctError <>`__ `ExtensionFeedItemError <>`__\n`ExtensionSettingError <>`__ `FeedAttributeReferenceError <>`__\n`FeedError <>`__ `FeedItemError <>`__ `FeedItemSetError <>`__\n`FieldError <>`__ `FieldMaskError <>`__\n`FunctionParsingError <>`__ `HeaderError <>`__ `ImageError <>`__\n`InternalError <>`__ `KeywordPlanAdGroupKeywordError <>`__\n`KeywordPlanCampaignError <>`__ `KeywordPlanError <>`__\n`LabelError <>`__ `ListOperationError <>`__\n`MediaUploadError <>`__ `MutateError <>`__\n`NewResourceCreationError <>`__ `NullError <>`__\n`OperationAccessDeniedError <>`__ `PolicyFindingError <>`__\n`PolicyViolationError <>`__ `QuotaError <>`__ `RangeError <>`__\n`RequestError <>`__ `ResourceCountLimitExceededError <>`__\n`SettingError <>`__ `SharedSetError <>`__ `SizeLimitError <>`__\n`StringFormatError <>`__ `StringLengthError <>`__\n`UrlFieldError <>`__ `UserListError <>`__\n`YoutubeVideoRegistrationError <>`__\n\nArgs:\n    request (Union[google.ads.googleads.v24.services.types.MutateGoogleAdsRequest, dict]):\n        The request object. Request message for\n        [GoogleAdsService.Mutate][google.ads.googleads.v24.services.GoogleAdsService.Mutate].\n    customer_id (str):\n        Required. The ID of the customer\n        whose resources are being modified.\n\n        This corresponds to the ``customer_id`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    mutate_operations (MutableSequence[google.ads.googleads.v24.services.types.MutateOperation]):\n        Required. The list of operations to\n        perform on individual resources.\n\n        This corresponds to the ``mutate_operations`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    retry (google.api_core.retry.Retry): Designation of what errors, if any,\n        should be retried.\n    timeout (float): The timeout for this request.\n    metadata (Sequence[Tuple[str, Union[str, bytes]]]): Key/value pairs which should be\n        sent along with the request as metadata. Normally, each value must be of type `str`,\n        but for metadata keys ending with the suffix `-bin`, the corresponding values must\n        be of type `bytes`.\n\nReturns:\n    google.ads.googleads.v24.services.types.MutateGoogleAdsResponse:\n        Response message for\n           [GoogleAdsService.Mutate][google.ads.googleads.v24.services.GoogleAdsService.Mutate]."
+      },
+      "offline_conversion_upload_client_summary_path": {
+        "signature": "(customer_id: str, client: str) -> str",
+        "docstring": "Returns a fully-qualified offline_conversion_upload_client_summary string."
+      },
+      "offline_conversion_upload_conversion_action_summary_path": {
+        "signature": "(customer_id: str, conversion_type_id: str, client: str) -> str",
+        "docstring": "Returns a fully-qualified offline_conversion_upload_conversion_action_summary string."
+      },
+      "offline_user_data_job_path": {
+        "signature": "(customer_id: str, offline_user_data_update_id: str) -> str",
+        "docstring": "Returns a fully-qualified offline_user_data_job string."
+      },
+      "operating_system_version_constant_path": {
+        "signature": "(criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified operating_system_version_constant string."
+      },
+      "paid_organic_search_term_view_path": {
+        "signature": "(customer_id: str, campaign_id: str, ad_group_id: str, base64_search_term: str) -> str",
+        "docstring": "Returns a fully-qualified paid_organic_search_term_view string."
+      },
+      "parental_status_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified parental_status_view string."
+      },
+      "parse_accessible_bidding_strategy_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a accessible_bidding_strategy path into its component segments."
+      },
+      "parse_account_budget_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a account_budget path into its component segments."
+      },
+      "parse_account_budget_proposal_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a account_budget_proposal path into its component segments."
+      },
+      "parse_account_link_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a account_link path into its component segments."
+      },
+      "parse_ad_group_ad_asset_combination_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_ad_asset_combination_view path into its component segments."
+      },
+      "parse_ad_group_ad_asset_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_ad_asset_view path into its component segments."
+      },
+      "parse_ad_group_ad_label_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_ad_label path into its component segments."
+      },
+      "parse_ad_group_ad_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_ad path into its component segments."
+      },
+      "parse_ad_group_asset_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_asset path into its component segments."
+      },
+      "parse_ad_group_asset_set_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_asset_set path into its component segments."
+      },
+      "parse_ad_group_audience_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_audience_view path into its component segments."
+      },
+      "parse_ad_group_bid_modifier_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_bid_modifier path into its component segments."
+      },
+      "parse_ad_group_criterion_customizer_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_criterion_customizer path into its component segments."
+      },
+      "parse_ad_group_criterion_label_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_criterion_label path into its component segments."
+      },
+      "parse_ad_group_criterion_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_criterion path into its component segments."
+      },
+      "parse_ad_group_criterion_simulation_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_criterion_simulation path into its component segments."
+      },
+      "parse_ad_group_customizer_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_customizer path into its component segments."
+      },
+      "parse_ad_group_label_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_label path into its component segments."
+      },
+      "parse_ad_group_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group path into its component segments."
+      },
+      "parse_ad_group_simulation_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_group_simulation path into its component segments."
+      },
+      "parse_ad_parameter_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_parameter path into its component segments."
+      },
+      "parse_ad_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad path into its component segments."
+      },
+      "parse_ad_schedule_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ad_schedule_view path into its component segments."
+      },
+      "parse_age_range_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a age_range_view path into its component segments."
+      },
+      "parse_ai_max_search_term_ad_combination_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a ai_max_search_term_ad_combination_view path into its component segments."
+      },
+      "parse_android_privacy_shared_key_google_ad_group_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a android_privacy_shared_key_google_ad_group path into its component segments."
+      },
+      "parse_android_privacy_shared_key_google_campaign_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a android_privacy_shared_key_google_campaign path into its component segments."
+      },
+      "parse_android_privacy_shared_key_google_network_type_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a android_privacy_shared_key_google_network_type path into its component segments."
+      },
+      "parse_app_top_combination_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a app_top_combination_view path into its component segments."
+      },
+      "parse_applied_incentive_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a applied_incentive path into its component segments."
+      },
+      "parse_asset_field_type_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a asset_field_type_view path into its component segments."
+      },
+      "parse_asset_group_asset_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a asset_group_asset path into its component segments."
+      },
+      "parse_asset_group_listing_group_filter_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a asset_group_listing_group_filter path into its component segments."
+      },
+      "parse_asset_group_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a asset_group path into its component segments."
+      },
+      "parse_asset_group_product_group_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a asset_group_product_group_view path into its component segments."
+      },
+      "parse_asset_group_signal_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a asset_group_signal path into its component segments."
+      },
+      "parse_asset_group_top_combination_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a asset_group_top_combination_view path into its component segments."
+      },
+      "parse_asset_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a asset path into its component segments."
+      },
+      "parse_asset_set_asset_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a asset_set_asset path into its component segments."
+      },
+      "parse_asset_set_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a asset_set path into its component segments."
+      },
+      "parse_asset_set_type_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a asset_set_type_view path into its component segments."
+      },
+      "parse_audience_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a audience path into its component segments."
+      },
+      "parse_batch_job_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a batch_job path into its component segments."
+      },
+      "parse_bidding_data_exclusion_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a bidding_data_exclusion path into its component segments."
+      },
+      "parse_bidding_seasonality_adjustment_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a bidding_seasonality_adjustment path into its component segments."
+      },
+      "parse_bidding_strategy_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a bidding_strategy path into its component segments."
+      },
+      "parse_bidding_strategy_simulation_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a bidding_strategy_simulation path into its component segments."
+      },
+      "parse_billing_setup_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a billing_setup path into its component segments."
+      },
+      "parse_call_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a call_view path into its component segments."
+      },
+      "parse_campaign_aggregate_asset_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_aggregate_asset_view path into its component segments."
+      },
+      "parse_campaign_asset_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_asset path into its component segments."
+      },
+      "parse_campaign_asset_set_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_asset_set path into its component segments."
+      },
+      "parse_campaign_audience_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_audience_view path into its component segments."
+      },
+      "parse_campaign_bid_modifier_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_bid_modifier path into its component segments."
+      },
+      "parse_campaign_budget_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_budget path into its component segments."
+      },
+      "parse_campaign_conversion_goal_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_conversion_goal path into its component segments."
+      },
+      "parse_campaign_criterion_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_criterion path into its component segments."
+      },
+      "parse_campaign_customizer_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_customizer path into its component segments."
+      },
+      "parse_campaign_draft_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_draft path into its component segments."
+      },
+      "parse_campaign_goal_config_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_goal_config path into its component segments."
+      },
+      "parse_campaign_group_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_group path into its component segments."
+      },
+      "parse_campaign_label_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_label path into its component segments."
+      },
+      "parse_campaign_lifecycle_goal_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_lifecycle_goal path into its component segments."
+      },
+      "parse_campaign_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign path into its component segments."
+      },
+      "parse_campaign_search_term_insight_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_search_term_insight path into its component segments."
+      },
+      "parse_campaign_search_term_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_search_term_view path into its component segments."
+      },
+      "parse_campaign_shared_set_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_shared_set path into its component segments."
+      },
+      "parse_campaign_simulation_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a campaign_simulation path into its component segments."
+      },
+      "parse_carrier_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a carrier_constant path into its component segments."
+      },
+      "parse_cart_data_sales_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a cart_data_sales_view path into its component segments."
+      },
+      "parse_change_event_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a change_event path into its component segments."
+      },
+      "parse_change_status_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a change_status path into its component segments."
+      },
+      "parse_channel_aggregate_asset_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a channel_aggregate_asset_view path into its component segments."
+      },
+      "parse_click_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a click_view path into its component segments."
+      },
+      "parse_combined_audience_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a combined_audience path into its component segments."
+      },
+      "parse_content_criterion_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a content_criterion_view path into its component segments."
+      },
+      "parse_conversion_action_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a conversion_action path into its component segments."
+      },
+      "parse_conversion_custom_variable_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a conversion_custom_variable path into its component segments."
+      },
+      "parse_conversion_goal_campaign_config_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a conversion_goal_campaign_config path into its component segments."
+      },
+      "parse_conversion_value_rule_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a conversion_value_rule path into its component segments."
+      },
+      "parse_conversion_value_rule_set_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a conversion_value_rule_set path into its component segments."
+      },
+      "parse_currency_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a currency_constant path into its component segments."
+      },
+      "parse_custom_audience_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a custom_audience path into its component segments."
+      },
+      "parse_custom_conversion_goal_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a custom_conversion_goal path into its component segments."
+      },
+      "parse_custom_interest_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a custom_interest path into its component segments."
+      },
+      "parse_customer_asset_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customer_asset path into its component segments."
+      },
+      "parse_customer_asset_set_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customer_asset_set path into its component segments."
+      },
+      "parse_customer_client_link_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customer_client_link path into its component segments."
+      },
+      "parse_customer_client_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customer_client path into its component segments."
+      },
+      "parse_customer_conversion_goal_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customer_conversion_goal path into its component segments."
+      },
+      "parse_customer_customizer_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customer_customizer path into its component segments."
+      },
+      "parse_customer_label_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customer_label path into its component segments."
+      },
+      "parse_customer_lifecycle_goal_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customer_lifecycle_goal path into its component segments."
+      },
+      "parse_customer_manager_link_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customer_manager_link path into its component segments."
+      },
+      "parse_customer_negative_criterion_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customer_negative_criterion path into its component segments."
+      },
+      "parse_customer_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customer path into its component segments."
+      },
+      "parse_customer_search_term_insight_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customer_search_term_insight path into its component segments."
+      },
+      "parse_customer_user_access_invitation_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customer_user_access_invitation path into its component segments."
+      },
+      "parse_customer_user_access_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customer_user_access path into its component segments."
+      },
+      "parse_customizer_attribute_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a customizer_attribute path into its component segments."
+      },
+      "parse_data_link_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a data_link path into its component segments."
+      },
+      "parse_detail_content_suitability_placement_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a detail_content_suitability_placement_view path into its component segments."
+      },
+      "parse_detail_placement_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a detail_placement_view path into its component segments."
+      },
+      "parse_detailed_demographic_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a detailed_demographic path into its component segments."
+      },
+      "parse_display_keyword_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a display_keyword_view path into its component segments."
+      },
+      "parse_distance_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a distance_view path into its component segments."
+      },
+      "parse_domain_category_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a domain_category path into its component segments."
+      },
+      "parse_dynamic_search_ads_search_term_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a dynamic_search_ads_search_term_view path into its component segments."
+      },
+      "parse_expanded_landing_page_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a expanded_landing_page_view path into its component segments."
+      },
+      "parse_experiment_arm_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a experiment_arm path into its component segments."
+      },
+      "parse_experiment_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a experiment path into its component segments."
+      },
+      "parse_final_url_expansion_asset_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a final_url_expansion_asset_view path into its component segments."
+      },
+      "parse_gender_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a gender_view path into its component segments."
+      },
+      "parse_geo_target_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a geo_target_constant path into its component segments."
+      },
+      "parse_geographic_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a geographic_view path into its component segments."
+      },
+      "parse_goal_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a goal path into its component segments."
+      },
+      "parse_group_content_suitability_placement_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a group_content_suitability_placement_view path into its component segments."
+      },
+      "parse_group_placement_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a group_placement_view path into its component segments."
+      },
+      "parse_hotel_group_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a hotel_group_view path into its component segments."
+      },
+      "parse_hotel_performance_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a hotel_performance_view path into its component segments."
+      },
+      "parse_hotel_reconciliation_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a hotel_reconciliation path into its component segments."
+      },
+      "parse_income_range_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a income_range_view path into its component segments."
+      },
+      "parse_keyword_plan_ad_group_keyword_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a keyword_plan_ad_group_keyword path into its component segments."
+      },
+      "parse_keyword_plan_ad_group_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a keyword_plan_ad_group path into its component segments."
+      },
+      "parse_keyword_plan_campaign_keyword_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a keyword_plan_campaign_keyword path into its component segments."
+      },
+      "parse_keyword_plan_campaign_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a keyword_plan_campaign path into its component segments."
+      },
+      "parse_keyword_plan_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a keyword_plan path into its component segments."
+      },
+      "parse_keyword_theme_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a keyword_theme_constant path into its component segments."
+      },
+      "parse_keyword_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a keyword_view path into its component segments."
+      },
+      "parse_label_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a label path into its component segments."
+      },
+      "parse_landing_page_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a landing_page_view path into its component segments."
+      },
+      "parse_language_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a language_constant path into its component segments."
+      },
+      "parse_lead_form_submission_data_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a lead_form_submission_data path into its component segments."
+      },
+      "parse_life_event_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a life_event path into its component segments."
+      },
+      "parse_local_services_employee_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a local_services_employee path into its component segments."
+      },
+      "parse_local_services_lead_conversation_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a local_services_lead_conversation path into its component segments."
+      },
+      "parse_local_services_lead_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a local_services_lead path into its component segments."
+      },
+      "parse_local_services_verification_artifact_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a local_services_verification_artifact path into its component segments."
+      },
+      "parse_location_interest_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a location_interest_view path into its component segments."
+      },
+      "parse_location_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a location_view path into its component segments."
+      },
+      "parse_managed_placement_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a managed_placement_view path into its component segments."
+      },
+      "parse_matched_location_interest_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a matched_location_interest_view path into its component segments."
+      },
+      "parse_media_file_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a media_file path into its component segments."
+      },
+      "parse_mobile_app_category_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a mobile_app_category_constant path into its component segments."
+      },
+      "parse_mobile_device_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a mobile_device_constant path into its component segments."
+      },
+      "parse_multi_party_auth_review_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a multi_party_auth_review path into its component segments."
+      },
+      "parse_offline_conversion_upload_client_summary_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a offline_conversion_upload_client_summary path into its component segments."
+      },
+      "parse_offline_conversion_upload_conversion_action_summary_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a offline_conversion_upload_conversion_action_summary path into its component segments."
+      },
+      "parse_offline_user_data_job_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a offline_user_data_job path into its component segments."
+      },
+      "parse_operating_system_version_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a operating_system_version_constant path into its component segments."
+      },
+      "parse_paid_organic_search_term_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a paid_organic_search_term_view path into its component segments."
+      },
+      "parse_parental_status_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a parental_status_view path into its component segments."
+      },
+      "parse_payments_account_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a payments_account path into its component segments."
+      },
+      "parse_per_store_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a per_store_view path into its component segments."
+      },
+      "parse_performance_max_placement_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a performance_max_placement_view path into its component segments."
+      },
+      "parse_product_category_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a product_category_constant path into its component segments."
+      },
+      "parse_product_group_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a product_group_view path into its component segments."
+      },
+      "parse_product_link_invitation_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a product_link_invitation path into its component segments."
+      },
+      "parse_product_link_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a product_link path into its component segments."
+      },
+      "parse_qualifying_question_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a qualifying_question path into its component segments."
+      },
+      "parse_recommendation_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a recommendation path into its component segments."
+      },
+      "parse_recommendation_subscription_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a recommendation_subscription path into its component segments."
+      },
+      "parse_remarketing_action_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a remarketing_action path into its component segments."
+      },
+      "parse_search_term_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a search_term_view path into its component segments."
+      },
+      "parse_shared_criterion_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a shared_criterion path into its component segments."
+      },
+      "parse_shared_set_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a shared_set path into its component segments."
+      },
+      "parse_shopping_performance_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a shopping_performance_view path into its component segments."
+      },
+      "parse_shopping_product_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a shopping_product path into its component segments."
+      },
+      "parse_smart_campaign_search_term_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a smart_campaign_search_term_view path into its component segments."
+      },
+      "parse_smart_campaign_setting_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a smart_campaign_setting path into its component segments."
+      },
+      "parse_targeting_expansion_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a targeting_expansion_view path into its component segments."
+      },
+      "parse_third_party_app_analytics_link_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a third_party_app_analytics_link path into its component segments."
+      },
+      "parse_topic_constant_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a topic_constant path into its component segments."
+      },
+      "parse_topic_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a topic_view path into its component segments."
+      },
+      "parse_travel_activity_group_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a travel_activity_group_view path into its component segments."
+      },
+      "parse_travel_activity_performance_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a travel_activity_performance_view path into its component segments."
+      },
+      "parse_user_interest_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a user_interest path into its component segments."
+      },
+      "parse_user_list_customer_type_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a user_list_customer_type path into its component segments."
+      },
+      "parse_user_list_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a user_list path into its component segments."
+      },
+      "parse_user_location_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a user_location_view path into its component segments."
+      },
+      "parse_video_enhancement_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a video_enhancement path into its component segments."
+      },
+      "parse_video_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a video path into its component segments."
+      },
+      "parse_webpage_view_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a webpage_view path into its component segments."
+      },
+      "parse_you_tube_video_upload_path": {
+        "signature": "(path: str) -> Dict[str, str]",
+        "docstring": "Parses a you_tube_video_upload path into its component segments."
+      },
+      "payments_account_path": {
+        "signature": "(customer_id: str, payments_account_id: str) -> str",
+        "docstring": "Returns a fully-qualified payments_account string."
+      },
+      "per_store_view_path": {
+        "signature": "(customer_id: str, place_id: str) -> str",
+        "docstring": "Returns a fully-qualified per_store_view string."
+      },
+      "performance_max_placement_view_path": {
+        "signature": "(customer_id: str, base_64_placement: str) -> str",
+        "docstring": "Returns a fully-qualified performance_max_placement_view string."
+      },
+      "product_category_constant_path": {
+        "signature": "(level: str, category_id: str) -> str",
+        "docstring": "Returns a fully-qualified product_category_constant string."
+      },
+      "product_group_view_path": {
+        "signature": "(customer_id: str, adgroup_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified product_group_view string."
+      },
+      "product_link_invitation_path": {
+        "signature": "(customer_id: str, customer_invitation_id: str) -> str",
+        "docstring": "Returns a fully-qualified product_link_invitation string."
+      },
+      "product_link_path": {
+        "signature": "(customer_id: str, product_link_id: str) -> str",
+        "docstring": "Returns a fully-qualified product_link string."
+      },
+      "qualifying_question_path": {
+        "signature": "(qualifying_question_id: str) -> str",
+        "docstring": "Returns a fully-qualified qualifying_question string."
+      },
+      "recommendation_path": {
+        "signature": "(customer_id: str, recommendation_id: str) -> str",
+        "docstring": "Returns a fully-qualified recommendation string."
+      },
+      "recommendation_subscription_path": {
+        "signature": "(customer_id: str, recommendation_type: str) -> str",
+        "docstring": "Returns a fully-qualified recommendation_subscription string."
+      },
+      "remarketing_action_path": {
+        "signature": "(customer_id: str, remarketing_action_id: str) -> str",
+        "docstring": "Returns a fully-qualified remarketing_action string."
+      },
+      "search": {
+        "signature": "(self, request: Union[google.ads.googleads.v24.services.types.google_ads_service.SearchGoogleAdsRequest, dict, NoneType] = None, *, customer_id: Optional[str] = None, query: Optional[str] = None, retry: Union[google.api_core.retry.retry_unary.Retry, google.api_core.gapic_v1.method._MethodDefault, NoneType] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, timeout: Union[float, object] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, metadata: Sequence[Tuple[str, Union[str, bytes]]] = ()) -> google.ads.googleads.v24.services.services.google_ads_service.pagers.SearchPager",
+        "docstring": "Returns all rows that match the search query.\n\nList of thrown errors: `AuthenticationError <>`__\n`AuthorizationError <>`__ `ChangeEventError <>`__\n`ChangeStatusError <>`__ `ClickViewError <>`__\n`HeaderError <>`__ `InternalError <>`__ `QueryError <>`__\n`QuotaError <>`__ `RequestError <>`__\n\nArgs:\n    request (Union[google.ads.googleads.v24.services.types.SearchGoogleAdsRequest, dict]):\n        The request object. Request message for\n        [GoogleAdsService.Search][google.ads.googleads.v24.services.GoogleAdsService.Search].\n    customer_id (str):\n        Required. The ID of the customer\n        being queried.\n\n        This corresponds to the ``customer_id`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    query (str):\n        Required. The query string.\n        This corresponds to the ``query`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    retry (google.api_core.retry.Retry): Designation of what errors, if any,\n        should be retried.\n    timeout (float): The timeout for this request.\n    metadata (Sequence[Tuple[str, Union[str, bytes]]]): Key/value pairs which should be\n        sent along with the request as metadata. Normally, each value must be of type `str`,\n        but for metadata keys ending with the suffix `-bin`, the corresponding values must\n        be of type `bytes`.\n\nReturns:\n    google.ads.googleads.v24.services.services.google_ads_service.pagers.SearchPager:\n        Response message for\n           [GoogleAdsService.Search][google.ads.googleads.v24.services.GoogleAdsService.Search].\n\n        Iterating over this object will yield results and\n        resolve additional pages automatically."
+      },
+      "search_stream": {
+        "signature": "(self, request: Union[google.ads.googleads.v24.services.types.google_ads_service.SearchGoogleAdsStreamRequest, dict, NoneType] = None, *, customer_id: Optional[str] = None, query: Optional[str] = None, retry: Union[google.api_core.retry.retry_unary.Retry, google.api_core.gapic_v1.method._MethodDefault, NoneType] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, timeout: Union[float, object] = <_MethodDefault._DEFAULT_VALUE: <object object at 0x0000014EE6E61230>>, metadata: Sequence[Tuple[str, Union[str, bytes]]] = ()) -> Iterable[google.ads.googleads.v24.services.types.google_ads_service.SearchGoogleAdsStreamResponse]",
+        "docstring": "Returns all rows that match the search stream query.\n\nList of thrown errors: `AuthenticationError <>`__\n`AuthorizationError <>`__ `ChangeEventError <>`__\n`ChangeStatusError <>`__ `ClickViewError <>`__\n`HeaderError <>`__ `InternalError <>`__ `QueryError <>`__\n`QuotaError <>`__ `RequestError <>`__\n\nArgs:\n    request (Union[google.ads.googleads.v24.services.types.SearchGoogleAdsStreamRequest, dict]):\n        The request object. Request message for\n        [GoogleAdsService.SearchStream][google.ads.googleads.v24.services.GoogleAdsService.SearchStream].\n    customer_id (str):\n        Required. The ID of the customer\n        being queried.\n\n        This corresponds to the ``customer_id`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    query (str):\n        Required. The query string.\n        This corresponds to the ``query`` field\n        on the ``request`` instance; if ``request`` is provided, this\n        should not be set.\n    retry (google.api_core.retry.Retry): Designation of what errors, if any,\n        should be retried.\n    timeout (float): The timeout for this request.\n    metadata (Sequence[Tuple[str, Union[str, bytes]]]): Key/value pairs which should be\n        sent along with the request as metadata. Normally, each value must be of type `str`,\n        but for metadata keys ending with the suffix `-bin`, the corresponding values must\n        be of type `bytes`.\n\nReturns:\n    Iterable[google.ads.googleads.v24.services.types.SearchGoogleAdsStreamResponse]:\n        Response message for\n           [GoogleAdsService.SearchStream][google.ads.googleads.v24.services.GoogleAdsService.SearchStream]."
+      },
+      "search_term_view_path": {
+        "signature": "(customer_id: str, campaign_id: str, ad_group_id: str, query: str) -> str",
+        "docstring": "Returns a fully-qualified search_term_view string."
+      },
+      "shared_criterion_path": {
+        "signature": "(customer_id: str, shared_set_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified shared_criterion string."
+      },
+      "shared_set_path": {
+        "signature": "(customer_id: str, shared_set_id: str) -> str",
+        "docstring": "Returns a fully-qualified shared_set string."
+      },
+      "shopping_performance_view_path": {
+        "signature": "(customer_id: str) -> str",
+        "docstring": "Returns a fully-qualified shopping_performance_view string."
+      },
+      "shopping_product_path": {
+        "signature": "(customer_id: str, merchant_center_id: str, channel: str, language_code: str, feed_label: str, item_id: str) -> str",
+        "docstring": "Returns a fully-qualified shopping_product string."
+      },
+      "smart_campaign_search_term_view_path": {
+        "signature": "(customer_id: str, campaign_id: str, query: str) -> str",
+        "docstring": "Returns a fully-qualified smart_campaign_search_term_view string."
+      },
+      "smart_campaign_setting_path": {
+        "signature": "(customer_id: str, campaign_id: str) -> str",
+        "docstring": "Returns a fully-qualified smart_campaign_setting string."
+      },
+      "targeting_expansion_view_path": {
+        "signature": "(customer_id: str, campaign_id: str, targeting_expansion_type: str) -> str",
+        "docstring": "Returns a fully-qualified targeting_expansion_view string."
+      },
+      "third_party_app_analytics_link_path": {
+        "signature": "(customer_id: str, customer_link_id: str) -> str",
+        "docstring": "Returns a fully-qualified third_party_app_analytics_link string."
+      },
+      "topic_constant_path": {
+        "signature": "(topic_id: str) -> str",
+        "docstring": "Returns a fully-qualified topic_constant string."
+      },
+      "topic_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified topic_view string."
+      },
+      "travel_activity_group_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified travel_activity_group_view string."
+      },
+      "travel_activity_performance_view_path": {
+        "signature": "(customer_id: str) -> str",
+        "docstring": "Returns a fully-qualified travel_activity_performance_view string."
+      },
+      "user_interest_path": {
+        "signature": "(customer_id: str, user_interest_id: str) -> str",
+        "docstring": "Returns a fully-qualified user_interest string."
+      },
+      "user_list_customer_type_path": {
+        "signature": "(customer_id: str, user_list_id: str, semantic_label: str) -> str",
+        "docstring": "Returns a fully-qualified user_list_customer_type string."
+      },
+      "user_list_path": {
+        "signature": "(customer_id: str, user_list_id: str) -> str",
+        "docstring": "Returns a fully-qualified user_list string."
+      },
+      "user_location_view_path": {
+        "signature": "(customer_id: str, country_criterion_id: str, is_targeting_location: str) -> str",
+        "docstring": "Returns a fully-qualified user_location_view string."
+      },
+      "video_enhancement_path": {
+        "signature": "(customer_id: str, video_enhancement: str) -> str",
+        "docstring": "Returns a fully-qualified video_enhancement string."
+      },
+      "video_path": {
+        "signature": "(customer_id: str, video_id: str) -> str",
+        "docstring": "Returns a fully-qualified video string."
+      },
+      "webpage_view_path": {
+        "signature": "(customer_id: str, ad_group_id: str, criterion_id: str) -> str",
+        "docstring": "Returns a fully-qualified webpage_view string."
+      },
+      "you_tube_video_upload_path": {
+        "signature": "(customer_id: str, video_upload_id: str) -> str",
+        "docstring": "Returns a fully-qualified you_tube_video_upload string."
+      }
+    }
+  }
+}

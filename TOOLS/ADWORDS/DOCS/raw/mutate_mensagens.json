@@ -1,0 +1,4687 @@
+{
+  "Campaign": {
+    "name": "google.ads.googleads.v24.resources.Campaign",
+    "fields": [
+      {
+        "name": "resource_name",
+        "number": 1,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "id",
+        "number": 59,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_id"
+      },
+      {
+        "name": "name",
+        "number": 58,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_name"
+      },
+      {
+        "name": "primary_status",
+        "number": 81,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "CampaignPrimaryStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "ELIGIBLE",
+          "PAUSED",
+          "REMOVED",
+          "ENDED",
+          "PENDING",
+          "MISCONFIGURED",
+          "LIMITED",
+          "LEARNING",
+          "NOT_ELIGIBLE"
+        ]
+      },
+      {
+        "name": "primary_status_reasons",
+        "number": 82,
+        "type": "ENUM",
+        "label": "REPEATED",
+        "enum_type": "CampaignPrimaryStatusReason",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "CAMPAIGN_REMOVED",
+          "CAMPAIGN_PAUSED",
+          "CAMPAIGN_PENDING",
+          "CAMPAIGN_ENDED",
+          "CAMPAIGN_DRAFT",
+          "BIDDING_STRATEGY_MISCONFIGURED",
+          "BIDDING_STRATEGY_LIMITED",
+          "BIDDING_STRATEGY_LEARNING",
+          "BIDDING_STRATEGY_CONSTRAINED",
+          "BUDGET_CONSTRAINED",
+          "BUDGET_MISCONFIGURED",
+          "SEARCH_VOLUME_LIMITED",
+          "AD_GROUPS_PAUSED",
+          "NO_AD_GROUPS",
+          "KEYWORDS_PAUSED",
+          "NO_KEYWORDS",
+          "AD_GROUP_ADS_PAUSED",
+          "NO_AD_GROUP_ADS",
+          "HAS_ADS_LIMITED_BY_POLICY",
+          "HAS_ADS_DISAPPROVED",
+          "MOST_ADS_UNDER_REVIEW",
+          "MISSING_LEAD_FORM_EXTENSION",
+          "MISSING_CALL_EXTENSION",
+          "LEAD_FORM_EXTENSION_UNDER_REVIEW",
+          "LEAD_FORM_EXTENSION_DISAPPROVED",
+          "CALL_EXTENSION_UNDER_REVIEW",
+          "CALL_EXTENSION_DISAPPROVED",
+          "NO_MOBILE_APPLICATION_AD_GROUP_CRITERIA",
+          "CAMPAIGN_GROUP_PAUSED",
+          "CAMPAIGN_GROUP_ALL_GROUP_BUDGETS_ENDED",
+          "APP_NOT_RELEASED",
+          "APP_PARTIALLY_RELEASED",
+          "HAS_ASSET_GROUPS_DISAPPROVED",
+          "HAS_ASSET_GROUPS_LIMITED_BY_POLICY",
+          "MOST_ASSET_GROUPS_UNDER_REVIEW",
+          "NO_ASSET_GROUPS",
+          "ASSET_GROUPS_PAUSED",
+          "MISSING_LOCATION_TARGETING",
+          "CAMPAIGN_NOT_BOOKED",
+          "BOOKING_HOLD_EXPIRING",
+          "BOOKING_HOLD_EXPIRED",
+          "BOOKING_CANCELLED"
+        ]
+      },
+      {
+        "name": "status",
+        "number": 5,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "CampaignStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "ENABLED",
+          "PAUSED",
+          "REMOVED"
+        ]
+      },
+      {
+        "name": "serving_status",
+        "number": 21,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "CampaignServingStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "SERVING",
+          "NONE",
+          "ENDED",
+          "PENDING",
+          "SUSPENDED"
+        ]
+      },
+      {
+        "name": "bidding_strategy_system_status",
+        "number": 78,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "BiddingStrategySystemStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "ENABLED",
+          "LEARNING_NEW",
+          "LEARNING_SETTING_CHANGE",
+          "LEARNING_BUDGET_CHANGE",
+          "LEARNING_COMPOSITION_CHANGE",
+          "LEARNING_CONVERSION_TYPE_CHANGE",
+          "LEARNING_CONVERSION_SETTING_CHANGE",
+          "LIMITED_BY_CPC_BID_CEILING",
+          "LIMITED_BY_CPC_BID_FLOOR",
+          "LIMITED_BY_DATA",
+          "LIMITED_BY_BUDGET",
+          "LIMITED_BY_LOW_PRIORITY_SPEND",
+          "LIMITED_BY_LOW_QUALITY",
+          "LIMITED_BY_INVENTORY",
+          "MISCONFIGURED_ZERO_ELIGIBILITY",
+          "MISCONFIGURED_CONVERSION_TYPES",
+          "MISCONFIGURED_CONVERSION_SETTINGS",
+          "MISCONFIGURED_SHARED_BUDGET",
+          "MISCONFIGURED_STRATEGY_TYPE",
+          "PAUSED",
+          "UNAVAILABLE",
+          "MULTIPLE_LEARNING",
+          "MULTIPLE_LIMITED",
+          "MULTIPLE_MISCONFIGURED",
+          "MULTIPLE"
+        ]
+      },
+      {
+        "name": "ad_serving_optimization_status",
+        "number": 8,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AdServingOptimizationStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "OPTIMIZE",
+          "CONVERSION_OPTIMIZE",
+          "ROTATE",
+          "ROTATE_INDEFINITELY",
+          "UNAVAILABLE"
+        ]
+      },
+      {
+        "name": "advertising_channel_type",
+        "number": 9,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AdvertisingChannelType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "SEARCH",
+          "DISPLAY",
+          "SHOPPING",
+          "HOTEL",
+          "VIDEO",
+          "MULTI_CHANNEL",
+          "LOCAL",
+          "SMART",
+          "PERFORMANCE_MAX",
+          "LOCAL_SERVICES",
+          "TRAVEL",
+          "DEMAND_GEN"
+        ]
+      },
+      {
+        "name": "advertising_channel_sub_type",
+        "number": 10,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AdvertisingChannelSubType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "SEARCH_MOBILE_APP",
+          "DISPLAY_MOBILE_APP",
+          "SEARCH_EXPRESS",
+          "DISPLAY_EXPRESS",
+          "SHOPPING_SMART_ADS",
+          "DISPLAY_GMAIL_AD",
+          "DISPLAY_SMART_CAMPAIGN",
+          "VIDEO_ACTION",
+          "VIDEO_NON_SKIPPABLE",
+          "APP_CAMPAIGN",
+          "APP_CAMPAIGN_FOR_ENGAGEMENT",
+          "LOCAL_CAMPAIGN",
+          "SHOPPING_COMPARISON_LISTING_ADS",
+          "SMART_CAMPAIGN",
+          "VIDEO_SEQUENCE",
+          "APP_CAMPAIGN_FOR_PRE_REGISTRATION",
+          "VIDEO_REACH_TARGET_FREQUENCY",
+          "TRAVEL_ACTIVITIES",
+          "YOUTUBE_AUDIO"
+        ]
+      },
+      {
+        "name": "tracking_url_template",
+        "number": 60,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_tracking_url_template"
+      },
+      {
+        "name": "url_custom_parameters",
+        "number": 12,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "CustomParameter"
+      },
+      {
+        "name": "local_services_campaign_settings",
+        "number": 75,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "LocalServicesCampaignSettings"
+      },
+      {
+        "name": "travel_campaign_settings",
+        "number": 85,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TravelCampaignSettings"
+      },
+      {
+        "name": "demand_gen_campaign_settings",
+        "number": 91,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "DemandGenCampaignSettings"
+      },
+      {
+        "name": "video_campaign_settings",
+        "number": 94,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "VideoCampaignSettings"
+      },
+      {
+        "name": "pmax_campaign_settings",
+        "number": 97,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "PmaxCampaignSettings"
+      },
+      {
+        "name": "real_time_bidding_setting",
+        "number": 39,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "RealTimeBiddingSetting"
+      },
+      {
+        "name": "network_settings",
+        "number": 14,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "NetworkSettings"
+      },
+      {
+        "name": "hotel_setting",
+        "number": 32,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "HotelSettingInfo"
+      },
+      {
+        "name": "dynamic_search_ads_setting",
+        "number": 33,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "DynamicSearchAdsSetting"
+      },
+      {
+        "name": "shopping_setting",
+        "number": 36,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ShoppingSetting"
+      },
+      {
+        "name": "targeting_setting",
+        "number": 43,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TargetingSetting"
+      },
+      {
+        "name": "audience_setting",
+        "number": 73,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AudienceSetting",
+        "oneof": "_audience_setting"
+      },
+      {
+        "name": "geo_target_type_setting",
+        "number": 47,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "GeoTargetTypeSetting"
+      },
+      {
+        "name": "local_campaign_setting",
+        "number": 50,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "LocalCampaignSetting"
+      },
+      {
+        "name": "app_campaign_setting",
+        "number": 51,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AppCampaignSetting"
+      },
+      {
+        "name": "labels",
+        "number": 61,
+        "type": "STRING",
+        "label": "REPEATED"
+      },
+      {
+        "name": "experiment_type",
+        "number": 17,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "CampaignExperimentType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "BASE",
+          "DRAFT",
+          "EXPERIMENT"
+        ]
+      },
+      {
+        "name": "base_campaign",
+        "number": 56,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_base_campaign"
+      },
+      {
+        "name": "campaign_budget",
+        "number": 62,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_campaign_budget"
+      },
+      {
+        "name": "bidding_strategy_type",
+        "number": 22,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "BiddingStrategyType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "ENHANCED_CPC",
+          "MANUAL_CPC",
+          "MANUAL_CPM",
+          "PAGE_ONE_PROMOTED",
+          "TARGET_CPA",
+          "TARGET_OUTRANK_SHARE",
+          "TARGET_ROAS",
+          "TARGET_SPEND",
+          "MAXIMIZE_CONVERSIONS",
+          "MAXIMIZE_CONVERSION_VALUE",
+          "PERCENT_CPC",
+          "MANUAL_CPV",
+          "TARGET_CPM",
+          "TARGET_IMPRESSION_SHARE",
+          "COMMISSION",
+          "INVALID",
+          "MANUAL_CPA",
+          "FIXED_CPM",
+          "TARGET_CPV",
+          "TARGET_CPC",
+          "FIXED_SHARE_OF_VOICE"
+        ]
+      },
+      {
+        "name": "accessible_bidding_strategy",
+        "number": 71,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "campaign_group",
+        "number": 76,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_campaign_group"
+      },
+      {
+        "name": "start_date_time",
+        "number": 104,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_start_date_time"
+      },
+      {
+        "name": "end_date_time",
+        "number": 105,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_end_date_time"
+      },
+      {
+        "name": "final_url_suffix",
+        "number": 65,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_final_url_suffix"
+      },
+      {
+        "name": "frequency_caps",
+        "number": 40,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "FrequencyCapEntry"
+      },
+      {
+        "name": "vanity_pharma",
+        "number": 44,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "VanityPharma"
+      },
+      {
+        "name": "selective_optimization",
+        "number": 45,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "SelectiveOptimization"
+      },
+      {
+        "name": "optimization_goal_setting",
+        "number": 54,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "OptimizationGoalSetting"
+      },
+      {
+        "name": "tracking_setting",
+        "number": 46,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TrackingSetting"
+      },
+      {
+        "name": "payment_mode",
+        "number": 52,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "PaymentMode",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "CLICKS",
+          "CONVERSION_VALUE",
+          "CONVERSIONS",
+          "GUEST_STAY"
+        ]
+      },
+      {
+        "name": "optimization_score",
+        "number": 66,
+        "type": "DOUBLE",
+        "label": "OPTIONAL",
+        "oneof": "_optimization_score"
+      },
+      {
+        "name": "excluded_parent_asset_field_types",
+        "number": 69,
+        "type": "ENUM",
+        "label": "REPEATED",
+        "enum_type": "AssetFieldType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "HEADLINE",
+          "DESCRIPTION",
+          "MANDATORY_AD_TEXT",
+          "MARKETING_IMAGE",
+          "MEDIA_BUNDLE",
+          "YOUTUBE_VIDEO",
+          "BOOK_ON_GOOGLE",
+          "LEAD_FORM",
+          "PROMOTION",
+          "CALLOUT",
+          "STRUCTURED_SNIPPET",
+          "SITELINK",
+          "MOBILE_APP",
+          "HOTEL_CALLOUT",
+          "CALL",
+          "LONG_HEADLINE",
+          "BUSINESS_NAME",
+          "SQUARE_MARKETING_IMAGE",
+          "PORTRAIT_MARKETING_IMAGE",
+          "LOGO",
+          "LANDSCAPE_LOGO",
+          "VIDEO",
+          "PRICE",
+          "CALL_TO_ACTION_SELECTION",
+          "AD_IMAGE",
+          "BUSINESS_LOGO",
+          "HOTEL_PROPERTY",
+          "DEMAND_GEN_CAROUSEL_CARD",
+          "BUSINESS_MESSAGE",
+          "TALL_PORTRAIT_MARKETING_IMAGE",
+          "RELATED_YOUTUBE_VIDEOS",
+          "LANDING_PAGE_PREVIEW",
+          "LONG_DESCRIPTION",
+          "CALL_TO_ACTION",
+          "CLASSIC_DISPLAY_IMAGE"
+        ]
+      },
+      {
+        "name": "excluded_parent_asset_set_types",
+        "number": 80,
+        "type": "ENUM",
+        "label": "REPEATED",
+        "enum_type": "AssetSetType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "PAGE_FEED",
+          "DYNAMIC_EDUCATION",
+          "MERCHANT_CENTER_FEED",
+          "DYNAMIC_REAL_ESTATE",
+          "DYNAMIC_CUSTOM",
+          "DYNAMIC_HOTELS_AND_RENTALS",
+          "DYNAMIC_FLIGHTS",
+          "DYNAMIC_TRAVEL",
+          "DYNAMIC_LOCAL",
+          "DYNAMIC_JOBS",
+          "LOCATION_SYNC",
+          "BUSINESS_PROFILE_DYNAMIC_LOCATION_GROUP",
+          "CHAIN_DYNAMIC_LOCATION_GROUP",
+          "STATIC_LOCATION_GROUP",
+          "HOTEL_PROPERTY",
+          "TRAVEL_FEED"
+        ]
+      },
+      {
+        "name": "performance_max_upgrade",
+        "number": 77,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "PerformanceMaxUpgrade"
+      },
+      {
+        "name": "hotel_property_asset_set",
+        "number": 83,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_hotel_property_asset_set"
+      },
+      {
+        "name": "listing_type",
+        "number": 86,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "ListingType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "VEHICLES"
+        ],
+        "oneof": "_listing_type"
+      },
+      {
+        "name": "asset_automation_settings",
+        "number": 88,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "AssetAutomationSetting"
+      },
+      {
+        "name": "keyword_match_type",
+        "number": 90,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "CampaignKeywordMatchType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "BROAD"
+        ]
+      },
+      {
+        "name": "brand_guidelines_enabled",
+        "number": 96,
+        "type": "BOOL",
+        "label": "OPTIONAL",
+        "oneof": "_brand_guidelines_enabled"
+      },
+      {
+        "name": "brand_guidelines",
+        "number": 98,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "BrandGuidelines"
+      },
+      {
+        "name": "text_guidelines",
+        "number": 107,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TextGuidelines"
+      },
+      {
+        "name": "third_party_integration_partners",
+        "number": 100,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignThirdPartyIntegrationPartners"
+      },
+      {
+        "name": "ai_max_setting",
+        "number": 101,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AiMaxSetting"
+      },
+      {
+        "name": "contains_eu_political_advertising",
+        "number": 102,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "EuPoliticalAdvertisingStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "CONTAINS_EU_POLITICAL_ADVERTISING",
+          "DOES_NOT_CONTAIN_EU_POLITICAL_ADVERTISING"
+        ]
+      },
+      {
+        "name": "feed_types",
+        "number": 103,
+        "type": "ENUM",
+        "label": "REPEATED",
+        "enum_type": "AssetSetType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "PAGE_FEED",
+          "DYNAMIC_EDUCATION",
+          "MERCHANT_CENTER_FEED",
+          "DYNAMIC_REAL_ESTATE",
+          "DYNAMIC_CUSTOM",
+          "DYNAMIC_HOTELS_AND_RENTALS",
+          "DYNAMIC_FLIGHTS",
+          "DYNAMIC_TRAVEL",
+          "DYNAMIC_LOCAL",
+          "DYNAMIC_JOBS",
+          "LOCATION_SYNC",
+          "BUSINESS_PROFILE_DYNAMIC_LOCATION_GROUP",
+          "CHAIN_DYNAMIC_LOCATION_GROUP",
+          "STATIC_LOCATION_GROUP",
+          "HOTEL_PROPERTY",
+          "TRAVEL_FEED"
+        ]
+      },
+      {
+        "name": "view_through_conversion_optimization_enabled",
+        "number": 106,
+        "type": "BOOL",
+        "label": "OPTIONAL",
+        "oneof": "_view_through_conversion_optimization_enabled"
+      },
+      {
+        "name": "missing_eu_political_advertising_declaration",
+        "number": 108,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "bidding_strategy",
+        "number": 67,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "commission",
+        "number": 49,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "Commission",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "manual_cpa",
+        "number": 74,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ManualCpa",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "manual_cpc",
+        "number": 24,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ManualCpc",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "manual_cpm",
+        "number": 25,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ManualCpm",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "manual_cpv",
+        "number": 37,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ManualCpv",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "maximize_conversions",
+        "number": 30,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MaximizeConversions",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "maximize_conversion_value",
+        "number": 31,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MaximizeConversionValue",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "target_cpa",
+        "number": 26,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TargetCpa",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "target_impression_share",
+        "number": 48,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TargetImpressionShare",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "target_roas",
+        "number": 29,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TargetRoas",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "target_spend",
+        "number": 27,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TargetSpend",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "percent_cpc",
+        "number": 34,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "PercentCpc",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "target_cpm",
+        "number": 41,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TargetCpm",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "fixed_cpm",
+        "number": 92,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "FixedCpm",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "target_cpv",
+        "number": 93,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TargetCpv",
+        "oneof": "campaign_bidding_strategy"
+      },
+      {
+        "name": "target_cpc",
+        "number": 99,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TargetCpc",
+        "oneof": "campaign_bidding_strategy"
+      }
+    ]
+  },
+  "CampaignOperation": {
+    "name": "google.ads.googleads.v24.services.CampaignOperation",
+    "fields": [
+      {
+        "name": "update_mask",
+        "number": 4,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "FieldMask"
+      },
+      {
+        "name": "create",
+        "number": 1,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "Campaign",
+        "oneof": "operation"
+      },
+      {
+        "name": "update",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "Campaign",
+        "oneof": "operation"
+      },
+      {
+        "name": "remove",
+        "number": 3,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "operation"
+      }
+    ]
+  },
+  "MutateCampaignsRequest": {
+    "name": "google.ads.googleads.v24.services.MutateCampaignsRequest",
+    "fields": [
+      {
+        "name": "customer_id",
+        "number": 1,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "operations",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "CampaignOperation"
+      },
+      {
+        "name": "partial_failure",
+        "number": 3,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "validate_only",
+        "number": 4,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "response_content_type",
+        "number": 5,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "ResponseContentType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "RESOURCE_NAME_ONLY",
+          "MUTABLE_RESOURCE"
+        ]
+      }
+    ]
+  },
+  "MutateCampaignsResponse": {
+    "name": "google.ads.googleads.v24.services.MutateCampaignsResponse",
+    "fields": [
+      {
+        "name": "partial_failure_error",
+        "number": 3,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "Status"
+      },
+      {
+        "name": "results",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "MutateCampaignResult"
+      }
+    ]
+  },
+  "CampaignBudget": {
+    "name": "google.ads.googleads.v24.resources.CampaignBudget",
+    "fields": [
+      {
+        "name": "resource_name",
+        "number": 1,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "id",
+        "number": 19,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_id"
+      },
+      {
+        "name": "name",
+        "number": 20,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_name"
+      },
+      {
+        "name": "amount_micros",
+        "number": 21,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_amount_micros"
+      },
+      {
+        "name": "total_amount_micros",
+        "number": 22,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_total_amount_micros"
+      },
+      {
+        "name": "status",
+        "number": 6,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "BudgetStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "ENABLED",
+          "REMOVED"
+        ]
+      },
+      {
+        "name": "delivery_method",
+        "number": 7,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "BudgetDeliveryMethod",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "STANDARD",
+          "ACCELERATED"
+        ]
+      },
+      {
+        "name": "explicitly_shared",
+        "number": 23,
+        "type": "BOOL",
+        "label": "OPTIONAL",
+        "oneof": "_explicitly_shared"
+      },
+      {
+        "name": "reference_count",
+        "number": 24,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_reference_count"
+      },
+      {
+        "name": "has_recommended_budget",
+        "number": 25,
+        "type": "BOOL",
+        "label": "OPTIONAL",
+        "oneof": "_has_recommended_budget"
+      },
+      {
+        "name": "recommended_budget_amount_micros",
+        "number": 26,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_recommended_budget_amount_micros"
+      },
+      {
+        "name": "period",
+        "number": 13,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "BudgetPeriod",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "DAILY",
+          "CUSTOM_PERIOD"
+        ]
+      },
+      {
+        "name": "recommended_budget_estimated_change_weekly_clicks",
+        "number": 27,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_recommended_budget_estimated_change_weekly_clicks"
+      },
+      {
+        "name": "recommended_budget_estimated_change_weekly_cost_micros",
+        "number": 28,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_recommended_budget_estimated_change_weekly_cost_micros"
+      },
+      {
+        "name": "recommended_budget_estimated_change_weekly_interactions",
+        "number": 29,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_recommended_budget_estimated_change_weekly_interactions"
+      },
+      {
+        "name": "recommended_budget_estimated_change_weekly_views",
+        "number": 30,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_recommended_budget_estimated_change_weekly_views"
+      },
+      {
+        "name": "type_",
+        "number": 18,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "BudgetType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "STANDARD",
+          "FIXED_CPA",
+          "SMART_CAMPAIGN",
+          "LOCAL_SERVICES"
+        ]
+      },
+      {
+        "name": "aligned_bidding_strategy_id",
+        "number": 31,
+        "type": "INT64",
+        "label": "OPTIONAL"
+      }
+    ]
+  },
+  "CampaignBudgetOperation": {
+    "name": "google.ads.googleads.v24.services.CampaignBudgetOperation",
+    "fields": [
+      {
+        "name": "update_mask",
+        "number": 4,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "FieldMask"
+      },
+      {
+        "name": "create",
+        "number": 1,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignBudget",
+        "oneof": "operation"
+      },
+      {
+        "name": "update",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignBudget",
+        "oneof": "operation"
+      },
+      {
+        "name": "remove",
+        "number": 3,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "operation"
+      }
+    ]
+  },
+  "MutateCampaignBudgetsRequest": {
+    "name": "google.ads.googleads.v24.services.MutateCampaignBudgetsRequest",
+    "fields": [
+      {
+        "name": "customer_id",
+        "number": 1,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "operations",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "CampaignBudgetOperation"
+      },
+      {
+        "name": "partial_failure",
+        "number": 3,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "validate_only",
+        "number": 4,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "response_content_type",
+        "number": 5,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "ResponseContentType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "RESOURCE_NAME_ONLY",
+          "MUTABLE_RESOURCE"
+        ]
+      }
+    ]
+  },
+  "AdGroup": {
+    "name": "google.ads.googleads.v24.resources.AdGroup",
+    "fields": [
+      {
+        "name": "resource_name",
+        "number": 1,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "id",
+        "number": 34,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_id"
+      },
+      {
+        "name": "name",
+        "number": 35,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_name"
+      },
+      {
+        "name": "status",
+        "number": 5,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AdGroupStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "ENABLED",
+          "PAUSED",
+          "REMOVED"
+        ]
+      },
+      {
+        "name": "type_",
+        "number": 12,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AdGroupType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "SEARCH_STANDARD",
+          "DISPLAY_STANDARD",
+          "SHOPPING_PRODUCT_ADS",
+          "HOTEL_ADS",
+          "SHOPPING_SMART_ADS",
+          "VIDEO_BUMPER",
+          "VIDEO_TRUE_VIEW_IN_STREAM",
+          "VIDEO_TRUE_VIEW_IN_DISPLAY",
+          "VIDEO_NON_SKIPPABLE_IN_STREAM",
+          "SEARCH_DYNAMIC_ADS",
+          "SHOPPING_COMPARISON_LISTING_ADS",
+          "PROMOTED_HOTEL_ADS",
+          "VIDEO_RESPONSIVE",
+          "VIDEO_EFFICIENT_REACH",
+          "SMART_CAMPAIGN_ADS",
+          "TRAVEL_ADS",
+          "YOUTUBE_AUDIO"
+        ]
+      },
+      {
+        "name": "ad_rotation_mode",
+        "number": 22,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AdGroupAdRotationMode",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "OPTIMIZE",
+          "ROTATE_FOREVER"
+        ]
+      },
+      {
+        "name": "base_ad_group",
+        "number": 36,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_base_ad_group"
+      },
+      {
+        "name": "tracking_url_template",
+        "number": 37,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_tracking_url_template"
+      },
+      {
+        "name": "url_custom_parameters",
+        "number": 6,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "CustomParameter"
+      },
+      {
+        "name": "campaign",
+        "number": 38,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_campaign"
+      },
+      {
+        "name": "cpc_bid_micros",
+        "number": 39,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_cpc_bid_micros"
+      },
+      {
+        "name": "effective_cpc_bid_micros",
+        "number": 57,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_effective_cpc_bid_micros"
+      },
+      {
+        "name": "cpm_bid_micros",
+        "number": 40,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_cpm_bid_micros"
+      },
+      {
+        "name": "target_cpa_micros",
+        "number": 41,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_target_cpa_micros"
+      },
+      {
+        "name": "cpv_bid_micros",
+        "number": 42,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_cpv_bid_micros"
+      },
+      {
+        "name": "target_cpm_micros",
+        "number": 43,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_target_cpm_micros"
+      },
+      {
+        "name": "target_roas",
+        "number": 44,
+        "type": "DOUBLE",
+        "label": "OPTIONAL",
+        "oneof": "_target_roas"
+      },
+      {
+        "name": "percent_cpc_bid_micros",
+        "number": 45,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_percent_cpc_bid_micros"
+      },
+      {
+        "name": "fixed_cpm_micros",
+        "number": 64,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_fixed_cpm_micros"
+      },
+      {
+        "name": "target_cpv_micros",
+        "number": 65,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_target_cpv_micros"
+      },
+      {
+        "name": "target_cpc_micros",
+        "number": 68,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_target_cpc_micros"
+      },
+      {
+        "name": "optimized_targeting_enabled",
+        "number": 59,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "exclude_demographic_expansion",
+        "number": 67,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "display_custom_bid_dimension",
+        "number": 23,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "TargetingDimension",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "KEYWORD",
+          "AUDIENCE",
+          "TOPIC",
+          "GENDER",
+          "AGE_RANGE",
+          "PLACEMENT",
+          "PARENTAL_STATUS",
+          "INCOME_RANGE"
+        ]
+      },
+      {
+        "name": "final_url_suffix",
+        "number": 46,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_final_url_suffix"
+      },
+      {
+        "name": "targeting_setting",
+        "number": 25,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TargetingSetting"
+      },
+      {
+        "name": "audience_setting",
+        "number": 56,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AudienceSetting"
+      },
+      {
+        "name": "effective_target_cpa_micros",
+        "number": 47,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_effective_target_cpa_micros"
+      },
+      {
+        "name": "effective_target_cpa_source",
+        "number": 29,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "BiddingSource",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "CAMPAIGN_BIDDING_STRATEGY",
+          "AD_GROUP",
+          "AD_GROUP_CRITERION"
+        ]
+      },
+      {
+        "name": "effective_target_roas",
+        "number": 48,
+        "type": "DOUBLE",
+        "label": "OPTIONAL",
+        "oneof": "_effective_target_roas"
+      },
+      {
+        "name": "effective_target_roas_source",
+        "number": 32,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "BiddingSource",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "CAMPAIGN_BIDDING_STRATEGY",
+          "AD_GROUP",
+          "AD_GROUP_CRITERION"
+        ]
+      },
+      {
+        "name": "effective_target_cpc",
+        "number": 69,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_effective_target_cpc"
+      },
+      {
+        "name": "effective_target_cpc_source",
+        "number": 70,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "BiddingSource",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "CAMPAIGN_BIDDING_STRATEGY",
+          "AD_GROUP",
+          "AD_GROUP_CRITERION"
+        ]
+      },
+      {
+        "name": "labels",
+        "number": 49,
+        "type": "STRING",
+        "label": "REPEATED"
+      },
+      {
+        "name": "excluded_parent_asset_field_types",
+        "number": 54,
+        "type": "ENUM",
+        "label": "REPEATED",
+        "enum_type": "AssetFieldType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "HEADLINE",
+          "DESCRIPTION",
+          "MANDATORY_AD_TEXT",
+          "MARKETING_IMAGE",
+          "MEDIA_BUNDLE",
+          "YOUTUBE_VIDEO",
+          "BOOK_ON_GOOGLE",
+          "LEAD_FORM",
+          "PROMOTION",
+          "CALLOUT",
+          "STRUCTURED_SNIPPET",
+          "SITELINK",
+          "MOBILE_APP",
+          "HOTEL_CALLOUT",
+          "CALL",
+          "LONG_HEADLINE",
+          "BUSINESS_NAME",
+          "SQUARE_MARKETING_IMAGE",
+          "PORTRAIT_MARKETING_IMAGE",
+          "LOGO",
+          "LANDSCAPE_LOGO",
+          "VIDEO",
+          "PRICE",
+          "CALL_TO_ACTION_SELECTION",
+          "AD_IMAGE",
+          "BUSINESS_LOGO",
+          "HOTEL_PROPERTY",
+          "DEMAND_GEN_CAROUSEL_CARD",
+          "BUSINESS_MESSAGE",
+          "TALL_PORTRAIT_MARKETING_IMAGE",
+          "RELATED_YOUTUBE_VIDEOS",
+          "LANDING_PAGE_PREVIEW",
+          "LONG_DESCRIPTION",
+          "CALL_TO_ACTION",
+          "CLASSIC_DISPLAY_IMAGE"
+        ]
+      },
+      {
+        "name": "excluded_parent_asset_set_types",
+        "number": 58,
+        "type": "ENUM",
+        "label": "REPEATED",
+        "enum_type": "AssetSetType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "PAGE_FEED",
+          "DYNAMIC_EDUCATION",
+          "MERCHANT_CENTER_FEED",
+          "DYNAMIC_REAL_ESTATE",
+          "DYNAMIC_CUSTOM",
+          "DYNAMIC_HOTELS_AND_RENTALS",
+          "DYNAMIC_FLIGHTS",
+          "DYNAMIC_TRAVEL",
+          "DYNAMIC_LOCAL",
+          "DYNAMIC_JOBS",
+          "LOCATION_SYNC",
+          "BUSINESS_PROFILE_DYNAMIC_LOCATION_GROUP",
+          "CHAIN_DYNAMIC_LOCATION_GROUP",
+          "STATIC_LOCATION_GROUP",
+          "HOTEL_PROPERTY",
+          "TRAVEL_FEED"
+        ]
+      },
+      {
+        "name": "primary_status",
+        "number": 62,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AdGroupPrimaryStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "ELIGIBLE",
+          "PAUSED",
+          "REMOVED",
+          "PENDING",
+          "NOT_ELIGIBLE",
+          "LIMITED"
+        ]
+      },
+      {
+        "name": "primary_status_reasons",
+        "number": 63,
+        "type": "ENUM",
+        "label": "REPEATED",
+        "enum_type": "AdGroupPrimaryStatusReason",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "CAMPAIGN_REMOVED",
+          "CAMPAIGN_PAUSED",
+          "CAMPAIGN_PENDING",
+          "CAMPAIGN_ENDED",
+          "AD_GROUP_PAUSED",
+          "AD_GROUP_REMOVED",
+          "AD_GROUP_INCOMPLETE",
+          "KEYWORDS_PAUSED",
+          "NO_KEYWORDS",
+          "AD_GROUP_ADS_PAUSED",
+          "NO_AD_GROUP_ADS",
+          "HAS_ADS_DISAPPROVED",
+          "HAS_ADS_LIMITED_BY_POLICY",
+          "MOST_ADS_UNDER_REVIEW",
+          "CAMPAIGN_DRAFT",
+          "AD_GROUP_PAUSED_DUE_TO_LOW_ACTIVITY"
+        ]
+      },
+      {
+        "name": "demand_gen_ad_group_settings",
+        "number": 91,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "DemandGenAdGroupSettings"
+      },
+      {
+        "name": "video_ad_group_settings",
+        "number": 92,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "VideoAdGroupSettings"
+      },
+      {
+        "name": "ai_max_ad_group_setting",
+        "number": 71,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AiMaxAdGroupSetting"
+      },
+      {
+        "name": "vertical_ads_format_setting",
+        "number": 72,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "VerticalAdsFormatSetting"
+      }
+    ]
+  },
+  "AdGroupOperation": {
+    "name": "google.ads.googleads.v24.services.AdGroupOperation",
+    "fields": [
+      {
+        "name": "update_mask",
+        "number": 4,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "FieldMask"
+      },
+      {
+        "name": "create",
+        "number": 1,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroup",
+        "oneof": "operation"
+      },
+      {
+        "name": "update",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroup",
+        "oneof": "operation"
+      },
+      {
+        "name": "remove",
+        "number": 3,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "operation"
+      }
+    ]
+  },
+  "MutateAdGroupsRequest": {
+    "name": "google.ads.googleads.v24.services.MutateAdGroupsRequest",
+    "fields": [
+      {
+        "name": "customer_id",
+        "number": 1,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "operations",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "AdGroupOperation"
+      },
+      {
+        "name": "partial_failure",
+        "number": 3,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "validate_only",
+        "number": 4,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "response_content_type",
+        "number": 5,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "ResponseContentType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "RESOURCE_NAME_ONLY",
+          "MUTABLE_RESOURCE"
+        ]
+      }
+    ]
+  },
+  "AdGroupCriterion": {
+    "name": "google.ads.googleads.v24.resources.AdGroupCriterion",
+    "fields": [
+      {
+        "name": "resource_name",
+        "number": 1,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "criterion_id",
+        "number": 56,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_criterion_id"
+      },
+      {
+        "name": "display_name",
+        "number": 77,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "status",
+        "number": 3,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AdGroupCriterionStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "ENABLED",
+          "PAUSED",
+          "REMOVED"
+        ]
+      },
+      {
+        "name": "quality_info",
+        "number": 4,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "QualityInfo"
+      },
+      {
+        "name": "ad_group",
+        "number": 57,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_ad_group"
+      },
+      {
+        "name": "type_",
+        "number": 25,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "CriterionType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "KEYWORD",
+          "PLACEMENT",
+          "MOBILE_APP_CATEGORY",
+          "MOBILE_APPLICATION",
+          "DEVICE",
+          "LOCATION",
+          "LISTING_GROUP",
+          "AD_SCHEDULE",
+          "AGE_RANGE",
+          "GENDER",
+          "INCOME_RANGE",
+          "PARENTAL_STATUS",
+          "YOUTUBE_VIDEO",
+          "YOUTUBE_CHANNEL",
+          "USER_LIST",
+          "PROXIMITY",
+          "TOPIC",
+          "LISTING_SCOPE",
+          "LANGUAGE",
+          "IP_BLOCK",
+          "CONTENT_LABEL",
+          "CARRIER",
+          "USER_INTEREST",
+          "WEBPAGE",
+          "OPERATING_SYSTEM_VERSION",
+          "APP_PAYMENT_MODEL",
+          "MOBILE_DEVICE",
+          "CUSTOM_AFFINITY",
+          "CUSTOM_INTENT",
+          "LOCATION_GROUP",
+          "CUSTOM_AUDIENCE",
+          "COMBINED_AUDIENCE",
+          "KEYWORD_THEME",
+          "AUDIENCE",
+          "NEGATIVE_KEYWORD_LIST",
+          "LOCAL_SERVICE_ID",
+          "SEARCH_THEME",
+          "BRAND",
+          "BRAND_LIST",
+          "LIFE_EVENT",
+          "WEBPAGE_LIST",
+          "VIDEO_LINEUP",
+          "PLACEMENT_LIST",
+          "VERTICAL_ADS_ITEM_GROUP_RULE_LIST",
+          "VERTICAL_ADS_ITEM_GROUP_RULE",
+          "RETAIL_FILTER_BUNDLE",
+          "RETAIL_FILTER"
+        ]
+      },
+      {
+        "name": "negative",
+        "number": 58,
+        "type": "BOOL",
+        "label": "OPTIONAL",
+        "oneof": "_negative"
+      },
+      {
+        "name": "system_serving_status",
+        "number": 52,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "CriterionSystemServingStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "ELIGIBLE",
+          "RARELY_SERVED"
+        ]
+      },
+      {
+        "name": "approval_status",
+        "number": 53,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AdGroupCriterionApprovalStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "APPROVED",
+          "DISAPPROVED",
+          "PENDING_REVIEW",
+          "UNDER_REVIEW"
+        ]
+      },
+      {
+        "name": "disapproval_reasons",
+        "number": 59,
+        "type": "STRING",
+        "label": "REPEATED"
+      },
+      {
+        "name": "labels",
+        "number": 60,
+        "type": "STRING",
+        "label": "REPEATED"
+      },
+      {
+        "name": "bid_modifier",
+        "number": 61,
+        "type": "DOUBLE",
+        "label": "OPTIONAL",
+        "oneof": "_bid_modifier"
+      },
+      {
+        "name": "cpc_bid_micros",
+        "number": 62,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_cpc_bid_micros"
+      },
+      {
+        "name": "cpm_bid_micros",
+        "number": 63,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_cpm_bid_micros"
+      },
+      {
+        "name": "cpv_bid_micros",
+        "number": 64,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_cpv_bid_micros"
+      },
+      {
+        "name": "percent_cpc_bid_micros",
+        "number": 65,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_percent_cpc_bid_micros"
+      },
+      {
+        "name": "effective_cpc_bid_micros",
+        "number": 66,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_effective_cpc_bid_micros"
+      },
+      {
+        "name": "effective_cpm_bid_micros",
+        "number": 67,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_effective_cpm_bid_micros"
+      },
+      {
+        "name": "effective_cpv_bid_micros",
+        "number": 68,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_effective_cpv_bid_micros"
+      },
+      {
+        "name": "effective_percent_cpc_bid_micros",
+        "number": 69,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_effective_percent_cpc_bid_micros"
+      },
+      {
+        "name": "effective_cpc_bid_source",
+        "number": 21,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "BiddingSource",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "CAMPAIGN_BIDDING_STRATEGY",
+          "AD_GROUP",
+          "AD_GROUP_CRITERION"
+        ]
+      },
+      {
+        "name": "effective_cpm_bid_source",
+        "number": 22,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "BiddingSource",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "CAMPAIGN_BIDDING_STRATEGY",
+          "AD_GROUP",
+          "AD_GROUP_CRITERION"
+        ]
+      },
+      {
+        "name": "effective_cpv_bid_source",
+        "number": 23,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "BiddingSource",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "CAMPAIGN_BIDDING_STRATEGY",
+          "AD_GROUP",
+          "AD_GROUP_CRITERION"
+        ]
+      },
+      {
+        "name": "effective_percent_cpc_bid_source",
+        "number": 35,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "BiddingSource",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "CAMPAIGN_BIDDING_STRATEGY",
+          "AD_GROUP",
+          "AD_GROUP_CRITERION"
+        ]
+      },
+      {
+        "name": "position_estimates",
+        "number": 10,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "PositionEstimates"
+      },
+      {
+        "name": "final_urls",
+        "number": 70,
+        "type": "STRING",
+        "label": "REPEATED"
+      },
+      {
+        "name": "final_mobile_urls",
+        "number": 71,
+        "type": "STRING",
+        "label": "REPEATED"
+      },
+      {
+        "name": "final_url_suffix",
+        "number": 72,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_final_url_suffix"
+      },
+      {
+        "name": "tracking_url_template",
+        "number": 73,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_tracking_url_template"
+      },
+      {
+        "name": "url_custom_parameters",
+        "number": 14,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "CustomParameter"
+      },
+      {
+        "name": "primary_status",
+        "number": 85,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AdGroupCriterionPrimaryStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "ELIGIBLE",
+          "PAUSED",
+          "REMOVED",
+          "PENDING",
+          "NOT_ELIGIBLE"
+        ],
+        "oneof": "_primary_status"
+      },
+      {
+        "name": "primary_status_reasons",
+        "number": 86,
+        "type": "ENUM",
+        "label": "REPEATED",
+        "enum_type": "AdGroupCriterionPrimaryStatusReason",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "CAMPAIGN_PENDING",
+          "CAMPAIGN_CRITERION_NEGATIVE",
+          "CAMPAIGN_PAUSED",
+          "CAMPAIGN_REMOVED",
+          "CAMPAIGN_ENDED",
+          "AD_GROUP_PAUSED",
+          "AD_GROUP_REMOVED",
+          "AD_GROUP_CRITERION_DISAPPROVED",
+          "AD_GROUP_CRITERION_RARELY_SERVED",
+          "AD_GROUP_CRITERION_LOW_QUALITY",
+          "AD_GROUP_CRITERION_UNDER_REVIEW",
+          "AD_GROUP_CRITERION_PENDING_REVIEW",
+          "AD_GROUP_CRITERION_BELOW_FIRST_PAGE_BID",
+          "AD_GROUP_CRITERION_NEGATIVE",
+          "AD_GROUP_CRITERION_RESTRICTED",
+          "AD_GROUP_CRITERION_PAUSED",
+          "AD_GROUP_CRITERION_PAUSED_DUE_TO_LOW_ACTIVITY",
+          "AD_GROUP_CRITERION_REMOVED"
+        ]
+      },
+      {
+        "name": "keyword",
+        "number": 27,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "KeywordInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "placement",
+        "number": 28,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "PlacementInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "mobile_app_category",
+        "number": 29,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MobileAppCategoryInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "mobile_application",
+        "number": 30,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MobileApplicationInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "listing_group",
+        "number": 32,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ListingGroupInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "age_range",
+        "number": 36,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AgeRangeInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "gender",
+        "number": 37,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "GenderInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "income_range",
+        "number": 38,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "IncomeRangeInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "parental_status",
+        "number": 39,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ParentalStatusInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "user_list",
+        "number": 42,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "UserListInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "youtube_video",
+        "number": 40,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "YouTubeVideoInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "youtube_channel",
+        "number": 41,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "YouTubeChannelInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "topic",
+        "number": 43,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TopicInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "user_interest",
+        "number": 45,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "UserInterestInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "webpage",
+        "number": 46,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "WebpageInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "app_payment_model",
+        "number": 47,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AppPaymentModelInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "custom_affinity",
+        "number": 48,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CustomAffinityInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "custom_intent",
+        "number": 49,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CustomIntentInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "custom_audience",
+        "number": 74,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CustomAudienceInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "combined_audience",
+        "number": 75,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CombinedAudienceInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "audience",
+        "number": 79,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AudienceInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "location",
+        "number": 82,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "LocationInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "language",
+        "number": 83,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "LanguageInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "life_event",
+        "number": 84,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "LifeEventInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "video_lineup",
+        "number": 88,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "VideoLineupInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "extended_demographic",
+        "number": 90,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ExtendedDemographicInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "brand_list",
+        "number": 89,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "BrandListInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "vertical_ads_item_group_rule_list",
+        "number": 91,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "VerticalAdsItemGroupRuleListInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "retail_filter_bundle",
+        "number": 180,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "RetailFilterBundle",
+        "oneof": "criterion"
+      }
+    ]
+  },
+  "AdGroupCriterionOperation": {
+    "name": "google.ads.googleads.v24.services.AdGroupCriterionOperation",
+    "fields": [
+      {
+        "name": "update_mask",
+        "number": 4,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "FieldMask"
+      },
+      {
+        "name": "exempt_policy_violation_keys",
+        "number": 5,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "PolicyViolationKey"
+      },
+      {
+        "name": "create",
+        "number": 1,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupCriterion",
+        "oneof": "operation"
+      },
+      {
+        "name": "update",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupCriterion",
+        "oneof": "operation"
+      },
+      {
+        "name": "remove",
+        "number": 3,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "operation"
+      }
+    ]
+  },
+  "MutateAdGroupCriteriaRequest": {
+    "name": "google.ads.googleads.v24.services.MutateAdGroupCriteriaRequest",
+    "fields": [
+      {
+        "name": "customer_id",
+        "number": 1,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "operations",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "AdGroupCriterionOperation"
+      },
+      {
+        "name": "partial_failure",
+        "number": 3,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "validate_only",
+        "number": 4,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "response_content_type",
+        "number": 5,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "ResponseContentType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "RESOURCE_NAME_ONLY",
+          "MUTABLE_RESOURCE"
+        ]
+      }
+    ]
+  },
+  "KeywordInfo": {
+    "name": "google.ads.googleads.v24.common.KeywordInfo",
+    "fields": [
+      {
+        "name": "text",
+        "number": 3,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_text"
+      },
+      {
+        "name": "match_type",
+        "number": 2,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "KeywordMatchType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "EXACT",
+          "PHRASE",
+          "BROAD"
+        ]
+      }
+    ]
+  },
+  "AdGroupAd": {
+    "name": "google.ads.googleads.v24.resources.AdGroupAd",
+    "fields": [
+      {
+        "name": "resource_name",
+        "number": 1,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "status",
+        "number": 3,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AdGroupAdStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "ENABLED",
+          "PAUSED",
+          "REMOVED"
+        ]
+      },
+      {
+        "name": "ad_group",
+        "number": 9,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_ad_group"
+      },
+      {
+        "name": "ad",
+        "number": 5,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "Ad"
+      },
+      {
+        "name": "start_date_time",
+        "number": 20,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "end_date_time",
+        "number": 21,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "policy_summary",
+        "number": 6,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupAdPolicySummary"
+      },
+      {
+        "name": "ad_strength",
+        "number": 7,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AdStrength",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "PENDING",
+          "NO_ADS",
+          "POOR",
+          "AVERAGE",
+          "GOOD",
+          "EXCELLENT"
+        ]
+      },
+      {
+        "name": "action_items",
+        "number": 13,
+        "type": "STRING",
+        "label": "REPEATED"
+      },
+      {
+        "name": "labels",
+        "number": 10,
+        "type": "STRING",
+        "label": "REPEATED"
+      },
+      {
+        "name": "primary_status",
+        "number": 16,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AdGroupAdPrimaryStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "ELIGIBLE",
+          "PAUSED",
+          "REMOVED",
+          "PENDING",
+          "LIMITED",
+          "NOT_ELIGIBLE"
+        ]
+      },
+      {
+        "name": "primary_status_reasons",
+        "number": 17,
+        "type": "ENUM",
+        "label": "REPEATED",
+        "enum_type": "AdGroupAdPrimaryStatusReason",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "CAMPAIGN_REMOVED",
+          "CAMPAIGN_PAUSED",
+          "CAMPAIGN_PENDING",
+          "CAMPAIGN_ENDED",
+          "AD_GROUP_PAUSED",
+          "AD_GROUP_REMOVED",
+          "AD_GROUP_AD_PAUSED",
+          "AD_GROUP_AD_REMOVED",
+          "AD_GROUP_AD_DISAPPROVED",
+          "AD_GROUP_AD_UNDER_REVIEW",
+          "AD_GROUP_AD_POOR_QUALITY",
+          "AD_GROUP_AD_NO_ADS",
+          "AD_GROUP_AD_APPROVED_LABELED",
+          "AD_GROUP_AD_AREA_OF_INTEREST_ONLY",
+          "AD_GROUP_AD_UNDER_APPEAL"
+        ]
+      },
+      {
+        "name": "ad_group_ad_asset_automation_settings",
+        "number": 18,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "AdGroupAdAssetAutomationSetting"
+      }
+    ]
+  },
+  "AdGroupAdOperation": {
+    "name": "google.ads.googleads.v24.services.AdGroupAdOperation",
+    "fields": [
+      {
+        "name": "update_mask",
+        "number": 4,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "FieldMask"
+      },
+      {
+        "name": "policy_validation_parameter",
+        "number": 5,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "PolicyValidationParameter"
+      },
+      {
+        "name": "create",
+        "number": 1,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupAd",
+        "oneof": "operation"
+      },
+      {
+        "name": "update",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupAd",
+        "oneof": "operation"
+      },
+      {
+        "name": "remove",
+        "number": 3,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "operation"
+      }
+    ]
+  },
+  "MutateAdGroupAdsRequest": {
+    "name": "google.ads.googleads.v24.services.MutateAdGroupAdsRequest",
+    "fields": [
+      {
+        "name": "customer_id",
+        "number": 1,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "operations",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "AdGroupAdOperation"
+      },
+      {
+        "name": "partial_failure",
+        "number": 3,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "validate_only",
+        "number": 4,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "response_content_type",
+        "number": 5,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "ResponseContentType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "RESOURCE_NAME_ONLY",
+          "MUTABLE_RESOURCE"
+        ]
+      }
+    ]
+  },
+  "Ad": {
+    "name": "google.ads.googleads.v24.resources.Ad",
+    "fields": [
+      {
+        "name": "resource_name",
+        "number": 37,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "id",
+        "number": 40,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_id"
+      },
+      {
+        "name": "final_urls",
+        "number": 41,
+        "type": "STRING",
+        "label": "REPEATED"
+      },
+      {
+        "name": "final_app_urls",
+        "number": 35,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "FinalAppUrl"
+      },
+      {
+        "name": "final_mobile_urls",
+        "number": 42,
+        "type": "STRING",
+        "label": "REPEATED"
+      },
+      {
+        "name": "tracking_url_template",
+        "number": 43,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_tracking_url_template"
+      },
+      {
+        "name": "final_url_suffix",
+        "number": 44,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_final_url_suffix"
+      },
+      {
+        "name": "url_custom_parameters",
+        "number": 10,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "CustomParameter"
+      },
+      {
+        "name": "display_url",
+        "number": 45,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_display_url"
+      },
+      {
+        "name": "type_",
+        "number": 5,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AdType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "TEXT_AD",
+          "EXPANDED_TEXT_AD",
+          "EXPANDED_DYNAMIC_SEARCH_AD",
+          "HOTEL_AD",
+          "SHOPPING_SMART_AD",
+          "SHOPPING_PRODUCT_AD",
+          "VIDEO_AD",
+          "IMAGE_AD",
+          "RESPONSIVE_SEARCH_AD",
+          "LEGACY_RESPONSIVE_DISPLAY_AD",
+          "APP_AD",
+          "LEGACY_APP_INSTALL_AD",
+          "RESPONSIVE_DISPLAY_AD",
+          "LOCAL_AD",
+          "HTML5_UPLOAD_AD",
+          "DYNAMIC_HTML5_AD",
+          "APP_ENGAGEMENT_AD",
+          "SHOPPING_COMPARISON_LISTING_AD",
+          "VIDEO_BUMPER_AD",
+          "VIDEO_NON_SKIPPABLE_IN_STREAM_AD",
+          "VIDEO_TRUEVIEW_IN_STREAM_AD",
+          "VIDEO_RESPONSIVE_AD",
+          "SMART_CAMPAIGN_AD",
+          "CALL_AD",
+          "APP_PRE_REGISTRATION_AD",
+          "IN_FEED_VIDEO_AD",
+          "TRAVEL_AD",
+          "DEMAND_GEN_PRODUCT_AD",
+          "DEMAND_GEN_MULTI_ASSET_AD",
+          "DEMAND_GEN_CAROUSEL_AD",
+          "DEMAND_GEN_VIDEO_RESPONSIVE_AD",
+          "YOUTUBE_AUDIO_AD"
+        ]
+      },
+      {
+        "name": "added_by_google_ads",
+        "number": 46,
+        "type": "BOOL",
+        "label": "OPTIONAL",
+        "oneof": "_added_by_google_ads"
+      },
+      {
+        "name": "device_preference",
+        "number": 20,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "Device",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "MOBILE",
+          "TABLET",
+          "DESKTOP",
+          "OTHER",
+          "CONNECTED_TV"
+        ]
+      },
+      {
+        "name": "url_collections",
+        "number": 26,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "UrlCollection"
+      },
+      {
+        "name": "name",
+        "number": 47,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_name"
+      },
+      {
+        "name": "system_managed_resource_source",
+        "number": 27,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "SystemManagedResourceSource",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "AD_VARIATIONS"
+        ]
+      },
+      {
+        "name": "synthetic_content_info",
+        "number": 65,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "SyntheticContentInfo"
+      },
+      {
+        "name": "text_ad",
+        "number": 6,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TextAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "expanded_text_ad",
+        "number": 7,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ExpandedTextAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "expanded_dynamic_search_ad",
+        "number": 14,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ExpandedDynamicSearchAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "hotel_ad",
+        "number": 15,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "HotelAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "shopping_smart_ad",
+        "number": 17,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ShoppingSmartAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "shopping_product_ad",
+        "number": 18,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ShoppingProductAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "image_ad",
+        "number": 22,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ImageAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "video_ad",
+        "number": 24,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "VideoAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "video_responsive_ad",
+        "number": 39,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "VideoResponsiveAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "responsive_search_ad",
+        "number": 25,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ResponsiveSearchAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "legacy_responsive_display_ad",
+        "number": 28,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "LegacyResponsiveDisplayAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "app_ad",
+        "number": 29,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AppAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "legacy_app_install_ad",
+        "number": 30,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "LegacyAppInstallAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "responsive_display_ad",
+        "number": 31,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ResponsiveDisplayAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "local_ad",
+        "number": 32,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "LocalAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "display_upload_ad",
+        "number": 33,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "DisplayUploadAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "app_engagement_ad",
+        "number": 34,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AppEngagementAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "shopping_comparison_listing_ad",
+        "number": 36,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ShoppingComparisonListingAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "smart_campaign_ad",
+        "number": 48,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "SmartCampaignAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "app_pre_registration_ad",
+        "number": 50,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AppPreRegistrationAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "demand_gen_multi_asset_ad",
+        "number": 62,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "DemandGenMultiAssetAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "demand_gen_carousel_ad",
+        "number": 63,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "DemandGenCarouselAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "demand_gen_video_responsive_ad",
+        "number": 64,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "DemandGenVideoResponsiveAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "demand_gen_product_ad",
+        "number": 61,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "DemandGenProductAdInfo",
+        "oneof": "ad_data"
+      },
+      {
+        "name": "travel_ad",
+        "number": 54,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TravelAdInfo",
+        "oneof": "ad_data"
+      }
+    ]
+  },
+  "ResponsiveSearchAdInfo": {
+    "name": "google.ads.googleads.v24.common.ResponsiveSearchAdInfo",
+    "fields": [
+      {
+        "name": "headlines",
+        "number": 1,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "AdTextAsset"
+      },
+      {
+        "name": "descriptions",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "AdTextAsset"
+      },
+      {
+        "name": "path1",
+        "number": 5,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_path1"
+      },
+      {
+        "name": "path2",
+        "number": 6,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_path2"
+      }
+    ]
+  },
+  "AdTextAsset": {
+    "name": "google.ads.googleads.v24.common.AdTextAsset",
+    "fields": [
+      {
+        "name": "text",
+        "number": 4,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_text"
+      },
+      {
+        "name": "pinned_field",
+        "number": 2,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "ServedAssetFieldType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "HEADLINE_1",
+          "HEADLINE_2",
+          "HEADLINE_3",
+          "DESCRIPTION_1",
+          "DESCRIPTION_2",
+          "HEADLINE",
+          "HEADLINE_IN_PORTRAIT",
+          "LONG_HEADLINE",
+          "DESCRIPTION",
+          "DESCRIPTION_IN_PORTRAIT",
+          "BUSINESS_NAME_IN_PORTRAIT",
+          "BUSINESS_NAME",
+          "MARKETING_IMAGE",
+          "MARKETING_IMAGE_IN_PORTRAIT",
+          "SQUARE_MARKETING_IMAGE",
+          "PORTRAIT_MARKETING_IMAGE",
+          "LOGO",
+          "LANDSCAPE_LOGO",
+          "CALL_TO_ACTION",
+          "YOU_TUBE_VIDEO",
+          "SITELINK",
+          "CALL",
+          "MOBILE_APP",
+          "CALLOUT",
+          "STRUCTURED_SNIPPET",
+          "PRICE",
+          "PROMOTION",
+          "AD_IMAGE",
+          "LEAD_FORM",
+          "BUSINESS_LOGO",
+          "DESCRIPTION_PREFIX",
+          "HEADLINE_AS_SITELINK_POSITION_ONE",
+          "HEADLINE_AS_SITELINK_POSITION_TWO",
+          "DESCRIPTION_LINE_HEADLINE_AS_SITELINK_POSITION_ONE",
+          "DESCRIPTION_LINE_HEADLINE_AS_SITELINK_POSITION_TWO"
+        ]
+      },
+      {
+        "name": "asset_performance_label",
+        "number": 5,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "AssetPerformanceLabel",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "PENDING",
+          "LEARNING",
+          "LOW",
+          "GOOD",
+          "BEST",
+          "NOT_APPLICABLE"
+        ]
+      },
+      {
+        "name": "policy_summary_info",
+        "number": 6,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdAssetPolicySummary"
+      }
+    ]
+  },
+  "CampaignCriterion": {
+    "name": "google.ads.googleads.v24.resources.CampaignCriterion",
+    "fields": [
+      {
+        "name": "resource_name",
+        "number": 1,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "campaign",
+        "number": 37,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "_campaign"
+      },
+      {
+        "name": "criterion_id",
+        "number": 38,
+        "type": "INT64",
+        "label": "OPTIONAL",
+        "oneof": "_criterion_id"
+      },
+      {
+        "name": "display_name",
+        "number": 43,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "bid_modifier",
+        "number": 39,
+        "type": "FLOAT",
+        "label": "OPTIONAL",
+        "oneof": "_bid_modifier"
+      },
+      {
+        "name": "negative",
+        "number": 40,
+        "type": "BOOL",
+        "label": "OPTIONAL",
+        "oneof": "_negative"
+      },
+      {
+        "name": "type_",
+        "number": 6,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "CriterionType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "KEYWORD",
+          "PLACEMENT",
+          "MOBILE_APP_CATEGORY",
+          "MOBILE_APPLICATION",
+          "DEVICE",
+          "LOCATION",
+          "LISTING_GROUP",
+          "AD_SCHEDULE",
+          "AGE_RANGE",
+          "GENDER",
+          "INCOME_RANGE",
+          "PARENTAL_STATUS",
+          "YOUTUBE_VIDEO",
+          "YOUTUBE_CHANNEL",
+          "USER_LIST",
+          "PROXIMITY",
+          "TOPIC",
+          "LISTING_SCOPE",
+          "LANGUAGE",
+          "IP_BLOCK",
+          "CONTENT_LABEL",
+          "CARRIER",
+          "USER_INTEREST",
+          "WEBPAGE",
+          "OPERATING_SYSTEM_VERSION",
+          "APP_PAYMENT_MODEL",
+          "MOBILE_DEVICE",
+          "CUSTOM_AFFINITY",
+          "CUSTOM_INTENT",
+          "LOCATION_GROUP",
+          "CUSTOM_AUDIENCE",
+          "COMBINED_AUDIENCE",
+          "KEYWORD_THEME",
+          "AUDIENCE",
+          "NEGATIVE_KEYWORD_LIST",
+          "LOCAL_SERVICE_ID",
+          "SEARCH_THEME",
+          "BRAND",
+          "BRAND_LIST",
+          "LIFE_EVENT",
+          "WEBPAGE_LIST",
+          "VIDEO_LINEUP",
+          "PLACEMENT_LIST",
+          "VERTICAL_ADS_ITEM_GROUP_RULE_LIST",
+          "VERTICAL_ADS_ITEM_GROUP_RULE",
+          "RETAIL_FILTER_BUNDLE",
+          "RETAIL_FILTER"
+        ]
+      },
+      {
+        "name": "status",
+        "number": 35,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "CampaignCriterionStatus",
+        "enum_values": [
+          "UNSPECIFIED",
+          "UNKNOWN",
+          "ENABLED",
+          "PAUSED",
+          "REMOVED"
+        ]
+      },
+      {
+        "name": "keyword",
+        "number": 8,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "KeywordInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "placement",
+        "number": 9,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "PlacementInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "mobile_app_category",
+        "number": 10,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MobileAppCategoryInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "mobile_application",
+        "number": 11,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MobileApplicationInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "location",
+        "number": 12,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "LocationInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "device",
+        "number": 13,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "DeviceInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "ad_schedule",
+        "number": 15,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdScheduleInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "age_range",
+        "number": 16,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AgeRangeInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "gender",
+        "number": 17,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "GenderInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "income_range",
+        "number": 18,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "IncomeRangeInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "parental_status",
+        "number": 19,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ParentalStatusInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "user_list",
+        "number": 22,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "UserListInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "youtube_video",
+        "number": 20,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "YouTubeVideoInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "youtube_channel",
+        "number": 21,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "YouTubeChannelInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "proximity",
+        "number": 23,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ProximityInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "topic",
+        "number": 24,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "TopicInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "listing_scope",
+        "number": 25,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ListingScopeInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "language",
+        "number": 26,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "LanguageInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "ip_block",
+        "number": 27,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "IpBlockInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "content_label",
+        "number": 28,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ContentLabelInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "carrier",
+        "number": 29,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CarrierInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "user_interest",
+        "number": 30,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "UserInterestInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "webpage",
+        "number": 31,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "WebpageInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "operating_system_version",
+        "number": 32,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "OperatingSystemVersionInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "mobile_device",
+        "number": 33,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MobileDeviceInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "location_group",
+        "number": 34,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "LocationGroupInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "custom_affinity",
+        "number": 36,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CustomAffinityInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "custom_audience",
+        "number": 41,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CustomAudienceInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "combined_audience",
+        "number": 42,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CombinedAudienceInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "keyword_theme",
+        "number": 45,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "KeywordThemeInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "local_service_id",
+        "number": 46,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "LocalServiceIdInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "brand_list",
+        "number": 47,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "BrandListInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "life_event",
+        "number": 48,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "LifeEventInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "webpage_list",
+        "number": 49,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "WebpageListInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "video_lineup",
+        "number": 50,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "VideoLineupInfo",
+        "oneof": "criterion"
+      },
+      {
+        "name": "extended_demographic",
+        "number": 52,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ExtendedDemographicInfo",
+        "oneof": "criterion"
+      }
+    ]
+  },
+  "CampaignCriterionOperation": {
+    "name": "google.ads.googleads.v24.services.CampaignCriterionOperation",
+    "fields": [
+      {
+        "name": "update_mask",
+        "number": 4,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "FieldMask"
+      },
+      {
+        "name": "create",
+        "number": 1,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignCriterion",
+        "oneof": "operation"
+      },
+      {
+        "name": "update",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignCriterion",
+        "oneof": "operation"
+      },
+      {
+        "name": "remove",
+        "number": 3,
+        "type": "STRING",
+        "label": "OPTIONAL",
+        "oneof": "operation"
+      }
+    ]
+  },
+  "MutateCampaignCriteriaRequest": {
+    "name": "google.ads.googleads.v24.services.MutateCampaignCriteriaRequest",
+    "fields": [
+      {
+        "name": "customer_id",
+        "number": 1,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "operations",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "CampaignCriterionOperation"
+      },
+      {
+        "name": "partial_failure",
+        "number": 3,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "validate_only",
+        "number": 4,
+        "type": "BOOL",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "response_content_type",
+        "number": 5,
+        "type": "ENUM",
+        "label": "OPTIONAL",
+        "enum_type": "ResponseContentType",
+        "enum_values": [
+          "UNSPECIFIED",
+          "RESOURCE_NAME_ONLY",
+          "MUTABLE_RESOURCE"
+        ]
+      }
+    ]
+  },
+  "MutateOperation": {
+    "name": "google.ads.googleads.v24.services.MutateOperation",
+    "fields": [
+      {
+        "name": "ad_group_ad_label_operation",
+        "number": 17,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupAdLabelOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "ad_group_ad_operation",
+        "number": 1,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupAdOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "ad_group_asset_operation",
+        "number": 56,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupAssetOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "ad_group_bid_modifier_operation",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupBidModifierOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "ad_group_criterion_customizer_operation",
+        "number": 77,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupCriterionCustomizerOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "ad_group_criterion_label_operation",
+        "number": 18,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupCriterionLabelOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "ad_group_criterion_operation",
+        "number": 3,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupCriterionOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "ad_group_customizer_operation",
+        "number": 75,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupCustomizerOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "ad_group_label_operation",
+        "number": 21,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupLabelOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "ad_group_operation",
+        "number": 5,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdGroupOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "ad_operation",
+        "number": 49,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "ad_parameter_operation",
+        "number": 22,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AdParameterOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "asset_operation",
+        "number": 23,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AssetOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "asset_group_asset_operation",
+        "number": 65,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AssetGroupAssetOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "asset_group_listing_group_filter_operation",
+        "number": 78,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AssetGroupListingGroupFilterOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "asset_group_signal_operation",
+        "number": 80,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AssetGroupSignalOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "asset_group_operation",
+        "number": 62,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AssetGroupOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "asset_set_asset_operation",
+        "number": 71,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AssetSetAssetOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "asset_set_operation",
+        "number": 72,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AssetSetOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "audience_operation",
+        "number": 81,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "AudienceOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "bidding_data_exclusion_operation",
+        "number": 58,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "BiddingDataExclusionOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "bidding_seasonality_adjustment_operation",
+        "number": 59,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "BiddingSeasonalityAdjustmentOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "bidding_strategy_operation",
+        "number": 6,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "BiddingStrategyOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "book_campaigns_operation",
+        "number": 89,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "BookCampaignsOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "campaign_asset_operation",
+        "number": 52,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignAssetOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "campaign_asset_set_operation",
+        "number": 73,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignAssetSetOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "campaign_bid_modifier_operation",
+        "number": 7,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignBidModifierOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "campaign_budget_operation",
+        "number": 8,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignBudgetOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "campaign_conversion_goal_operation",
+        "number": 67,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignConversionGoalOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "campaign_criterion_operation",
+        "number": 13,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignCriterionOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "campaign_customizer_operation",
+        "number": 76,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignCustomizerOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "campaign_draft_operation",
+        "number": 24,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignDraftOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "campaign_group_operation",
+        "number": 9,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignGroupOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "campaign_label_operation",
+        "number": 28,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignLabelOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "campaign_operation",
+        "number": 10,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "campaign_shared_set_operation",
+        "number": 11,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CampaignSharedSetOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "conversion_action_operation",
+        "number": 12,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ConversionActionOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "conversion_custom_variable_operation",
+        "number": 55,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ConversionCustomVariableOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "conversion_goal_campaign_config_operation",
+        "number": 69,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ConversionGoalCampaignConfigOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "conversion_value_rule_operation",
+        "number": 63,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ConversionValueRuleOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "conversion_value_rule_set_operation",
+        "number": 64,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ConversionValueRuleSetOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "custom_conversion_goal_operation",
+        "number": 68,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CustomConversionGoalOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "customer_asset_operation",
+        "number": 57,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CustomerAssetOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "customer_conversion_goal_operation",
+        "number": 66,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CustomerConversionGoalOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "customer_customizer_operation",
+        "number": 79,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CustomerCustomizerOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "customer_label_operation",
+        "number": 32,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CustomerLabelOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "customer_negative_criterion_operation",
+        "number": 34,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CustomerNegativeCriterionOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "customer_operation",
+        "number": 35,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CustomerOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "customizer_attribute_operation",
+        "number": 70,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "CustomizerAttributeOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "experiment_operation",
+        "number": 82,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ExperimentOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "experiment_arm_operation",
+        "number": 83,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ExperimentArmOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "keyword_plan_ad_group_operation",
+        "number": 44,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "KeywordPlanAdGroupOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "keyword_plan_ad_group_keyword_operation",
+        "number": 50,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "KeywordPlanAdGroupKeywordOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "keyword_plan_campaign_keyword_operation",
+        "number": 51,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "KeywordPlanCampaignKeywordOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "keyword_plan_campaign_operation",
+        "number": 45,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "KeywordPlanCampaignOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "keyword_plan_operation",
+        "number": 48,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "KeywordPlanOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "label_operation",
+        "number": 41,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "LabelOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "quote_campaigns_operation",
+        "number": 88,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "QuoteCampaignsOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "recommendation_subscription_operation",
+        "number": 86,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "RecommendationSubscriptionOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "remarketing_action_operation",
+        "number": 43,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "RemarketingActionOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "shared_criterion_operation",
+        "number": 14,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "SharedCriterionOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "shared_set_operation",
+        "number": 15,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "SharedSetOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "smart_campaign_setting_operation",
+        "number": 61,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "SmartCampaignSettingOperation",
+        "oneof": "operation"
+      },
+      {
+        "name": "user_list_operation",
+        "number": 16,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "UserListOperation",
+        "oneof": "operation"
+      }
+    ]
+  },
+  "MutateOperationResponse": {
+    "name": "google.ads.googleads.v24.services.MutateOperationResponse",
+    "fields": [
+      {
+        "name": "ad_group_ad_label_result",
+        "number": 17,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAdGroupAdLabelResult",
+        "oneof": "response"
+      },
+      {
+        "name": "ad_group_ad_result",
+        "number": 1,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAdGroupAdResult",
+        "oneof": "response"
+      },
+      {
+        "name": "ad_group_asset_result",
+        "number": 56,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAdGroupAssetResult",
+        "oneof": "response"
+      },
+      {
+        "name": "ad_group_bid_modifier_result",
+        "number": 2,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAdGroupBidModifierResult",
+        "oneof": "response"
+      },
+      {
+        "name": "ad_group_criterion_customizer_result",
+        "number": 77,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAdGroupCriterionCustomizerResult",
+        "oneof": "response"
+      },
+      {
+        "name": "ad_group_criterion_label_result",
+        "number": 18,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAdGroupCriterionLabelResult",
+        "oneof": "response"
+      },
+      {
+        "name": "ad_group_criterion_result",
+        "number": 3,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAdGroupCriterionResult",
+        "oneof": "response"
+      },
+      {
+        "name": "ad_group_customizer_result",
+        "number": 75,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAdGroupCustomizerResult",
+        "oneof": "response"
+      },
+      {
+        "name": "ad_group_label_result",
+        "number": 21,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAdGroupLabelResult",
+        "oneof": "response"
+      },
+      {
+        "name": "ad_group_result",
+        "number": 5,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAdGroupResult",
+        "oneof": "response"
+      },
+      {
+        "name": "ad_parameter_result",
+        "number": 22,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAdParameterResult",
+        "oneof": "response"
+      },
+      {
+        "name": "ad_result",
+        "number": 49,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAdResult",
+        "oneof": "response"
+      },
+      {
+        "name": "asset_result",
+        "number": 23,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAssetResult",
+        "oneof": "response"
+      },
+      {
+        "name": "asset_group_asset_result",
+        "number": 65,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAssetGroupAssetResult",
+        "oneof": "response"
+      },
+      {
+        "name": "asset_group_listing_group_filter_result",
+        "number": 78,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAssetGroupListingGroupFilterResult",
+        "oneof": "response"
+      },
+      {
+        "name": "asset_group_signal_result",
+        "number": 79,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAssetGroupSignalResult",
+        "oneof": "response"
+      },
+      {
+        "name": "asset_group_result",
+        "number": 62,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAssetGroupResult",
+        "oneof": "response"
+      },
+      {
+        "name": "asset_set_asset_result",
+        "number": 71,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAssetSetAssetResult",
+        "oneof": "response"
+      },
+      {
+        "name": "asset_set_result",
+        "number": 72,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAssetSetResult",
+        "oneof": "response"
+      },
+      {
+        "name": "audience_result",
+        "number": 80,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateAudienceResult",
+        "oneof": "response"
+      },
+      {
+        "name": "bidding_data_exclusion_result",
+        "number": 58,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateBiddingDataExclusionsResult",
+        "oneof": "response"
+      },
+      {
+        "name": "bidding_seasonality_adjustment_result",
+        "number": 59,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateBiddingSeasonalityAdjustmentsResult",
+        "oneof": "response"
+      },
+      {
+        "name": "bidding_strategy_result",
+        "number": 6,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateBiddingStrategyResult",
+        "oneof": "response"
+      },
+      {
+        "name": "book_campaigns_result",
+        "number": 89,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "BookCampaignsResult",
+        "oneof": "response"
+      },
+      {
+        "name": "campaign_asset_result",
+        "number": 52,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCampaignAssetResult",
+        "oneof": "response"
+      },
+      {
+        "name": "campaign_asset_set_result",
+        "number": 73,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCampaignAssetSetResult",
+        "oneof": "response"
+      },
+      {
+        "name": "campaign_bid_modifier_result",
+        "number": 7,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCampaignBidModifierResult",
+        "oneof": "response"
+      },
+      {
+        "name": "campaign_budget_result",
+        "number": 8,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCampaignBudgetResult",
+        "oneof": "response"
+      },
+      {
+        "name": "campaign_conversion_goal_result",
+        "number": 67,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCampaignConversionGoalResult",
+        "oneof": "response"
+      },
+      {
+        "name": "campaign_criterion_result",
+        "number": 13,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCampaignCriterionResult",
+        "oneof": "response"
+      },
+      {
+        "name": "campaign_customizer_result",
+        "number": 76,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCampaignCustomizerResult",
+        "oneof": "response"
+      },
+      {
+        "name": "campaign_draft_result",
+        "number": 24,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCampaignDraftResult",
+        "oneof": "response"
+      },
+      {
+        "name": "campaign_group_result",
+        "number": 9,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCampaignGroupResult",
+        "oneof": "response"
+      },
+      {
+        "name": "campaign_label_result",
+        "number": 28,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCampaignLabelResult",
+        "oneof": "response"
+      },
+      {
+        "name": "campaign_result",
+        "number": 10,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCampaignResult",
+        "oneof": "response"
+      },
+      {
+        "name": "campaign_shared_set_result",
+        "number": 11,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCampaignSharedSetResult",
+        "oneof": "response"
+      },
+      {
+        "name": "conversion_action_result",
+        "number": 12,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateConversionActionResult",
+        "oneof": "response"
+      },
+      {
+        "name": "conversion_custom_variable_result",
+        "number": 55,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateConversionCustomVariableResult",
+        "oneof": "response"
+      },
+      {
+        "name": "conversion_goal_campaign_config_result",
+        "number": 69,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateConversionGoalCampaignConfigResult",
+        "oneof": "response"
+      },
+      {
+        "name": "conversion_value_rule_result",
+        "number": 63,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateConversionValueRuleResult",
+        "oneof": "response"
+      },
+      {
+        "name": "conversion_value_rule_set_result",
+        "number": 64,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateConversionValueRuleSetResult",
+        "oneof": "response"
+      },
+      {
+        "name": "custom_conversion_goal_result",
+        "number": 68,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCustomConversionGoalResult",
+        "oneof": "response"
+      },
+      {
+        "name": "customer_asset_result",
+        "number": 57,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCustomerAssetResult",
+        "oneof": "response"
+      },
+      {
+        "name": "customer_conversion_goal_result",
+        "number": 66,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCustomerConversionGoalResult",
+        "oneof": "response"
+      },
+      {
+        "name": "customer_customizer_result",
+        "number": 74,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCustomerCustomizerResult",
+        "oneof": "response"
+      },
+      {
+        "name": "customer_label_result",
+        "number": 32,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCustomerLabelResult",
+        "oneof": "response"
+      },
+      {
+        "name": "customer_negative_criterion_result",
+        "number": 34,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCustomerNegativeCriteriaResult",
+        "oneof": "response"
+      },
+      {
+        "name": "customer_result",
+        "number": 35,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCustomerResult",
+        "oneof": "response"
+      },
+      {
+        "name": "customizer_attribute_result",
+        "number": 70,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateCustomizerAttributeResult",
+        "oneof": "response"
+      },
+      {
+        "name": "experiment_result",
+        "number": 81,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateExperimentResult",
+        "oneof": "response"
+      },
+      {
+        "name": "experiment_arm_result",
+        "number": 82,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateExperimentArmResult",
+        "oneof": "response"
+      },
+      {
+        "name": "keyword_plan_ad_group_result",
+        "number": 44,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateKeywordPlanAdGroupResult",
+        "oneof": "response"
+      },
+      {
+        "name": "keyword_plan_campaign_result",
+        "number": 45,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateKeywordPlanCampaignResult",
+        "oneof": "response"
+      },
+      {
+        "name": "keyword_plan_ad_group_keyword_result",
+        "number": 50,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateKeywordPlanAdGroupKeywordResult",
+        "oneof": "response"
+      },
+      {
+        "name": "keyword_plan_campaign_keyword_result",
+        "number": 51,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateKeywordPlanCampaignKeywordResult",
+        "oneof": "response"
+      },
+      {
+        "name": "keyword_plan_result",
+        "number": 48,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateKeywordPlansResult",
+        "oneof": "response"
+      },
+      {
+        "name": "label_result",
+        "number": 41,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateLabelResult",
+        "oneof": "response"
+      },
+      {
+        "name": "quote_campaigns_result",
+        "number": 88,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "QuoteCampaignsResult",
+        "oneof": "response"
+      },
+      {
+        "name": "recommendation_subscription_result",
+        "number": 85,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateRecommendationSubscriptionResult",
+        "oneof": "response"
+      },
+      {
+        "name": "remarketing_action_result",
+        "number": 43,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateRemarketingActionResult",
+        "oneof": "response"
+      },
+      {
+        "name": "shared_criterion_result",
+        "number": 14,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateSharedCriterionResult",
+        "oneof": "response"
+      },
+      {
+        "name": "shared_set_result",
+        "number": 15,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateSharedSetResult",
+        "oneof": "response"
+      },
+      {
+        "name": "smart_campaign_setting_result",
+        "number": 61,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateSmartCampaignSettingResult",
+        "oneof": "response"
+      },
+      {
+        "name": "user_list_result",
+        "number": 16,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "MutateUserListResult",
+        "oneof": "response"
+      }
+    ]
+  },
+  "GoogleAdsError": {
+    "name": "google.ads.googleads.v24.errors.GoogleAdsError",
+    "fields": [
+      {
+        "name": "error_code",
+        "number": 1,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ErrorCode"
+      },
+      {
+        "name": "message",
+        "number": 2,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      },
+      {
+        "name": "trigger",
+        "number": 3,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "Value"
+      },
+      {
+        "name": "location",
+        "number": 4,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ErrorLocation"
+      },
+      {
+        "name": "details",
+        "number": 5,
+        "type": "MESSAGE",
+        "label": "OPTIONAL",
+        "message_type": "ErrorDetails"
+      }
+    ]
+  },
+  "GoogleAdsFailure": {
+    "name": "google.ads.googleads.v24.errors.GoogleAdsFailure",
+    "fields": [
+      {
+        "name": "errors",
+        "number": 1,
+        "type": "MESSAGE",
+        "label": "REPEATED",
+        "message_type": "GoogleAdsError"
+      },
+      {
+        "name": "request_id",
+        "number": 2,
+        "type": "STRING",
+        "label": "OPTIONAL"
+      }
+    ]
+  }
+}
