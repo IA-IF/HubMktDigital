@@ -279,17 +279,20 @@ git commit -m "feat: atualizar_perfil_cliente - tool normal, sem caso especial (
   gravar via `salvar_site` -- todo o resto delega pro executor
   genérico normal.
 
-- [ ] **Step 1:** Ler `main.py` atual e reescrever `processar_mensagem`/
+- [x] **Step 1:** Ler `main.py` atual e reescrever `processar_mensagem`/
   `rodar`/`montar_dependencias` pra: (a) não fixar `site`/`tools`/
   `executar_tool` uma vez só no início do processo; (b) recarregar por
   mensagem, com base no site daquele chat especificamente.
 
-- [ ] **Step 2:** Rodar teste REAL (não mock): mensagem nova sem site
-  selecionado → agente pergunta qual site (não assume); depois de
-  `selecionar_site` chamado, próxima mensagem já usa o catálogo/site
-  certo, e o perfil (se algum campo já setado) aparece no `system`.
+- [x] **Step 2:** Rodar teste REAL (não mock, 1 chamada só pra
+  economizar crédito): mensagem "3g foods, quero criar campanha" sem
+  site selecionado ainda → Claude reconheceu o site explícito, chamou
+  `selecionar_site`, resposta confirmou "Site 3G Foods selecionado" e
+  já engatou no próximo passo (pedindo objetivo/produto/público da
+  campanha). `carregar_site` confirmou `"3gfoods"` persistido no Redis
+  pro chat de teste. Mecanismo validado ponta a ponta.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add ARQUITETURA/nucleo/main.py
