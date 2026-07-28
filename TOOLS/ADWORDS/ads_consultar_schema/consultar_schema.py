@@ -3,13 +3,24 @@ qualquer tipo de mensagem da API do Google Ads instalada -- generaliza
 a coleta estática feita em TOOLS/ADWORDS/DOCS/raw/mutate_mensagens.json
 para uma tool que o agente pode chamar sob demanda, para QUALQUER tipo
 de recurso, não só os que alguém catalogou de antemão.
+
+Cacheado no Redis por tipo de recurso -- o schema de uma classe
+protobuf não muda entre chamadas (só mudaria com upgrade de versão da
+lib `google-ads` instalada), então recomputar a introspecção inteira
+(~900 módulos) a cada chamada é desperdício puro. Cache sem TTL: se a
+lib for atualizada, o cache fica desatualizado até alguém limpar --
+aceitável pro escopo de hoje, revisar se virar problema real.
 """
 import importlib
 import json
 import pkgutil
 import sys
+from pathlib import Path
 
 import google.ads.googleads.v24 as v24_pkg
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+PREFIXO_CACHE = "ads_schema:"
 
 LABEL_NOMES = {1: "OPTIONAL", 2: "REQUIRED", 3: "REPEATED"}
 TIPO_NOMES = {
@@ -46,7 +57,21 @@ def _indexar_classes() -> None:
                     continue
 
 
-def consultar_schema(tipo_recurso: str) -> dict:
+def _cliente_redis_ou_none():
+    try:
+        import redis
+        from dotenv import dotenv_values
+        env = dotenv_values(REPO_ROOT / "REDIS" / ".env")
+        if not env.get("REDIS_URL"):
+            return None
+        cliente = redis.Redis.from_url(env["REDIS_URL"], decode_responses=True)
+        cliente.ping()
+        return cliente
+    except Exception:
+        return None
+
+
+def _consultar_schema_sem_cache(tipo_recurso: str) -> dict:
     _indexar_classes()
     classe = _INDICE_CLASSES.get(tipo_recurso)
     if classe is None:
@@ -68,6 +93,23 @@ def consultar_schema(tipo_recurso: str) -> dict:
             campo["oneof"] = f.containing_oneof.name
         campos.append(campo)
     return {"name": descriptor.full_name, "fields": campos}
+
+
+def consultar_schema(tipo_recurso: str) -> dict:
+    cliente_redis = _cliente_redis_ou_none()
+    chave = f"{PREFIXO_CACHE}{tipo_recurso}"
+
+    if cliente_redis is not None:
+        cacheado = cliente_redis.get(chave)
+        if cacheado is not None:
+            return json.loads(cacheado)
+
+    resultado = _consultar_schema_sem_cache(tipo_recurso)
+
+    if cliente_redis is not None and "erro" not in resultado:
+        cliente_redis.set(chave, json.dumps(resultado, ensure_ascii=False))
+
+    return resultado
 
 
 if __name__ == "__main__":
