@@ -1,0 +1,17 @@
+{
+  "name": "ads_mutate",
+  "plataforma": "ADWORDS",
+  "description": "Cria, atualiza ou remove QUALQUER recurso do Google Ads (Campaign, CampaignBudget, CampaignCriterion, AdGroup, AdGroupCriterion, AdGroupAd, UserList, etc.) -- generico, nao limitado a um tipo especifico. Use ads_consultar_schema ANTES pra saber os campos exatos do recurso que voce precisa. Campanhas (recurso=Campaign, operacao=create) sempre nascem PAUSADAS automaticamente, mesmo que nao pedido -- ativar e sempre acao manual fora desta tool.",
+  "script": "TOOLS/ADWORDS/ads_mutate/mutate.py",
+  "modo_entrada": "stdin",
+  "requer_confirmacao": true,
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "recurso": {"type": "string", "description": "Tipo do recurso, ex: 'Campaign', 'CampaignCriterion', 'UserList'. Consulte ads_consultar_schema se tiver duvida."},
+      "operacao": {"type": "string", "description": "'create', 'update' ou 'remove'."},
+      "campos": {"type": "object", "description": "Campos do recurso, conforme o schema real (consulte ads_consultar_schema). Pode aninhar objetos pra sub-mensagens (ex: {\"location\": {\"geo_target_constant\": \"...\"}})."}
+    },
+    "required": ["recurso", "operacao", "campos"]
+  }
+}
