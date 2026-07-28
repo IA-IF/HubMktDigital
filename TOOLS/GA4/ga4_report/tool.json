@@ -1,0 +1,16 @@
+{
+  "name": "ga4_report",
+  "plataforma": "GA4",
+  "description": "Roda um relatorio GA4 (runReport) generico -- dimensoes e metricas escolhidas por voce, nao uma analise fixa. Consulte ga4_consultar_schema primeiro pra saber os nomes reais disponiveis.",
+  "script": "TOOLS/GA4/ga4_report/report.py",
+  "modo_entrada": "stdin",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "dimensoes": {"type": "array", "items": {"type": "string"}, "description": "Nomes de dimensoes reais (ex: 'sessionDefaultChannelGroup', 'date'). Consulte ga4_consultar_schema."},
+      "metricas": {"type": "array", "items": {"type": "string"}, "description": "Nomes de metricas reais (ex: 'sessions', 'conversions'). Consulte ga4_consultar_schema."},
+      "dias": {"type": "integer", "description": "Quantos dias pra tras a partir de hoje. Opcional, default 7."}
+    },
+    "required": ["dimensoes", "metricas"]
+  }
+}
