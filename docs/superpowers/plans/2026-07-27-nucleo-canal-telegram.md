@@ -56,7 +56,7 @@ descartar", é uma correção de ambiente com causa raiz documentada.
     em caso de `requests.RequestException`; levanta a última exceção
     se todas falharem.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # ARQUITETURA/nucleo/tests/test_canal_telegram.py
@@ -146,12 +146,12 @@ def test_chamada_levanta_apos_esgotar_tentativas():
     assert post_mock.call_count == 3
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_canal_telegram.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'ARQUITETURA.nucleo.canal_telegram'`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # ARQUITETURA/nucleo/canal_telegram.py
@@ -208,12 +208,12 @@ class CanalTelegram:
         return resposta.get("result", [])
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_canal_telegram.py -v`
 Expected: PASS (6 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ARQUITETURA/nucleo/canal_telegram.py ARQUITETURA/nucleo/tests/test_canal_telegram.py
