@@ -1,6 +1,6 @@
 # Entendimento (ponto de partida da nova frente)
 
-> **Status (2026-07-27):** Cinco planos escritos e executados:
+> **Status (2026-07-27):** Seis planos escritos e executados:
 > - Plano 1 — `docs/superpowers/plans/2026-07-27-nucleo-validacao-e-harness.md`:
 >   `validacao_tool.py` + `fake_anthropic.py` (contrato de validação +
 >   harness sem token).
@@ -27,21 +27,29 @@
 >   mecânica de `AGENTES/julio/agentes.py`, mas falando o vocabulário
 >   `FalhaPermanente`/`FalhaTransitoria`), testado com scripts Python
 >   reais em `tmp_path` (subprocess de verdade, zero credencial Google).
+> - Plano 6 — `docs/superpowers/plans/2026-07-27-nucleo-canal-telegram.md`:
+>   `canal_telegram.py` (`CanalTelegram`) — Canal real via Bot API
+>   (envio + long poll), preservando a correção de IPv4/retry já
+>   validada em produção em `telegram_transport.py` (não era legado —
+>   era uma correção de ambiente com causa raiz documentada).
 >
-> Os cinco com checklist 100% marcado `[x]` e código em
-> `ARQUITETURA/nucleo/` (43 testes passando, `pytest ARQUITETURA/ -v`).
+> Os seis com checklist 100% marcado `[x]` e código em
+> `ARQUITETURA/nucleo/` (49 testes passando, `pytest ARQUITETURA/ -v`).
 > Isso cobre os pontos 2, 3, 4, 5, 6 e 7 da lista no fim deste
 > documento. Nada em `AGENTES/julio/` foi tocado. O Redis de produção
 > (Redis Cloud compartilhado com o bot antigo) foi **zerado** a pedido
 > do usuário (2026-07-27) — schema/dados do `AGENTES/julio/` eram
 > considerados legado; o bot antigo, se reativado, precisa de
 > `/fix_redis` pra reindexar o catálogo de tools antes de voltar a
-> funcionar. Falta: `canal_telegram.py` (Canal real via Bot API) e um
-> `main.py` de assembly ligando tudo (mais integração/smoke-test do
-> que unidade pura — melhor numa sessão com credenciais reais pra
-> validar de ponta a ponta), e a otimização das TOOLS em si contra a
-> doc oficial de cada API (ponto 1 abaixo, o maior/mais independente
-> de todos, ainda não iniciado).
+> funcionar. Falta só: o `main.py` de assembly ligando `CanalTelegram`
+> (token real) + `RepositorioEstadoRedis` (Redis real) +
+> `criar_executor_tool` (com `discover_tool.catalogar_tools()` real) +
+> `DespachanteConcorrente` + `anthropic.Anthropic()` real — isso é
+> integração/smoke-test, não unidade pura, e só deve ser ESCRITO E
+> RODADO numa sessão em que o usuário confirme testar contra o
+> Telegram de verdade. Depois disso, a otimização das TOOLS em si
+> contra a doc oficial de cada API (ponto 1 abaixo) é o maior ponto
+> ainda em aberto, e o mais independente de todos.
 
 Isso não é um plano fechado — é o meu entendimento atual do objetivo e
 dos problemas de fundo, pra servir de ponto de partida da conversa de
