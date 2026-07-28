@@ -49,19 +49,41 @@ def _tool_por_nome(tools: list[dict], nome: str) -> dict | None:
     return next((t for t in tools if t["name"] == nome), None)
 
 
-def processar_turno(
+def _tool_ou_pendencia(bloco, tools: list[dict], executar_tool: ExecutorTool, estado: EstadoConversa):
+    """Devolve (resultado, pendencia). `pendencia` preenchida so quando
+    a tool precisa de confirmacao E o plano ainda nao foi aprovado --
+    com plano_aprovado=True, executa direto (mesmo caminho de qualquer
+    outra tool), permitindo encadear varios passos confirmados de uma
+    vez so."""
+    tool_meta = _tool_por_nome(tools, bloco.name)
+    if tool_meta is None:
+        return {"erro": f"ferramenta desconhecida: {bloco.name}"}, None
+    if tool_meta.get("requer_confirmacao") and not estado.plano_aprovado:
+        try:
+            entrada_valida = preparar_input(bloco.input, tool_meta["input_schema"])
+            pendencia = {"tool_use_id": bloco.id, "name": bloco.name, "input": entrada_valida}
+            return {"ok": True, "aviso": "aguardando confirmacao do humano"}, pendencia
+        except InputInvalido as exc:
+            return {"erro": "input invalido, corrija e chame de novo", "problemas": exc.problemas}, None
+    try:
+        return executar_tool(bloco.name, bloco.input), None
+    except FalhaPermanente as exc:
+        return {"erro": str(exc)}, None
+    except FalhaTransitoria:
+        return {"erro": "falha tecnica temporaria"}, None
+
+
+def _rodar_loop(
     cliente,
     modelo: str,
     system: str,
     tools: list[dict],
     estado: EstadoConversa,
-    texto_usuario: str,
     executar_tool: ExecutorTool,
     destinatario: str,
     canal: Canal,
-    max_turnos: int = 6,
+    max_turnos: int,
 ) -> None:
-    estado.historico.append({"role": "user", "content": texto_usuario})
     tools_api = [
         {"name": t["name"], "description": t["description"], "input_schema": t["input_schema"]}
         for t in tools
@@ -79,30 +101,15 @@ def processar_turno(
         if not blocos_tool:
             if bloco_texto:
                 canal.enviar(destinatario, bloco_texto)
+            estado.plano_aprovado = False
             return
 
         resultados_tool = []
         pendencia_criada = None
         for bloco in blocos_tool:
-            tool_meta = _tool_por_nome(tools, bloco.name)
-            if tool_meta is None:
-                resultado = {"erro": f"ferramenta desconhecida: {bloco.name}"}
-            elif tool_meta.get("requer_confirmacao"):
-                try:
-                    entrada_valida = preparar_input(bloco.input, tool_meta["input_schema"])
-                    pendencia_criada = {
-                        "tool_use_id": bloco.id, "name": bloco.name, "input": entrada_valida,
-                    }
-                    resultado = {"ok": True, "aviso": "aguardando confirmacao do humano"}
-                except InputInvalido as exc:
-                    resultado = {"erro": "input invalido, corrija e chame de novo", "problemas": exc.problemas}
-            else:
-                try:
-                    resultado = executar_tool(bloco.name, bloco.input)
-                except FalhaPermanente as exc:
-                    resultado = {"erro": str(exc)}
-                except FalhaTransitoria:
-                    resultado = {"erro": "falha tecnica temporaria"}
+            resultado, pendencia = _tool_ou_pendencia(bloco, tools, executar_tool, estado)
+            if pendencia is not None:
+                pendencia_criada = pendencia
             resultados_tool.append({
                 "type": "tool_result", "tool_use_id": bloco.id,
                 "content": str(resultado),
@@ -116,14 +123,36 @@ def processar_turno(
             return
 
     canal.enviar(destinatario, "Nao consegui concluir agora -- tenta reformular?")
+    estado.plano_aprovado = False
+
+
+def processar_turno(
+    cliente,
+    modelo: str,
+    system: str,
+    tools: list[dict],
+    estado: EstadoConversa,
+    texto_usuario: str,
+    executar_tool: ExecutorTool,
+    destinatario: str,
+    canal: Canal,
+    max_turnos: int = 6,
+) -> None:
+    estado.historico.append({"role": "user", "content": texto_usuario})
+    _rodar_loop(cliente, modelo, system, tools, estado, executar_tool, destinatario, canal, max_turnos)
 
 
 def resolver_pendencia(
+    cliente,
+    modelo: str,
+    system: str,
+    tools: list[dict],
     estado: EstadoConversa,
     confirmou: bool,
     executar_tool: ExecutorTool,
     destinatario: str,
     canal: Canal,
+    max_turnos: int = 6,
 ) -> None:
     if estado.pendente is None:
         return
@@ -133,21 +162,33 @@ def resolver_pendencia(
         canal.enviar(destinatario, "Ok, cancelado.")
         estado.pendente = None
         estado.historico = []
+        estado.plano_aprovado = False
         return
 
+    estado.pendente = None
     try:
-        executar_tool(pendente["name"], pendente["input"])
-        canal.enviar(destinatario, f"Feito: {pendente['name']} executado com sucesso.")
-        estado.pendente = None
-        estado.historico = []
+        resultado = executar_tool(pendente["name"], pendente["input"])
     except FalhaPermanente as exc:
         canal.enviar(destinatario, f"Nao consegui: {exc}. Ajusta o pedido e tenta de novo.")
-        estado.pendente = None
         estado.historico = []
+        estado.plano_aprovado = False
+        return
     except FalhaTransitoria:
+        estado.pendente = pendente
         canal.enviar(
             destinatario,
             "Erro tecnico, ja registrado pra investigar. Manda 'sim' de novo pra "
             "tentar mais uma vez, ou 'nao' pra cancelar.",
         )
-        # Pendente/historico NAO zerados -- retry direto com "sim" repete a MESMA acao.
+        estado.plano_aprovado = False
+        return
+
+    # Plano aprovado: os proximos passos confirmados (ex: campanha
+    # depois do orcamento) executam direto, sem pedir "sim" de novo --
+    # reseta sozinho quando o loop termina ou falha permanentemente.
+    estado.plano_aprovado = True
+    estado.historico.append({
+        "role": "user",
+        "content": [{"type": "tool_result", "tool_use_id": pendente["tool_use_id"], "content": str(resultado)}],
+    })
+    _rodar_loop(cliente, modelo, system, tools, estado, executar_tool, destinatario, canal, max_turnos)

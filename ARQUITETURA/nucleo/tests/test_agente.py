@@ -173,22 +173,27 @@ PENDENTE_EXEMPLO = {"tool_use_id": "toolu_1", "name": "criar_campanha", "input":
 def test_resolver_pendencia_nao_confirma_cancela():
     canal = CanalFake()
     estado = EstadoConversa(historico=[{"role": "user", "content": "oi"}], pendente=PENDENTE_EXEMPLO)
-    resolver_pendencia(estado, confirmou=False, executar_tool=lambda n, e: {}, destinatario="chat1", canal=canal)
-    assert estado.pendente is None
-    assert estado.historico == []
-    assert "cancel" in canal.enviados[0][1].lower()
-
-
-def test_resolver_pendencia_confirma_sucesso():
-    canal = CanalFake()
-    estado = EstadoConversa(pendente=PENDENTE_EXEMPLO)
     resolver_pendencia(
-        estado, confirmou=True,
-        executar_tool=lambda n, e: {"ok": True}, destinatario="chat1", canal=canal,
+        ClienteAnthropicFake(respostas=[]), "modelo-x", "sistema", [], estado,
+        confirmou=False, executar_tool=lambda n, e: {}, destinatario="chat1", canal=canal,
     )
     assert estado.pendente is None
     assert estado.historico == []
-    assert len(canal.enviados) == 1
+    assert estado.plano_aprovado is False
+    assert "cancel" in canal.enviados[0][1].lower()
+
+
+def test_resolver_pendencia_confirma_sucesso_e_continua_o_loop():
+    canal = CanalFake()
+    estado = EstadoConversa(pendente=PENDENTE_EXEMPLO)
+    cliente = ClienteAnthropicFake(respostas=[fake_response(fake_text("prontinho, tudo certo"))])
+    resolver_pendencia(
+        cliente, "modelo-x", "sistema", [TOOL_SIMPLES], estado,
+        confirmou=True, executar_tool=lambda n, e: {"ok": True}, destinatario="chat1", canal=canal,
+    )
+    assert estado.pendente is None
+    assert estado.plano_aprovado is False
+    assert any("prontinho" in msg for _, msg in canal.enviados)
 
 
 def test_resolver_pendencia_falha_permanente_cancela_e_explica():
@@ -198,8 +203,12 @@ def test_resolver_pendencia_falha_permanente_cancela_e_explica():
     def executar(nome, entrada):
         raise FalhaPermanente("titulo excede 30 caracteres")
 
-    resolver_pendencia(estado, confirmou=True, executar_tool=executar, destinatario="chat1", canal=canal)
+    resolver_pendencia(
+        ClienteAnthropicFake(respostas=[]), "modelo-x", "sistema", [], estado,
+        confirmou=True, executar_tool=executar, destinatario="chat1", canal=canal,
+    )
     assert estado.pendente is None
+    assert estado.plano_aprovado is False
     assert "titulo excede 30 caracteres" in canal.enviados[0][1]
 
 
@@ -210,6 +219,60 @@ def test_resolver_pendencia_falha_transitoria_preserva_pendencia():
     def executar(nome, entrada):
         raise FalhaTransitoria("ModuleNotFoundError: no module google")
 
-    resolver_pendencia(estado, confirmou=True, executar_tool=executar, destinatario="chat1", canal=canal)
+    resolver_pendencia(
+        ClienteAnthropicFake(respostas=[]), "modelo-x", "sistema", [], estado,
+        confirmou=True, executar_tool=executar, destinatario="chat1", canal=canal,
+    )
     assert estado.pendente == PENDENTE_EXEMPLO
+    assert estado.plano_aprovado is False
+
+
+TOOL_CONFIRMACAO_SIMPLES = {
+    "name": "criar_campanha",
+    "description": "cria recurso generico",
+    "requer_confirmacao": True,
+    "input_schema": {
+        "type": "object",
+        "properties": {"nome": {"type": "string"}},
+        "required": ["nome"],
+    },
+}
+
+
+def test_plano_aprovado_permite_tool_requer_confirmacao_direto_sem_pendencia():
+    """Confirma o 1o passo (orcamento); o agente decide criar a
+    campanha em seguida (2o passo, MESMA tool requer_confirmacao) --
+    com plano_aprovado=True, executa direto, sem pedir confirmacao de
+    novo."""
+    cliente = ClienteAnthropicFake(respostas=[
+        fake_response(fake_tool_use(id="toolu_1", name="criar_campanha", input={"nome": "orcamento"})),
+    ])
+    canal = CanalFake()
+    estado = EstadoConversa()
+    chamadas = []
+
+    def executar(nome, entrada):
+        chamadas.append(entrada)
+        return {"ok": True, "resource_name": f"recurso/{len(chamadas)}"}
+
+    processar_turno(
+        cliente, "modelo-x", "sistema", [TOOL_CONFIRMACAO_SIMPLES], estado, "cria a campanha completa",
+        executar_tool=executar, destinatario="chat1", canal=canal,
+    )
+    assert estado.pendente is not None
+    assert estado.plano_aprovado is False
+
+    cliente_confirmacao = ClienteAnthropicFake(respostas=[
+        fake_response(fake_tool_use(id="toolu_2", name="criar_campanha", input={"nome": "campanha real"})),
+        fake_response(fake_text("prontinho, plano concluido")),
+    ])
+    resolver_pendencia(
+        cliente_confirmacao, "modelo-x", "sistema", [TOOL_CONFIRMACAO_SIMPLES], estado,
+        confirmou=True, executar_tool=executar, destinatario="chat1", canal=canal,
+    )
+
+    assert len(chamadas) == 2
+    assert estado.pendente is None
+    assert estado.plano_aprovado is False
+    assert any("prontinho" in msg for _, msg in canal.enviados)
     assert "ModuleNotFoundError" not in canal.enviados[0][1]

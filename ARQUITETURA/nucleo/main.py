@@ -83,7 +83,8 @@ def processar_mensagem(
     resposta_baixa = texto.strip().lower()
     if estado.pendente is not None and resposta_baixa in ("sim", "s", "nao", "n"):
         resolver_pendencia(
-            estado, confirmou=resposta_baixa in ("sim", "s"),
+            cliente_anthropic, modelo, system, tools, estado,
+            confirmou=resposta_baixa in ("sim", "s"),
             executar_tool=executar_tool, destinatario=chat_id, canal=canal,
         )
     else:
