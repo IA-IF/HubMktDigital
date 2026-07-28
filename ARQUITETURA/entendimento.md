@@ -1,6 +1,7 @@
 # Entendimento (ponto de partida da nova frente)
 
-> **Status (2026-07-27):** Seis planos escritos e executados:
+> **Status (2026-07-27):** Seis planos escritos e executados, mais o
+> assembly final escrito:
 > - Plano 1 — `docs/superpowers/plans/2026-07-27-nucleo-validacao-e-harness.md`:
 >   `validacao_tool.py` + `fake_anthropic.py` (contrato de validação +
 >   harness sem token).
@@ -41,15 +42,26 @@
 > do usuário (2026-07-27) — schema/dados do `AGENTES/julio/` eram
 > considerados legado; o bot antigo, se reativado, precisa de
 > `/fix_redis` pra reindexar o catálogo de tools antes de voltar a
-> funcionar. Falta só: o `main.py` de assembly ligando `CanalTelegram`
-> (token real) + `RepositorioEstadoRedis` (Redis real) +
-> `criar_executor_tool` (com `discover_tool.catalogar_tools()` real) +
-> `DespachanteConcorrente` + `anthropic.Anthropic()` real — isso é
-> integração/smoke-test, não unidade pura, e só deve ser ESCRITO E
-> RODADO numa sessão em que o usuário confirme testar contra o
-> Telegram de verdade. Depois disso, a otimização das TOOLS em si
-> contra a doc oficial de cada API (ponto 1 abaixo) é o maior ponto
-> ainda em aberto, e o mais independente de todos.
+> funcionar.
+>
+> **`ARQUITETURA/nucleo/main.py`** (commit `cbad86b`) liga tudo:
+> `CanalTelegram` (token de `REDIS/.env`) + `RepositorioEstadoRedis`
+> (Redis real) + `criar_executor_tool` (com um `catalogar_tools()`
+> próprio, leitura direta de `TOOLS/**/tool.json` — achou as 7 tools
+> reais do catálogo, incluindo `registrar_pedido_futuro`, que hoje só
+> funciona no `AGENTES/julio/orchestrator.py` por estar
+> hard-coded/especial-casado por nome; aqui funciona genérico, sem
+> caso especial nenhum) + `DespachanteConcorrente` +
+> `anthropic.Anthropic()` real. Import e `catalogar_tools()` já
+> verificados — **mas o loop de long-polling (`rodar()`) ainda NÃO foi
+> executado** contra o Telegram de verdade (ação ao vivo, decisão
+> separada — evita competir com `AGENTES/julio/main_telegram.py` se
+> ainda estiver rodando, ou mandar mensagem indesejada a um chat real).
+>
+> Com isso, todo o núcleo v2 está pronto pra um smoke test real assim
+> que decidido rodar. Depois disso, a otimização das TOOLS em si contra
+> a doc oficial de cada API (ponto 1 abaixo) é o único ponto ainda em
+> aberto — e o maior/mais independente de todos.
 
 Isso não é um plano fechado — é o meu entendimento atual do objetivo e
 dos problemas de fundo, pra servir de ponto de partida da conversa de
