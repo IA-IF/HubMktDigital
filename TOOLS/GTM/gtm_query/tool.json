@@ -1,0 +1,16 @@
+{
+  "name": "gtm_query",
+  "plataforma": "GTM",
+  "description": "Executa QUALQUER metodo da API do GTM (accounts, containers, workspaces, tags, triggers, variables, etc, inclusive caminhos aninhados) -- recurso/metodo/parametros escolhidos por voce. Consulte gtm_consultar_schema primeiro pra saber os caminhos e parametros exatos.",
+  "script": "TOOLS/GTM/gtm_query/query.py",
+  "modo_entrada": "stdin",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "resource_path": {"type": "string", "description": "Caminho pontilhado, ex: 'accounts.containers.workspaces.tags'."},
+      "metodo": {"type": "string", "description": "Ex: 'list', 'get', 'create', 'update', 'delete'."},
+      "parametros": {"type": "object", "description": "Parametros do metodo (ver gtm_consultar_schema), ex: {\"parent\": \"accounts/.../containers/.../workspaces/...\"}."}
+    },
+    "required": ["resource_path", "metodo"]
+  }
+}

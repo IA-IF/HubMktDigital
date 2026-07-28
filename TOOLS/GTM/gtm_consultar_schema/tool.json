@@ -1,0 +1,12 @@
+{
+  "name": "gtm_consultar_schema",
+  "plataforma": "GTM",
+  "description": "Consulta os recursos (inclusive aninhados, ex: accounts.containers.workspaces.tags), metodos e parametros REAIS da API do GTM. Chame ANTES de usar gtm_query pra saber o caminho e parametros exatos de cada recurso/metodo.",
+  "script": "TOOLS/GTM/gtm_consultar_schema/consultar_schema.py",
+  "modo_entrada": "argv",
+  "input_schema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  }
+}
