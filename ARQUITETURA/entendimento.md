@@ -1,6 +1,6 @@
 # Entendimento (ponto de partida da nova frente)
 
-> **Status (2026-07-27):** Quatro planos escritos e executados:
+> **Status (2026-07-27):** Cinco planos escritos e executados:
 > - Plano 1 — `docs/superpowers/plans/2026-07-27-nucleo-validacao-e-harness.md`:
 >   `validacao_tool.py` + `fake_anthropic.py` (contrato de validação +
 >   harness sem token).
@@ -21,21 +21,27 @@
 >   sempre serializados (lock por chat_id) — resolve o "parece travado"
 >   real de hoje (bot single-thread bloqueando todo mundo numa tarefa
 >   demorada).
+> - Plano 5 — `docs/superpowers/plans/2026-07-27-nucleo-executor-tools.md`:
+>   `executor_tools.py` (`criar_executor_tool`) — despacho genérico de
+>   qualquer tool real catalogada em `TOOLS/**/tool.json` (mesma
+>   mecânica de `AGENTES/julio/agentes.py`, mas falando o vocabulário
+>   `FalhaPermanente`/`FalhaTransitoria`), testado com scripts Python
+>   reais em `tmp_path` (subprocess de verdade, zero credencial Google).
 >
-> Os quatro com checklist 100% marcado `[x]` e código em
-> `ARQUITETURA/nucleo/` (38 testes passando, `pytest ARQUITETURA/ -v`).
+> Os cinco com checklist 100% marcado `[x]` e código em
+> `ARQUITETURA/nucleo/` (43 testes passando, `pytest ARQUITETURA/ -v`).
 > Isso cobre os pontos 2, 3, 4, 5, 6 e 7 da lista no fim deste
 > documento. Nada em `AGENTES/julio/` foi tocado. O Redis de produção
 > (Redis Cloud compartilhado com o bot antigo) foi **zerado** a pedido
 > do usuário (2026-07-27) — schema/dados do `AGENTES/julio/` eram
 > considerados legado; o bot antigo, se reativado, precisa de
 > `/fix_redis` pra reindexar o catálogo de tools antes de voltar a
-> funcionar. Falta: integração com o catálogo real de tools
-> (`discover_tool`/`TOOLS/*` como `executar_tool` de verdade), um
-> `main.py` que ligue `Canal` real (Telegram/IDE) ao núcleo, e a
-> otimização das TOOLS em si contra a doc oficial de cada API (o único
-> ponto ainda não endereçado — ponto 1 abaixo, e o maior/mais
-> independente de todos).
+> funcionar. Falta: `canal_telegram.py` (Canal real via Bot API) e um
+> `main.py` de assembly ligando tudo (mais integração/smoke-test do
+> que unidade pura — melhor numa sessão com credenciais reais pra
+> validar de ponta a ponta), e a otimização das TOOLS em si contra a
+> doc oficial de cada API (ponto 1 abaixo, o maior/mais independente
+> de todos, ainda não iniciado).
 
 Isso não é um plano fechado — é o meu entendimento atual do objetivo e
 dos problemas de fundo, pra servir de ponto de partida da conversa de
