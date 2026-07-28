@@ -69,7 +69,7 @@ salvo no Redis").
   `RepositorioEstadoRedis.salvar`/`.carregar` incluem esse campo no
   JSON persistido.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # adicionar em ARQUITETURA/nucleo/tests/test_agente.py
@@ -89,12 +89,12 @@ def test_repositorio_redis_persiste_plano_aprovado():
     assert recarregado.plano_aprovado is True
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_agente.py::test_estado_conversa_plano_aprovado_default_false ARQUITETURA/nucleo/tests/test_memoria.py::test_repositorio_redis_persiste_plano_aprovado -v`
 Expected: FAIL (`AttributeError`/`assert False is True`)
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # ARQUITETURA/nucleo/agente.py -- EstadoConversa
@@ -127,12 +127,12 @@ class EstadoConversa:
         self._cliente.set(f"{self._prefixo}{chat_id}", json.dumps(dados, ensure_ascii=False))
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pytest ARQUITETURA/ -v`
 Expected: PASS (todos os testes existentes + os 2 novos)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ARQUITETURA/nucleo/agente.py ARQUITETURA/nucleo/memoria.py ARQUITETURA/nucleo/tests/test_agente.py ARQUITETURA/nucleo/tests/test_memoria.py
@@ -163,7 +163,7 @@ git commit -m "feat: EstadoConversa.plano_aprovado, persistido no Redis (nucleo 
 - Consumes: mesma interface de `processar_turno` (agora ambos chamam o
   mesmo `_rodar_loop` interno).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # adicionar em ARQUITETURA/nucleo/tests/test_agente.py
@@ -231,12 +231,12 @@ já existente no arquivo, mas sem campos obrigatórios (só `{"nome":
 {"type": "string"}}`, `required: ["nome"]`) pra simplificar o teste de
 encadeamento -- adicionar essa constante junto dos testes.
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_agente.py -v`
 Expected: FAIL (`resolver_pendencia() missing required positional arguments` e afins)
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # ARQUITETURA/nucleo/agente.py -- substituir processar_turno/resolver_pendencia
@@ -354,12 +354,12 @@ def resolver_pendencia(
     _rodar_loop(cliente, modelo, system, tools, estado, executar_tool, destinatario, canal, max_turnos)
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pytest ARQUITETURA/ -v`
 Expected: PASS (todos, incluindo os 2 novos)
 
-- [ ] **Step 5: Update `main.py` call site**
+- [x] **Step 5: Update `main.py` call site**
 
 ```python
 # ARQUITETURA/nucleo/main.py -- dentro de processar_mensagem
@@ -371,7 +371,7 @@ Expected: PASS (todos, incluindo os 2 novos)
         )
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add ARQUITETURA/nucleo/agente.py ARQUITETURA/nucleo/tests/test_agente.py ARQUITETURA/nucleo/main.py
