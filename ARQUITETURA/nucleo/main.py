@@ -31,6 +31,7 @@ from ARQUITETURA.nucleo.memoria import (
     montar_system_com_resumo,
     salvar_site,
 )
+from ARQUITETURA.nucleo.status import texto_status
 
 HUB_ROOT = Path(__file__).resolve().parents[2]
 ENV_FILE = HUB_ROOT / "REDIS" / ".env"
@@ -128,6 +129,10 @@ def processar_mensagem(
     chat_id: str, texto: str, cliente_redis, repositorio, cliente_anthropic,
     tool_por_nome, canal, modelo: str,
 ) -> None:
+    if texto.strip().lower() == "/status":
+        canal.enviar(chat_id, texto_status())
+        return
+
     estado = repositorio.carregar(chat_id)
     site = carregar_site(cliente_redis, chat_id)
     tools, executar_tool = _tools_e_executor(site, tool_por_nome, cliente_redis, chat_id)
