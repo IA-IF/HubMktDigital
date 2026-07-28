@@ -80,19 +80,19 @@ depois de um conceito novo entrar pode confundir a IA e fazer ela
 regredir pro modo antigo — tem que ser removida, não só deixada de lado.
 Pra este plano, especificamente:
 
-- [ ] **Deletar o conteúdo dos 3 `RULES.md`** (`SITES/3gfoods/RULES.md`,
+- [x] **Deletar o conteúdo dos 3 `RULES.md`** (`SITES/3gfoods/RULES.md`,
   `SITES/adoro/RULES.md`, `SITES/integrafoods/RULES.md`) depois que o
   perfil de cliente estiver de fato em Redis e sendo lido de lá — não
   deixar o arquivo vazio "TODO: preencher" no repo, porque se algum
   código ou algum Claude futuro ainda ler esse arquivo (por hábito, por
   busca de contexto), ele vai achar que não há perfil nenhum, mesmo com
   o dado real já em Redis.
-- [ ] **Atualizar todo lugar que hoje lê `RULES.md`** (ver
+- [x] **Atualizar todo lugar que hoje lê `RULES.md`** (ver
   `_perguntar` em `orchestrator.py`, que monta o system prompt com
   `SITES/<site>/RULES.md`) pra ler do Redis em vez do arquivo —
   remover a leitura de arquivo, não manter os dois caminhos "por
   garantia".
-- [ ] Se `_template/RULES.md` deixar de fazer sentido como modelo
+- [x] Se `_template/RULES.md` deixar de fazer sentido como modelo
   (porque o fluxo de preenchimento passa a ser via Redis, não copiar
   markdown), documentar isso ou remover o template também.
 

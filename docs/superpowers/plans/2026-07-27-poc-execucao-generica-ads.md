@@ -66,7 +66,7 @@ v24), `pytest`.
 - CLI: `python consultar_schema.py <site> <tipo_recurso>` — imprime
   JSON no stdout (mesmo padrão de todas as outras tools do projeto).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # TOOLS/ADWORDS/ads_consultar_schema/test_consultar_schema.py
@@ -92,12 +92,12 @@ def test_consultar_schema_erro_pra_tipo_desconhecido():
     assert "erro" in resultado
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd TOOLS/ADWORDS/ads_consultar_schema && python -m pytest test_consultar_schema.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'consultar_schema'`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # TOOLS/ADWORDS/ads_consultar_schema/consultar_schema.py
@@ -178,12 +178,12 @@ if __name__ == "__main__":
     print(json.dumps(consultar_schema(tipo_recurso_arg), ensure_ascii=False, indent=2))
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `cd TOOLS/ADWORDS/ads_consultar_schema && python -m pytest test_consultar_schema.py -v`
 Expected: PASS (3 tests)
 
-- [ ] **Step 5: Write `tool.json`**
+- [x] **Step 5: Write `tool.json`**
 
 ```json
 {
@@ -202,7 +202,7 @@ Expected: PASS (3 tests)
 }
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add TOOLS/ADWORDS/ads_consultar_schema/
@@ -246,7 +246,7 @@ git commit -m "feat: ads_consultar_schema - schema real de qualquer recurso Ads,
     formato que `criar_campanha` já usa, pro `agentes.py`/
     `executor_tools.py` reconhecerem sem mudar nada).
 
-- [ ] **Step 1: Write the failing tests (só lógica pura, sem API real)**
+- [x] **Step 1: Write the failing tests (só lógica pura, sem API real)**
 
 ```python
 # TOOLS/ADWORDS/ads_mutate/test_mutate.py
@@ -293,12 +293,12 @@ def test_aplicar_campos_dict_aninhado_vira_submensagem():
     assert criterio.keyword.match_type.name == "BROAD"
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `cd TOOLS/ADWORDS/ads_mutate && python -m pytest test_mutate.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'mutate'`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # TOOLS/ADWORDS/ads_mutate/mutate.py
@@ -442,12 +442,12 @@ if __name__ == "__main__":
     ))
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `cd TOOLS/ADWORDS/ads_mutate && python -m pytest test_mutate.py -v`
 Expected: PASS (6 tests) — nenhum precisa de credencial real, só monta a mensagem protobuf em memória.
 
-- [ ] **Step 5: Write `tool.json`**
+- [x] **Step 5: Write `tool.json`**
 
 ```json
 {
@@ -469,7 +469,7 @@ Expected: PASS (6 tests) — nenhum precisa de credencial real, só monta a mens
 }
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add TOOLS/ADWORDS/ads_mutate/
@@ -483,13 +483,13 @@ git commit -m "feat: ads_mutate - criar/atualizar/remover qualquer recurso Ads, 
 **Files:** nenhum arquivo novo — só um teste manual/smoke, documentado
 no resultado (adicionar ao `ARQUITETURA/entendimento.md` depois).
 
-- [ ] **Step 1:** Rodar, via `ARQUITETURA/nucleo/agente.processar_turno`
+- [x] **Step 1:** Rodar, via `ARQUITETURA/nucleo/agente.processar_turno`
   (cliente Anthropic real, `executor_tools.criar_executor_tool`
   apontando só pras 2 tools novas + `ads_gaql` NÃO incluída neste POC),
   um pedido tipo: *"crie uma campanha de search pausada pro produto X
   da 3G Foods, segmentada num raio de 5km ao redor do endereço da
   loja"*.
-- [ ] **Step 2:** Confirmar no histórico que o agente:
+- [x] **Step 2:** Confirmar no histórico que o agente:
   (a) chamou `ads_consultar_schema("ProximityInfo")` e/ou
   `ads_consultar_schema("CampaignCriterion")` sem ter sido instruído
   a fazer isso especificamente:
@@ -497,7 +497,7 @@ no resultado (adicionar ao `ARQUITETURA/entendimento.md` depois).
   `proximity` preenchido corretamente (radius + geo_point ou address),
   sem nenhum código escrito por mim pra "targeting por proximidade"
   especificamente.
-- [ ] **Step 3:** Se falhar: documentar o motivo exato (não é uma
+- [x] **Step 3:** Se falhar: documentar o motivo exato (não é uma
   falha genérica — é dado real pra saber se o POC precisa de ajuste
   na `description` das tools, no `aplicar_campos`, ou se a abordagem
   em si tem um problema mais fundo).

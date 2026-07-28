@@ -60,10 +60,10 @@ de leitura/análise, saída em markdown.
   critério: usado nos fluxos de auditoria do container hoje, ver skill
   `auditoria-gtm`, ou não).
 
-- [ ] **Step 1: Ler o discovery.json e listar todos os recursos/métodos do container GTM (tags, triggers, variables, versions, workspaces)**
-- [ ] **Step 2: Cruzar com o que a skill `auditoria-gtm` já lê hoje via API (ver `.claude/skills/auditoria-gtm/`) — o que já é lido mas não é uma tool invocável pelo Julio**
-- [ ] **Step 3: Escrever `TOOLS/GTM/DOCS/gap_tool_json.md` com a tabela de gap e uma recomendação do primeiro tool.json a criar (ex.: `listar_tags_triggers`, goal-oriented, não "chamar GTM API tags.list")**
-- [ ] **Step 4: Commit**
+- [x] **Step 1: Ler o discovery.json e listar todos os recursos/métodos do container GTM (tags, triggers, variables, versions, workspaces)**
+- [x] **Step 2: Cruzar com o que a skill `auditoria-gtm` já lê hoje via API (ver `.claude/skills/auditoria-gtm/`) — o que já é lido mas não é uma tool invocável pelo Julio**
+- [x] **Step 3: Escrever `TOOLS/GTM/DOCS/gap_tool_json.md` com a tabela de gap e uma recomendação do primeiro tool.json a criar (ex.: `listar_tags_triggers`, goal-oriented, não "chamar GTM API tags.list")**
+- [x] **Step 4: Commit**
 
 ```bash
 git add TOOLS/GTM/DOCS/gap_tool_json.md
@@ -82,10 +82,10 @@ git commit -m "docs: mapeia gap raw->tool.json do GTM"
   capacidades cobertas por `analise_vendas` (eficiência de campanha) e
   `criar_campanha` (criação/validação de campanha).
 
-- [ ] **Step 1: Listar os `services.json`/`google_ads_fields.json` relevantes pra e-commerce (campanhas, grupos de anúncio, keywords, lances, negative keywords — ver `analise_video.md`/`video.md` sobre SKAG se existirem no repo)**
-- [ ] **Step 2: Marcar o que `analise_vendas` e `criar_campanha` já cobrem, ler os dois `tool.json` pra confirmar escopo real (não assumir pelo nome)**
-- [ ] **Step 3: Escrever `TOOLS/ADWORDS/DOCS/gap_tool_json.md` com o que falta (ex.: negative keywords, ajuste de lance, pausar/ativar campanha — só incluir se houver evidência no raw de que a API suporta)**
-- [ ] **Step 4: Commit**
+- [x] **Step 1: Listar os `services.json`/`google_ads_fields.json` relevantes pra e-commerce (campanhas, grupos de anúncio, keywords, lances, negative keywords — ver `analise_video.md`/`video.md` sobre SKAG se existirem no repo)**
+- [x] **Step 2: Marcar o que `analise_vendas` e `criar_campanha` já cobrem, ler os dois `tool.json` pra confirmar escopo real (não assumir pelo nome)**
+- [x] **Step 3: Escrever `TOOLS/ADWORDS/DOCS/gap_tool_json.md` com o que falta (ex.: negative keywords, ajuste de lance, pausar/ativar campanha — só incluir se houver evidência no raw de que a API suporta)**
+- [x] **Step 4: Commit**
 
 ```bash
 git add TOOLS/ADWORDS/DOCS/gap_tool_json.md
@@ -105,10 +105,10 @@ git commit -m "docs: mapeia gap raw->tool.json do ADWORDS"
   `docs/superpowers/plans/2026-07-22-esquema-analise-vendas-fase-a.md`
   pra escopo exato da Fase A).
 
-- [ ] **Step 1: Listar relatórios/dimensões/métricas do `data_discovery.json` + `metadata_3gfoods.json` fora do que a Fase A do `analise_vendas` já usa**
-- [ ] **Step 2: Checar o `admin_discovery.json` por capacidades de admin (custom dimensions, conversion events, links de Ads) que hoje só existem como raw**
-- [ ] **Step 3: Escrever `TOOLS/GA4/DOCS/gap_tool_json.md` com o gap (ex.: Fases B/C/D do esquema de análise de vendas, se ainda não implementadas — conferir)**
-- [ ] **Step 4: Commit**
+- [x] **Step 1: Listar relatórios/dimensões/métricas do `data_discovery.json` + `metadata_3gfoods.json` fora do que a Fase A do `analise_vendas` já usa**
+- [x] **Step 2: Checar o `admin_discovery.json` por capacidades de admin (custom dimensions, conversion events, links de Ads) que hoje só existem como raw**
+- [x] **Step 3: Escrever `TOOLS/GA4/DOCS/gap_tool_json.md` com o gap (ex.: Fases B/C/D do esquema de análise de vendas, se ainda não implementadas — conferir)**
+- [x] **Step 4: Commit**
 
 ```bash
 git add TOOLS/GA4/DOCS/gap_tool_json.md
@@ -126,10 +126,10 @@ git commit -m "docs: mapeia gap raw->tool.json do GA4"
 - Produces: mesmo formato de tabela, descontando `analise_vendas`
   (orgânico) e `analise_tecnica` (técnico/indexação).
 
-- [ ] **Step 1: Listar métodos do `discovery.json` (sitemaps, searchAnalytics, URL inspection) fora do que os 2 tool.json já cobrem**
-- [ ] **Step 2: Cruzar com a skill `auditoria-search-console` (que hoje é só leitura de sitemap/indexação) pra ver se há capacidade de escrita (submeter sitemap, pedir inspeção) documentada no raw mas não exposta como tool**
-- [ ] **Step 3: Escrever `TOOLS/SEARCH_CONSOLE/DOCS/gap_tool_json.md`**
-- [ ] **Step 4: Commit**
+- [x] **Step 1: Listar métodos do `discovery.json` (sitemaps, searchAnalytics, URL inspection) fora do que os 2 tool.json já cobrem**
+- [x] **Step 2: Cruzar com a skill `auditoria-search-console` (que hoje é só leitura de sitemap/indexação) pra ver se há capacidade de escrita (submeter sitemap, pedir inspeção) documentada no raw mas não exposta como tool**
+- [x] **Step 3: Escrever `TOOLS/SEARCH_CONSOLE/DOCS/gap_tool_json.md`**
+- [x] **Step 4: Commit**
 
 ```bash
 git add TOOLS/SEARCH_CONSOLE/DOCS/gap_tool_json.md

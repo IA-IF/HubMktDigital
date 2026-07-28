@@ -71,22 +71,48 @@
 > persistindo em Redis (lista `pedidos_futuros`) em vez do markdown
 > que o antigo usava.
 >
-> **Catálogo ativo hoje: 14 tools**, todas com `script` válido e
+> **Catálogo ativo hoje: 15 tools**, todas com `script` válido e
 > dispatchável (`ads_consultar_schema`, `ads_mutate`, `analise_ads`,
 > `catalogo_produtos`, `analise_vendas` [GA4], `ga4_consultar_schema`,
-> `ga4_report`, `registrar_pedido_futuro`, `gtm_consultar_schema`,
-> `gtm_query`, `analise_tecnica`, `analise_organico`,
-> `search_console_consultar_schema`, `search_console_query`). Tools de
-> análise com cálculo real (`analise_ads`, `analise_vendas`,
-> `analise_tecnica`, `analise_organico`, `catalogo_produtos`) mantidas
-> curadas, per o contrato (não são decisão do agente, são fórmula
-> fixa). 77 testes passando no total (`ARQUITETURA/` + `TOOLS/GA4/
-> analise_vendas` + `TOOLS/CATALOGO/catalogo_produtos`).
+> `ga4_report`, `registrar_pedido_futuro`, `atualizar_perfil_cliente`,
+> `gtm_consultar_schema`, `gtm_query`, `analise_tecnica`,
+> `analise_organico`, `search_console_consultar_schema`,
+> `search_console_query`). Tools de análise com cálculo real
+> (`analise_ads`, `analise_vendas`, `analise_tecnica`,
+> `analise_organico`, `catalogo_produtos`) mantidas curadas, per o
+> contrato (não são decisão do agente, são fórmula fixa). 91 testes
+> passando no total (`pytest ARQUITETURA/ TOOLS/ -q`).
 >
-> **Pendente:** site por conversa e memória de perfil de cliente ainda
-> não portados pro núcleo v2 (caminho pequeno conhecido — mesmo padrão
-> do resumo, Redis por chat); reautorização OAuth GA4/GTM se escrita
-> nessas plataformas virar necessária.
+> **Site por conversa e perfil de cliente**: portados pro núcleo v2
+> (`memoria.py`: `carregar_site`/`salvar_site`, `carregar_perfil_
+> cliente`, `montar_system_com_perfil`; `main.py`: tool
+> `selecionar_site` tratada em `_tools_e_executor`, catálogo restrito
+> a `selecionar_site`+`registrar_pedido_futuro` até o site ser
+> escolhido). Validado ao vivo (Anthropic real): "Site 3G Foods
+> selecionado! ✅", `carregar_site` retornou `"3gfoods"`.
+>
+> **Guardrail `validate_only` (dry-run antes de mutação real)**:
+> implementado em `ads_mutate/mutate.py` — `executar_mutate` monta um
+> `MutateGoogleAdsRequest` com `validate_only=True` e roda primeiro;
+> só executa a mutação real se o dry-run não levantar erro. Os outros
+> 3 guardrails do spec (`requer_confirmacao=true` incondicional em
+> `*_mutate`, `status=PAUSED` hardcoded pra `Campaign`+`create`, escopo
+> por site único por execução) já estavam implementados — conferidos
+> de novo linha a linha nesta revisão.
+>
+> **Escrita em GA4/GTM segue bloqueada por escopo OAuth
+> `.readonly`** (ver abaixo) — não é gap de código, é decisão do
+> usuário (re-consentimento OAuth) ainda não tomada. Os dispatchers
+> genéricos (`gtm_query`, `search_console_query`) não têm um filtro
+> de método explícito no código, mas isso é seguro hoje porque o
+> escopo OAuth authorizado é só leitura — a própria API do Google
+> rejeitaria qualquer método de escrita antes de qualquer efeito
+> colateral acontecer.
+>
+> **Sem pendências conhecidas no núcleo v2** neste momento. Próximo
+> passo é o deploy no EC2 (ver `infra/ec2/deploy.ps1`) substituindo o
+> bot antigo (`AGENTES/julio/main_telegram.py`) pelo novo
+> (`ARQUITETURA/nucleo/main.py`).
 
 Isso não é um plano fechado — é o meu entendimento atual do objetivo e
 dos problemas de fundo, pra servir de ponto de partida da conversa de

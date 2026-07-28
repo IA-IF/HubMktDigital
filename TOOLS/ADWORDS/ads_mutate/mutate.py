@@ -118,6 +118,21 @@ def executar_mutate(site: str, recurso: str, operacao: str, campos: dict) -> dic
         return {"ok": False, "erros": [str(exc)]}
 
     service = client.get_service("GoogleAdsService")
+
+    # Guardrail obrigatorio (ver spec de execucao generica): dry-run
+    # com validate_only ANTES de qualquer mutacao real -- rede de
+    # seguranca generica que substitui os checks manuais por tool que
+    # nao generalizavam (ex: validar_proposta.py do antigo
+    # criar_campanha so pegava limite de caractere pra ESSA tool).
+    requisicao_validacao = client.get_type("MutateGoogleAdsRequest")
+    requisicao_validacao.customer_id = cid
+    requisicao_validacao.mutate_operations.append(mutate_op)
+    requisicao_validacao.validate_only = True
+    try:
+        service.mutate(request=requisicao_validacao)
+    except Exception as exc:  # noqa: BLE001 -- GoogleAdsException tem forma variavel
+        return {"ok": False, "erros": [f"validacao (dry-run) rejeitou: {exc}"]}
+
     try:
         resposta = service.mutate(customer_id=cid, mutate_operations=[mutate_op])
     except Exception as exc:  # noqa: BLE001 -- GoogleAdsException tem forma variavel

@@ -102,25 +102,25 @@ projeto depois de um conceito novo entrar pode confundir a IA e fazer
 ela regredir pro modo antigo — tem que ser removida, não só deixada de
 lado. Pra este plano, especificamente:
 
-- [ ] **Deletar** `AGENTES/julio/elis_orchestrator.py` e
+- [x] **Deletar** `AGENTES/julio/elis_orchestrator.py` e
   `AGENTES/julio/GLOBAL_ELIS.md` depois que o orchestrator fundido
   cobrir tudo que os dois faziam — não deixar como "código morto de
   referência".
-- [ ] **Remover** `julio_config.agente_ativo()` e a variável
+- [x] **Remover** `julio_config.agente_ativo()` e a variável
   `AGENTE_ATIVO` de `REDIS/.env`/`.env.example` — o switch deixa de
   existir, não faz sentido a variável continuar lida em algum lugar.
-- [ ] **Remover** as funções de menu fixo em `orchestrator.py`
+- [x] **Remover** as funções de menu fixo em `orchestrator.py`
   (`_perguntar_qual_site`, `_site_por_opcao`) depois que a seleção de
   site virar interpretação por LLM — não manter como fallback "pra
   garantir", isso é exatamente o tipo de caminho antigo que engana a IA.
-- [ ] **Atualizar ou arquivar** `entendendno.md` (linhas 93-192 hoje
+- [x] **Atualizar ou arquivar** `entendendno.md` (linhas 93-192 hoje
   descrevem o fluxo fixo `/start` → menu numerado como se fosse o
   comportamento atual) — depois da fusão, esse trecho passa a descrever
   algo que não existe mais. Ou reescreve pra refletir o fluxo novo, ou
   marca explicitamente como histórico ("como funcionava antes da fusão
   de 2026-07-27") pra nenhuma sessão futura do Claude ler isso como
   verdade atual.
-- [ ] Conferir se `data/telegram_conversas/<chat_id>.json` e
+- [x] Conferir se `data/telegram_conversas/<chat_id>.json` e
   `data/conversas_elis/<chat_id>.json` (históricos separados por
   agente) precisam de migração/merge pro histórico único em Redis, ou
   se ficam como arquivo morto — decidir junto com o schema de memória

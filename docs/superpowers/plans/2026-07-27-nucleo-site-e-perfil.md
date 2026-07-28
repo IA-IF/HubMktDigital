@@ -67,7 +67,7 @@ precisar ler o mesmo dado de lá).
     seção "=== Perfil do cliente (site) ===" com os campos já
     preenchidos e uma linha "Campos ainda faltando: ...".
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # adicionar em ARQUITETURA/nucleo/tests/test_memoria.py
@@ -115,12 +115,12 @@ Nota: `ClienteRedisFake` (já existe em `test_memoria.py`) só implementa
 `get`/`set` — o teste de `carregar_perfil_cliente` precisa de
 `hgetall`, daí a subclasse local `ClienteRedisFakeHash` só nesse teste.
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_memoria.py -v`
 Expected: FAIL (`ImportError`)
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # adicionar em ARQUITETURA/nucleo/memoria.py
@@ -153,12 +153,12 @@ def montar_system_com_perfil(
     )
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pytest ARQUITETURA/ -v`
 Expected: PASS (todos + os 5 novos)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ARQUITETURA/nucleo/memoria.py ARQUITETURA/nucleo/tests/test_memoria.py
@@ -181,7 +181,7 @@ git commit -m "feat: site por conversa e perfil de cliente no memoria.py (nucleo
   desconhecido (`FalhaPermanente`-shaped, sem precisar da exceção —
   já é o formato que `executor_tools.criar_executor_tool` reconhece).
 
-- [ ] **Step 1:** Escrever `atualizar.py` (dispatch `stdin`, mesmo
+- [x] **Step 1:** Escrever `atualizar.py` (dispatch `stdin`, mesmo
   padrão de `registrar_pedido_futuro/registrar.py`):
 
 ```python
@@ -225,7 +225,7 @@ if __name__ == "__main__":
     print(json.dumps(atualizar(site_arg, entrada["campo"], entrada["valor"]), ensure_ascii=False, indent=2))
 ```
 
-- [ ] **Step 2:** Escrever `tool.json`:
+- [x] **Step 2:** Escrever `tool.json`:
 
 ```json
 {
@@ -245,7 +245,7 @@ if __name__ == "__main__":
 }
 ```
 
-- [ ] **Step 3:** Testar de verdade contra Redis real:
+- [x] **Step 3:** Testar de verdade contra Redis real:
 
 ```bash
 cd TOOLS/GERAL/atualizar_perfil_cliente
@@ -253,7 +253,7 @@ echo '{"campo": "roas_alvo", "valor": "400%"}' | python atualizar.py 3gfoods
 ```
 Expected: `{"ok": true}`, e confirmar via `HGETALL cliente:3gfoods:perfil` no Redis real.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add TOOLS/GERAL/atualizar_perfil_cliente/
