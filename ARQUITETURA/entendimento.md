@@ -1,6 +1,6 @@
 # Entendimento (ponto de partida da nova frente)
 
-> **Status (2026-07-27):** Três planos escritos e executados:
+> **Status (2026-07-27):** Quatro planos escritos e executados:
 > - Plano 1 — `docs/superpowers/plans/2026-07-27-nucleo-validacao-e-harness.md`:
 >   `validacao_tool.py` + `fake_anthropic.py` (contrato de validação +
 >   harness sem token).
@@ -15,18 +15,27 @@
 >   persistência real de `EstadoConversa` e o resumo de conversa
 >   **lido de volta** no system prompt (o bug concreto de hoje: era só
 >   escrito, nunca consumido).
+> - Plano 4 — `docs/superpowers/plans/2026-07-27-nucleo-execucao-nao-bloqueante.md`:
+>   `execucao.py` (`DespachanteConcorrente`) — turnos de chats
+>   diferentes rodam em paralelo (thread pool), turnos do MESMO chat
+>   sempre serializados (lock por chat_id) — resolve o "parece travado"
+>   real de hoje (bot single-thread bloqueando todo mundo numa tarefa
+>   demorada).
 >
-> Os três com checklist 100% marcado `[x]` e código em
-> `ARQUITETURA/nucleo/` (35 testes passando, `pytest ARQUITETURA/ -v`).
-> Isso cobre os pontos 2, 3, 4, 5 e 7 da lista no fim deste documento.
-> Nada em `AGENTES/julio/` foi tocado. O Redis de produção (Redis Cloud
-> compartilhado com o bot antigo) foi **zerado** a pedido do usuário
-> (2026-07-27) — schema/dados do `AGENTES/julio/` eram considerados
-> legado; o bot antigo, se reativado, precisa de `/fix_redis` pra
-> reindexar o catálogo de tools antes de voltar a funcionar. Falta:
-> execução não-bloqueante de verdade, integração com o catálogo real
-> de tools (`discover_tool`/`TOOLS/*`), e a otimização das TOOLS em si
-> contra a doc oficial (pontos 1 e 6 abaixo).
+> Os quatro com checklist 100% marcado `[x]` e código em
+> `ARQUITETURA/nucleo/` (38 testes passando, `pytest ARQUITETURA/ -v`).
+> Isso cobre os pontos 2, 3, 4, 5, 6 e 7 da lista no fim deste
+> documento. Nada em `AGENTES/julio/` foi tocado. O Redis de produção
+> (Redis Cloud compartilhado com o bot antigo) foi **zerado** a pedido
+> do usuário (2026-07-27) — schema/dados do `AGENTES/julio/` eram
+> considerados legado; o bot antigo, se reativado, precisa de
+> `/fix_redis` pra reindexar o catálogo de tools antes de voltar a
+> funcionar. Falta: integração com o catálogo real de tools
+> (`discover_tool`/`TOOLS/*` como `executar_tool` de verdade), um
+> `main.py` que ligue `Canal` real (Telegram/IDE) ao núcleo, e a
+> otimização das TOOLS em si contra a doc oficial de cada API (o único
+> ponto ainda não endereçado — ponto 1 abaixo, e o maior/mais
+> independente de todos).
 
 Isso não é um plano fechado — é o meu entendimento atual do objetivo e
 dos problemas de fundo, pra servir de ponto de partida da conversa de
