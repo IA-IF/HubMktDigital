@@ -102,6 +102,64 @@
 > auditoria de tool daqui pra frente (GA4/GTM/Search Console, e a
 > revisão pendente do próprio ADWORDS) precisa checar essa regra
 > PRIMEIRO**, antes de qualquer outra otimização.
+>
+> **Auditoria completa do núcleo v2 (2026-07-27, pedido explícito do
+> usuário — "revisa tudo, respeita a arquitetura, dá pra avançar sem
+> voltar atrás?"):**
+>
+> Validado com TESTE REAL (não suposição, 2 chamadas Anthropic de
+> verdade, dado real de Ads+GA4):
+> - Mecânica de tool-calling (validação, retry, pareamento) funciona
+>   ponta a ponta com o `analise_ads` sozinho.
+> - Desambiguação entre várias tools parecidas funciona: dado o
+>   catálogo INTEIRO (7 tools reais, 4 delas "analise_*") e um pedido
+>   ambíguo ("saúde geral do tráfego pago e orgânico"), o Claude
+>   escolheu certo (`analise_ads` + `analise_organico`), sem nenhuma
+>   camada extra de "quando usar" além da `description` de cada
+>   `tool.json`. Isso derruba a maior dúvida que restava sobre
+>   orquestração — pelo menos no tamanho atual do catálogo.
+>
+> Confirmado por releitura completa do código (não redesenho, caminho
+> pequeno e conhecido pros dois):
+> - **Sem seleção de site por conversa** — `main.py` fixa o site no
+>   processo inteiro (argv), viola a regra dura do `CLAUDE.md` ("site
+>   sempre explícito na conversa"). Fix: mesmo padrão do resumo (chave
+>   Redis por chat, lida a cada turno) + tool `selecionar_site` +
+>   `main.py` montar `tools`/`executar_tool` por mensagem, não 1x no
+>   início.
+> - **Sem memória de perfil de cliente** — zero equivalente a
+>   `perfil_cliente.py` (roas_alvo etc.) no núcleo novo. Mesmo padrão
+>   de fix que o site.
+> - 2 bugs pequenos e concretos: `agente.py:107` serializa resultado de
+>   tool com `str()` (repr Python, aspas simples) em vez de
+>   `json.dumps` (funcionou nos testes por sorte/tolerância do modelo,
+>   não por estar certo); validação de input (`preparar_input`) só
+>   roda pra tools `requer_confirmacao`, não pra todas.
+>
+> **Achado novo, mais profundo que o do bidding (2026-07-27, teste do
+> usuário: "e se eu pedir segmentação por CEP num anúncio?"):**
+> confirmado que não funcionaria hoje — `construtor.py` só implementa
+> geo em nível de país (Brasil fixo, hardcoded) e não expõe NENHUM
+> parâmetro de targeting. Pior que "não suportado": o system prompt do
+> núcleo não tem regra nenhuma contra ignorar silenciosamente um
+> requisito não suportado (ao contrário do antigo `AGENTES/julio`, que
+> tinha essa regra explícita). Isso generalizou o
+> `contrato-tool-agente.md`: decisões de campanha são abertas por
+> natureza (geo, dispositivo, horário, demografia, proximidade...) —
+> resolver campo nomeado por campo nomeado conforme o gap aparece é a
+> MESMA espiral de antes. A tool devia expor um parâmetro extensível
+> (`criterios: [{tipo, ...}]`, espelhando o próprio `CampaignCriterion`
+> da API real, que tem ~40 variantes através de um mecanismo só) em
+> vez de enumerar campo por campo. Ver seção correspondente no
+> documento do contrato pro detalhe completo.
+>
+> **Veredito da auditoria:** direção correta — o que era incerto agora
+> tem evidência real (não suposição), e os gaps confirmados têm
+> caminho pequeno e conhecido, não redesenho. Ordem proposta pro que
+> falta: (1) os 2 bugs pequenos, (2) site + perfil de cliente (mesmo
+> padrão, resolvem juntos), (3) parâmetro extensível de critérios +
+> bidding-alvo no `criar_campanha` (aplicação real do contrato), (4)
+> negative keywords, (5) auditoria GA4/GTM/Search Console.
 
 Isso não é um plano fechado — é o meu entendimento atual do objetivo e
 dos problemas de fundo, pra servir de ponto de partida da conversa de
