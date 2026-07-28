@@ -1,0 +1,14 @@
+{
+  "name": "ads_consultar_schema",
+  "plataforma": "ADWORDS",
+  "description": "Consulta os campos reais de QUALQUER tipo de recurso/mensagem da API do Google Ads (ex: Campaign, CampaignCriterion, ProximityInfo, UserList). Chame ANTES de usar ads_mutate pra saber exatamente quais campos existem e seus tipos -- nunca adivinhe um campo sem consultar primeiro.",
+  "script": "TOOLS/ADWORDS/ads_consultar_schema/consultar_schema.py",
+  "modo_entrada": "argv",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "tipo_recurso": {"type": "string", "description": "Nome exato do tipo, ex: 'Campaign', 'CampaignCriterion', 'ProximityInfo', 'UserList'."}
+    },
+    "required": ["tipo_recurso"]
+  }
+}
