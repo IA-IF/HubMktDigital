@@ -1,0 +1,12 @@
+{
+  "name": "ga4_consultar_schema",
+  "plataforma": "GA4",
+  "description": "Consulta as dimensoes e metricas REAIS disponiveis na propriedade GA4 do site (nome, descricao, categoria, tipo). Chame ANTES de usar ga4_report pra saber quais dimensoes/metricas existem -- nunca adivinhe um nome sem consultar.",
+  "script": "TOOLS/GA4/ga4_consultar_schema/consultar_schema.py",
+  "modo_entrada": "argv",
+  "input_schema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  }
+}
