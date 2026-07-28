@@ -59,9 +59,33 @@
 > ainda estiver rodando, ou mandar mensagem indesejada a um chat real).
 >
 > Com isso, todo o núcleo v2 está pronto pra um smoke test real assim
-> que decidido rodar. Depois disso, a otimização das TOOLS em si contra
-> a doc oficial de cada API (ponto 1 abaixo) é o único ponto ainda em
-> aberto — e o maior/mais independente de todos.
+> que decidido rodar.
+>
+> **Otimização das TOOLS (ponto 1) — começada, ADWORDS/criar_campanha
+> auditado (commit `e37d881`):** a doc oficial coletada em 2026-07-22
+> só cobria o lado de LEITURA (GAQL) — nada sobre como criar/alterar
+> recursos, exatamente o que `criar_campanha` faz. Essa API não tem
+> discovery document em runtime (gRPC/protobuf gerado); coletado via
+> introspecção direta do pacote `google-ads` instalado (schema completo
+> de 27 mensagens + docstring oficial de cada método mutate, salvo em
+> `TOOLS/ADWORDS/DOCS/raw/mutate_*.json`). Achado maior: a campanha
+> nascia em `manual_cpc` (bidding menos otimizado possível) — trocado
+> pra `maximize_conversions` (Smart Bidding real, sem exigir histórico
+> prévio). Verificado contra a API de verdade (não só teoria): a
+> primeira tentativa revelou um 2º bug real —
+> `CampaignBudget.explicitly_shared` nunca era setado (default
+> compartilhado), incompatível com Smart Bidding no nível da campanha —
+> corrigido também. `lance_inicial_brl` removido do schema (não se
+> aplica mais). Suite de teste do tool (`test_validacao.py`, 9 casos)
+> passando. Achados menores ainda não implementados: `AdGroupCriterion.
+> negative` nunca usado (sem suporte a negative keywords, apesar de já
+> ter sido desenhado antes — ver `elis.md`), `validate_only` e
+> `partial_failure` nunca usados nos mutates.
+>
+> Restam: GA4, GTM, Search Console (mesma auditoria, ainda não feita) —
+> cada API tem discovery document real em runtime, então a coleta é
+> mais direta que a do Ads. Depois de ADWORDS, é o maior ponto ainda em
+> aberto — e o mais independente de todos.
 
 Isso não é um plano fechado — é o meu entendimento atual do objetivo e
 dos problemas de fundo, pra servir de ponto de partida da conversa de
