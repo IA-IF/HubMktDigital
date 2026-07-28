@@ -1,0 +1,15 @@
+{
+  "name": "atualizar_perfil_cliente",
+  "plataforma": "geral",
+  "description": "Chame quando o humano disser algo que preenche um campo do perfil do cliente do site atual (quem e o cliente, o que vende, pra quem vende, publico-alvo, orcamento diario, ROAS-alvo, produtos em foco). So chame com o que ele disse explicitamente, nunca invente um valor.",
+  "script": "TOOLS/GERAL/atualizar_perfil_cliente/atualizar.py",
+  "modo_entrada": "stdin",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "campo": {"type": "string", "description": "quem_e_cliente, o_que_vende, pra_quem_vende, publico_alvo, orcamento_diario_tipico, roas_alvo ou produtos_em_foco."},
+      "valor": {"type": "string"}
+    },
+    "required": ["campo", "valor"]
+  }
+}
