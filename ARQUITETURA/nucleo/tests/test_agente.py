@@ -19,6 +19,11 @@ def test_estado_conversa_default_vazio():
     assert estado.pendente is None
 
 
+def test_estado_conversa_plano_aprovado_default_false():
+    estado = EstadoConversa()
+    assert estado.plano_aprovado is False
+
+
 def test_falha_permanente_e_transitoria_sao_excecoes_distintas():
     assert issubclass(FalhaPermanente, Exception)
     assert issubclass(FalhaTransitoria, Exception)

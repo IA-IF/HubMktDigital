@@ -27,6 +27,7 @@ class FalhaTransitoria(Exception):
 class EstadoConversa:
     historico: list[dict] = field(default_factory=list)
     pendente: dict | None = None
+    plano_aprovado: bool = False
 
 
 class Canal(Protocol):

@@ -24,6 +24,15 @@ def test_repositorio_memoria_devolve_estado_vazio_pra_chat_novo():
     assert estado.pendente is None
 
 
+def test_repositorio_redis_persiste_plano_aprovado():
+    cliente = ClienteRedisFake()
+    repo = RepositorioEstadoRedis(cliente)
+    estado = EstadoConversa(plano_aprovado=True)
+    repo.salvar("chat1", estado)
+    recarregado = repo.carregar("chat1")
+    assert recarregado.plano_aprovado is True
+
+
 def test_repositorio_memoria_salva_e_recarrega():
     repo = RepositorioEstadoMemoria()
     estado = EstadoConversa(historico=[{"role": "user", "content": "oi"}], pendente={"x": 1})
@@ -48,7 +57,9 @@ def test_repositorio_redis_salva_e_recarrega_via_json():
 
     # confirma que foi serializado como JSON de verdade na chave certa
     bruto = cliente.get("estado:chat1")
-    assert json.loads(bruto) == {"historico": [{"role": "user", "content": "oi"}], "pendente": {"x": 1}}
+    assert json.loads(bruto) == {
+        "historico": [{"role": "user", "content": "oi"}], "pendente": {"x": 1}, "plano_aprovado": False,
+    }
 
     recarregado = repo.carregar("chat1")
     assert recarregado.historico == estado.historico

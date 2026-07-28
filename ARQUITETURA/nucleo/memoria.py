@@ -35,10 +35,18 @@ class RepositorioEstadoRedis:
         if bruto is None:
             return EstadoConversa()
         dados = json.loads(bruto)
-        return EstadoConversa(historico=dados.get("historico", []), pendente=dados.get("pendente"))
+        return EstadoConversa(
+            historico=dados.get("historico", []),
+            pendente=dados.get("pendente"),
+            plano_aprovado=dados.get("plano_aprovado", False),
+        )
 
     def salvar(self, chat_id: str, estado: EstadoConversa) -> None:
-        dados = {"historico": estado.historico, "pendente": estado.pendente}
+        dados = {
+            "historico": estado.historico,
+            "pendente": estado.pendente,
+            "plano_aprovado": estado.plano_aprovado,
+        }
         self._cliente.set(f"{self._prefixo}{chat_id}", json.dumps(dados, ensure_ascii=False))
 
 
