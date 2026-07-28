@@ -72,3 +72,23 @@ def test_cliente_fake_pega_tool_use_paralelo_sem_par():
     ]
     with pytest.raises(AssertionError, match="toolu_2"):
         cliente.messages.create(messages=mensagens)
+
+
+def test_cliente_fake_pega_tool_result_duplicado():
+    """Reproduz o bug real do plano_aprovado: resolver_pendencia
+    anexava um 2o tool_result pro MESMO tool_use_id que ja tinha um
+    placeholder -- a API real rejeita com 'each tool_use must have a
+    single result' (achado ao vivo, 2026-07-27)."""
+    cliente = ClienteAnthropicFake(respostas=[fake_response(fake_text("ok"))])
+    mensagens = [
+        {"role": "user", "content": "oi"},
+        {"role": "assistant", "content": [
+            {"type": "tool_use", "id": "toolu_1", "name": "t", "input": {}},
+        ]},
+        {"role": "user", "content": [
+            {"type": "tool_result", "tool_use_id": "toolu_1", "content": "aguardando confirmacao"},
+            {"type": "tool_result", "tool_use_id": "toolu_1", "content": "resultado real"},
+        ]},
+    ]
+    with pytest.raises(AssertionError, match="toolu_1"):
+        cliente.messages.create(messages=mensagens)

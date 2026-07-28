@@ -49,6 +49,19 @@ def _tool_por_nome(tools: list[dict], nome: str) -> dict | None:
     return next((t for t in tools if t["name"] == nome), None)
 
 
+def _atualizar_tool_result(historico: list[dict], tool_use_id: str, novo_resultado) -> None:
+    """Substitui, in-place, o conteudo do tool_result com esse
+    tool_use_id -- nunca anexa um tool_result novo pro MESMO id (a API
+    da Anthropic rejeita 2 tool_result pro mesmo tool_use)."""
+    for turno in reversed(historico):
+        if turno.get("role") != "user" or not isinstance(turno.get("content"), list):
+            continue
+        for bloco in turno["content"]:
+            if isinstance(bloco, dict) and bloco.get("type") == "tool_result" and bloco.get("tool_use_id") == tool_use_id:
+                bloco["content"] = str(novo_resultado)
+                return
+
+
 def _tool_ou_pendencia(bloco, tools: list[dict], executar_tool: ExecutorTool, estado: EstadoConversa):
     """Devolve (resultado, pendencia). `pendencia` preenchida so quando
     a tool precisa de confirmacao E o plano ainda nao foi aprovado --
@@ -187,8 +200,10 @@ def resolver_pendencia(
     # depois do orcamento) executam direto, sem pedir "sim" de novo --
     # reseta sozinho quando o loop termina ou falha permanentemente.
     estado.plano_aprovado = True
-    estado.historico.append({
-        "role": "user",
-        "content": [{"type": "tool_result", "tool_use_id": pendente["tool_use_id"], "content": str(resultado)}],
-    })
+    # O tool_use que virou pendencia JA tem um tool_result placeholder
+    # no historico (criado em _tool_ou_pendencia, "aguardando
+    # confirmacao") -- atualiza esse bloco em vez de anexar um novo
+    # tool_result pro MESMO tool_use_id (a API da Anthropic rejeita
+    # dois tool_result pro mesmo id).
+    _atualizar_tool_result(estado.historico, pendente["tool_use_id"], resultado)
     _rodar_loop(cliente, modelo, system, tools, estado, executar_tool, destinatario, canal, max_turnos)

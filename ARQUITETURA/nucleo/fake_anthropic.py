@@ -48,12 +48,19 @@ def _validar_pareamento_tool_use(mensagens: list[dict]) -> None:
         conteudo_proxima = proxima.get("content", [])
         if not isinstance(conteudo_proxima, list):
             conteudo_proxima = []
-        ids_com_resultado = {
+        ids_resultado_lista = [
             bloco["tool_use_id"] for bloco in conteudo_proxima
             if isinstance(bloco, dict) and bloco.get("type") == "tool_result"
-        }
+        ]
+        ids_com_resultado = set(ids_resultado_lista)
         orfaos = ids_tool_use - ids_com_resultado
         assert not orfaos, f"tool_use sem tool_result pareado: {sorted(orfaos)}"
+
+        duplicados = {
+            id_ for id_ in ids_com_resultado
+            if ids_resultado_lista.count(id_) > 1
+        }
+        assert not duplicados, f"tool_use_id com MAIS DE UM tool_result (API rejeita): {sorted(duplicados)}"
 
 
 class _Messages:
