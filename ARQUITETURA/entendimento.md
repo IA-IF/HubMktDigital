@@ -86,6 +86,22 @@
 > cada API tem discovery document real em runtime, então a coleta é
 > mais direta que a do Ads. Depois de ADWORDS, é o maior ponto ainda em
 > aberto — e o mais independente de todos.
+>
+> **Reestruturação (2026-07-27, pós-auditoria):** o próprio fix do
+> bidding acima revelou a causa raiz CENTRAL de por que as tools não
+> funcionam — não é só "falta doc oficial" ou "falta saber quando
+> chamar", é uma **digressão errada de responsabilidade entre tool e
+> agente**: eu (corrigindo o bidding) hardcoded a estratégia de lance
+> dentro da tool em vez de expor como parâmetro pro agente decidir —
+> exatamente o erro que a arquitetura toda vem tentando resolver, só
+> que na direção oposta de antes. Formalizado como regra obrigatória em
+> **[`ARQUITETURA/contrato-tool-agente.md`](contrato-tool-agente.md)**:
+> o agente projeta/decide a campanha inteira, a tool só executa
+> fielmente o projeto — nenhuma tool pode decidir algo estratégico por
+> conta própria, toda decisão vira parâmetro explícito. **Todo plano de
+> auditoria de tool daqui pra frente (GA4/GTM/Search Console, e a
+> revisão pendente do próprio ADWORDS) precisa checar essa regra
+> PRIMEIRO**, antes de qualquer outra otimização.
 
 Isso não é um plano fechado — é o meu entendimento atual do objetivo e
 dos problemas de fundo, pra servir de ponto de partida da conversa de
@@ -140,6 +156,14 @@ Isso é mais profundo que só faltar um "quando usar": é preciso revisar
 se cada tool em si usa a API do jeito certo (campos certos, filtros
 certos, os recursos que a doc oficial recomenda pra esse tipo de
 análise) antes de sequer pensar na camada de orquestração por cima.
+
+**Atualização (2026-07-27, após auditar `criar_campanha`):** existe uma
+causa raiz ainda mais central por trás disso — ver
+[`contrato-tool-agente.md`](contrato-tool-agente.md). Usar a API
+"direito" não é só sobre completude/otimização técnica; é sobre a tool
+NUNCA decidir nada estratégico por conta própria (isso é sempre do
+agente) — e esse erro apareceu de novo bem ao vivo, no meu próprio fix
+de bidding do `criar_campanha`.
 
 ## "Registrar pedido" virou muleta (não é o propósito)
 
