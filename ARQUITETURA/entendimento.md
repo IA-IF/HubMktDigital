@@ -1,165 +1,92 @@
 # Entendimento (ponto de partida da nova frente)
 
-> **Status (2026-07-27):** Seis planos escritos e executados, mais o
-> assembly final escrito:
-> - Plano 1 — `docs/superpowers/plans/2026-07-27-nucleo-validacao-e-harness.md`:
->   `validacao_tool.py` + `fake_anthropic.py` (contrato de validação +
->   harness sem token).
-> - Plano 2 — `docs/superpowers/plans/2026-07-27-nucleo-agente-core.md`:
->   `agente.py` (`processar_turno`/`resolver_pendencia`) — loop
->   canal-agnóstico, pareamento de tool_use paralelo, e retry que
->   preserva contexto na falha transitória (distingue `FalhaPermanente`
->   de `FalhaTransitoria`).
-> - Plano 3 — `docs/superpowers/plans/2026-07-27-nucleo-memoria-redis.md`:
->   `memoria.py` (`RepositorioEstado`/`RepositorioEstadoRedis`,
->   `carregar_resumo`/`salvar_resumo`/`montar_system_com_resumo`) —
->   persistência real de `EstadoConversa` e o resumo de conversa
->   **lido de volta** no system prompt (o bug concreto de hoje: era só
->   escrito, nunca consumido).
-> - Plano 4 — `docs/superpowers/plans/2026-07-27-nucleo-execucao-nao-bloqueante.md`:
->   `execucao.py` (`DespachanteConcorrente`) — turnos de chats
->   diferentes rodam em paralelo (thread pool), turnos do MESMO chat
->   sempre serializados (lock por chat_id) — resolve o "parece travado"
->   real de hoje (bot single-thread bloqueando todo mundo numa tarefa
->   demorada).
-> - Plano 5 — `docs/superpowers/plans/2026-07-27-nucleo-executor-tools.md`:
->   `executor_tools.py` (`criar_executor_tool`) — despacho genérico de
->   qualquer tool real catalogada em `TOOLS/**/tool.json` (mesma
->   mecânica de `AGENTES/julio/agentes.py`, mas falando o vocabulário
->   `FalhaPermanente`/`FalhaTransitoria`), testado com scripts Python
->   reais em `tmp_path` (subprocess de verdade, zero credencial Google).
-> - Plano 6 — `docs/superpowers/plans/2026-07-27-nucleo-canal-telegram.md`:
->   `canal_telegram.py` (`CanalTelegram`) — Canal real via Bot API
->   (envio + long poll), preservando a correção de IPv4/retry já
->   validada em produção em `telegram_transport.py` (não era legado —
->   era uma correção de ambiente com causa raiz documentada).
+> **Status (2026-07-27, fim do dia):** Histórico detalhado desta data
+> nos commits do git e nos planos em `docs/superpowers/plans/2026-07-27-*.md`
+> (7 planos do núcleo + 1 do POC + 1 do plano-aprovado, todos com
+> checklist `[x]` completo) — aqui só o estado atual.
 >
-> Os seis com checklist 100% marcado `[x]` e código em
-> `ARQUITETURA/nucleo/` (49 testes passando, `pytest ARQUITETURA/ -v`).
-> Isso cobre os pontos 2, 3, 4, 5, 6 e 7 da lista no fim deste
-> documento. Nada em `AGENTES/julio/` foi tocado. O Redis de produção
-> (Redis Cloud compartilhado com o bot antigo) foi **zerado** a pedido
-> do usuário (2026-07-27) — schema/dados do `AGENTES/julio/` eram
-> considerados legado; o bot antigo, se reativado, precisa de
-> `/fix_redis` pra reindexar o catálogo de tools antes de voltar a
-> funcionar.
+> **Núcleo v2** (`ARQUITETURA/nucleo/`): loop de agente canal-agnóstico
+> (`agente.py`), validação/reparo de tool input (`validacao_tool.py`),
+> memória Redis real com resumo lido de volta (`memoria.py`), execução
+> não-bloqueante por chat (`execucao.py`), dispatch genérico de tools
+> reais (`executor_tools.py`), Canal Telegram real (`canal_telegram.py`),
+> harness sem token (`fake_anthropic.py`), assembly (`main.py`). 53
+> testes passando (`pytest ARQUITETURA/ -v`). Nada em `AGENTES/julio/`
+> foi tocado. `main.py` nunca teve `rodar()` (long-polling real)
+> executado — só testado via chamadas diretas ao loop com Anthropic
+> real; rodar contra o Telegram de verdade é decisão ao vivo separada.
 >
-> **`ARQUITETURA/nucleo/main.py`** (commit `cbad86b`) liga tudo:
-> `CanalTelegram` (token de `REDIS/.env`) + `RepositorioEstadoRedis`
-> (Redis real) + `criar_executor_tool` (com um `catalogar_tools()`
-> próprio, leitura direta de `TOOLS/**/tool.json` — achou as 7 tools
-> reais do catálogo, incluindo `registrar_pedido_futuro`, que hoje só
-> funciona no `AGENTES/julio/orchestrator.py` por estar
-> hard-coded/especial-casado por nome; aqui funciona genérico, sem
-> caso especial nenhum) + `DespachanteConcorrente` +
-> `anthropic.Anthropic()` real. Import e `catalogar_tools()` já
-> verificados — **mas o loop de long-polling (`rodar()`) ainda NÃO foi
-> executado** contra o Telegram de verdade (ação ao vivo, decisão
-> separada — evita competir com `AGENTES/julio/main_telegram.py` se
-> ainda estiver rodando, ou mandar mensagem indesejada a um chat real).
+> **Contrato tool↔agente** (`ARQUITETURA/contrato-tool-agente.md`): a
+> regra central descoberta hoje — agente decide/projeta tudo
+> (estratégia E sequência de passos), tool só executa fielmente. Tool
+> monolítica (uma chamada fazendo várias coisas amarradas) não escala
+> pra pedido aberto, mesmo com schema rico — precisa ser decomposta em
+> peças pequenas que o agente encadeia.
 >
-> Com isso, todo o núcleo v2 está pronto pra um smoke test real assim
-> que decidido rodar.
+> **Execução genérica de APIs** (`docs/superpowers/specs/2026-07-27-execucao-generica-apis-design.md`,
+> POC em `docs/superpowers/plans/2026-07-27-poc-execucao-generica-ads.md`):
+> aplicação prática do contrato — em vez de uma tool curada por
+> capacidade, cada plataforma ganha `<plataforma>_consultar_schema`
+> (schema/discovery real, ao vivo, cacheado no Redis) +
+> `<plataforma>_mutate`/`_query` (genérico, o agente decide recurso/
+> operação/campos). **Validado com teste REAL, não mock**: pedido de
+> segmentação por proximidade (equivalente a "por CEP") — orçamento →
+> campanha → critério, 3 chamadas de API real encadeadas numa
+> confirmação humana só, sem nenhum código específico escrito pra
+> proximidade. Confirmação única funciona via `EstadoConversa.
+> plano_aprovado` (persistido no Redis) — tools `requer_confirmacao`
+> só pedem confirmação de novo quando o plano anterior já terminou.
 >
-> **Otimização das TOOLS (ponto 1) — começada, ADWORDS/criar_campanha
-> auditado (commit `e37d881`):** a doc oficial coletada em 2026-07-22
-> só cobria o lado de LEITURA (GAQL) — nada sobre como criar/alterar
-> recursos, exatamente o que `criar_campanha` faz. Essa API não tem
-> discovery document em runtime (gRPC/protobuf gerado); coletado via
-> introspecção direta do pacote `google-ads` instalado (schema completo
-> de 27 mensagens + docstring oficial de cada método mutate, salvo em
-> `TOOLS/ADWORDS/DOCS/raw/mutate_*.json`). Achado maior: a campanha
-> nascia em `manual_cpc` (bidding menos otimizado possível) — trocado
-> pra `maximize_conversions` (Smart Bidding real, sem exigir histórico
-> prévio). Verificado contra a API de verdade (não só teoria): a
-> primeira tentativa revelou um 2º bug real —
-> `CampaignBudget.explicitly_shared` nunca era setado (default
-> compartilhado), incompatível com Smart Bidding no nível da campanha —
-> corrigido também. `lance_inicial_brl` removido do schema (não se
-> aplica mais). Suite de teste do tool (`test_validacao.py`, 9 casos)
-> passando. Achados menores ainda não implementados: `AdGroupCriterion.
-> negative` nunca usado (sem suporte a negative keywords, apesar de já
-> ter sido desenhado antes — ver `elis.md`), `validate_only` e
-> `partial_failure` nunca usados nos mutates.
+> Implementado em todas as 4 plataformas:
+> - **ADWORDS**: `ads_consultar_schema` + `ads_mutate` (introspecção
+>   protobuf do pacote `google-ads` instalado — não tem discovery doc
+>   em runtime). `criar_campanha` **retirado** do catálogo ativo,
+>   movido pra `ARQUITETURA/referencia/TOOLS_ADWORDS_criar_campanha/`
+>   (superado, não deletado).
+> - **GA4**: `ga4_consultar_schema` (376 dimensões + 140 métricas reais
+>   via `getMetadata`) + `ga4_report` (runReport genérico). Testado com
+>   dado real da 3G Foods.
+> - **SEARCH_CONSOLE**: `search_console_consultar_schema` +
+>   `search_console_query` (dispatch genérico por recurso/método, ex:
+>   `searchanalytics.query`, `sitemaps.list`). Testado com dado real.
+> - **GTM**: `gtm_consultar_schema` + `gtm_query` (dispatch genérico
+>   com caminhos aninhados, ex: `accounts.containers.workspaces.tags`).
+>   Testado com dado real (contas Integra Foods/3G Foods reais).
 >
-> Restam: GA4, GTM, Search Console (mesma auditoria, ainda não feita) —
-> cada API tem discovery document real em runtime, então a coleta é
-> mais direta que a do Ads. Depois de ADWORDS, é o maior ponto ainda em
-> aberto — e o mais independente de todos.
+> **Limitação de credencial encontrada (precisa de ação do usuário,
+> não é código):** GA4 e GTM só têm escopo OAuth `.readonly`
+> autorizado hoje — escrita (`ga4_admin_mutate`, criar/editar tags via
+> `gtm_mutate`) exigiria escopo `.edit`/`.readonly`→`.edit`,
+> re-consentimento OAuth que só o usuário pode fazer (não é algo que
+> se resolve no código). Search Console e Ads não têm essa limitação
+> (Ads usa SDK próprio sem esse tipo de escopo por método; Search
+> Console só tem `.readonly` mesmo, sem operação de escrita relevante
+> hoje).
 >
-> **Reestruturação (2026-07-27, pós-auditoria):** o próprio fix do
-> bidding acima revelou a causa raiz CENTRAL de por que as tools não
-> funcionam — não é só "falta doc oficial" ou "falta saber quando
-> chamar", é uma **digressão errada de responsabilidade entre tool e
-> agente**: eu (corrigindo o bidding) hardcoded a estratégia de lance
-> dentro da tool em vez de expor como parâmetro pro agente decidir —
-> exatamente o erro que a arquitetura toda vem tentando resolver, só
-> que na direção oposta de antes. Formalizado como regra obrigatória em
-> **[`ARQUITETURA/contrato-tool-agente.md`](contrato-tool-agente.md)**:
-> o agente projeta/decide a campanha inteira, a tool só executa
-> fielmente o projeto — nenhuma tool pode decidir algo estratégico por
-> conta própria, toda decisão vira parâmetro explícito. **Todo plano de
-> auditoria de tool daqui pra frente (GA4/GTM/Search Console, e a
-> revisão pendente do próprio ADWORDS) precisa checar essa regra
-> PRIMEIRO**, antes de qualquer outra otimização.
+> **Bug real achado e corrigido na limpeza pós-POC:** `tool.json` de
+> `registrar_pedido_futuro` declarava `modo_entrada: "local"` sem
+> nenhum `script` — só funcionava no `AGENTES/julio` antigo por estar
+> especial-casado por nome no orchestrator. No dispatch genérico do
+> núcleo v2 isso quebraria (`KeyError`). Corrigido: script real,
+> persistindo em Redis (lista `pedidos_futuros`) em vez do markdown
+> que o antigo usava.
 >
-> **Auditoria completa do núcleo v2 (2026-07-27, pedido explícito do
-> usuário — "revisa tudo, respeita a arquitetura, dá pra avançar sem
-> voltar atrás?"):**
+> **Catálogo ativo hoje: 14 tools**, todas com `script` válido e
+> dispatchável (`ads_consultar_schema`, `ads_mutate`, `analise_ads`,
+> `catalogo_produtos`, `analise_vendas` [GA4], `ga4_consultar_schema`,
+> `ga4_report`, `registrar_pedido_futuro`, `gtm_consultar_schema`,
+> `gtm_query`, `analise_tecnica`, `analise_organico`,
+> `search_console_consultar_schema`, `search_console_query`). Tools de
+> análise com cálculo real (`analise_ads`, `analise_vendas`,
+> `analise_tecnica`, `analise_organico`, `catalogo_produtos`) mantidas
+> curadas, per o contrato (não são decisão do agente, são fórmula
+> fixa). 77 testes passando no total (`ARQUITETURA/` + `TOOLS/GA4/
+> analise_vendas` + `TOOLS/CATALOGO/catalogo_produtos`).
 >
-> Validado com TESTE REAL (não suposição, 2 chamadas Anthropic de
-> verdade, dado real de Ads+GA4):
-> - Mecânica de tool-calling (validação, retry, pareamento) funciona
->   ponta a ponta com o `analise_ads` sozinho.
-> - Desambiguação entre várias tools parecidas funciona: dado o
->   catálogo INTEIRO (7 tools reais, 4 delas "analise_*") e um pedido
->   ambíguo ("saúde geral do tráfego pago e orgânico"), o Claude
->   escolheu certo (`analise_ads` + `analise_organico`), sem nenhuma
->   camada extra de "quando usar" além da `description` de cada
->   `tool.json`. Isso derruba a maior dúvida que restava sobre
->   orquestração — pelo menos no tamanho atual do catálogo.
->
-> Confirmado por releitura completa do código (não redesenho, caminho
-> pequeno e conhecido pros dois):
-> - **Sem seleção de site por conversa** — `main.py` fixa o site no
->   processo inteiro (argv), viola a regra dura do `CLAUDE.md` ("site
->   sempre explícito na conversa"). Fix: mesmo padrão do resumo (chave
->   Redis por chat, lida a cada turno) + tool `selecionar_site` +
->   `main.py` montar `tools`/`executar_tool` por mensagem, não 1x no
->   início.
-> - **Sem memória de perfil de cliente** — zero equivalente a
->   `perfil_cliente.py` (roas_alvo etc.) no núcleo novo. Mesmo padrão
->   de fix que o site.
-> - 2 bugs pequenos e concretos: `agente.py:107` serializa resultado de
->   tool com `str()` (repr Python, aspas simples) em vez de
->   `json.dumps` (funcionou nos testes por sorte/tolerância do modelo,
->   não por estar certo); validação de input (`preparar_input`) só
->   roda pra tools `requer_confirmacao`, não pra todas.
->
-> **Achado do CEP (2026-07-27), corrigido no mesmo dia:** primeira
-> resposta ("expor `criterios: [{tipo,...}]` genérico, espelhando os
-> ~40 tipos de `CampaignCriterion`") ainda ficou presa no exemplo — o
-> usuário testou de novo trocando CEP por "público que entrou num
-> funil de venda X" e isso quebra a ideia (não é um critério pra
-> escolher de um enum, é um recurso — audiência/UserList — que talvez
-> nem exista ainda e precisa ser CRIADO por outra operação de API
-> inteira antes). **Causa real: `criar_campanha` é uma tool
-> MONOLÍTICA** (orçamento+campanha+bidding+targeting+grupo+keywords+
-> anúncio numa chamada atômica só) — nenhum schema, por mais rico,
-> cobre um requisito que precisa de um PASSO que não existe no fluxo
-> ainda. **Fix correto: decompor a tool em peças pequenas e
-> componíveis**; a inteligência de compor os passos certos (incluindo
-> não previstos) é do AGENTE, não do schema. Ver
-> `ARQUITETURA/contrato-tool-agente.md` (versão final, já corrigida).
->
-> **Veredito da auditoria:** direção correta — o que era incerto agora
-> tem evidência real (não suposição). Gaps de site/perfil de cliente
-> têm caminho pequeno conhecido. O achado do `criar_campanha`
-> monolítico é mais profundo — decompor em tools pequenas é trabalho
-> real, não um patch. Ordem proposta: (1) os 2 bugs pequenos, (2) site
-> + perfil de cliente, (3) decompor `criar_campanha` em tools
-> componíveis (aplicação real e completa do contrato), (4) auditoria
-> GA4/GTM/Search Console com a mesma lente.
+> **Pendente:** site por conversa e memória de perfil de cliente ainda
+> não portados pro núcleo v2 (caminho pequeno conhecido — mesmo padrão
+> do resumo, Redis por chat); reautorização OAuth GA4/GTM se escrita
+> nessas plataformas virar necessária.
 
 Isso não é um plano fechado — é o meu entendimento atual do objetivo e
 dos problemas de fundo, pra servir de ponto de partida da conversa de
