@@ -56,7 +56,7 @@ mesmo chat_id rodando ao mesmo tempo -- evitaria corromper
   - `.encerrar(esperar: bool = True) -> None` — desliga o pool
     (`ThreadPoolExecutor.shutdown`).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # ARQUITETURA/nucleo/tests/test_execucao.py
@@ -132,12 +132,12 @@ def test_despachante_propaga_excecao_via_future():
     despachante.encerrar()
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_execucao.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'ARQUITETURA.nucleo.execucao'`
 
-- [ ] **Step 3: Write minimal implementation**
+- [x] **Step 3: Write minimal implementation**
 
 ```python
 # ARQUITETURA/nucleo/execucao.py
@@ -180,12 +180,12 @@ class DespachanteConcorrente:
         self._pool.shutdown(wait=esperar)
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pytest ARQUITETURA/nucleo/tests/test_execucao.py -v`
 Expected: PASS (3 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ARQUITETURA/nucleo/execucao.py ARQUITETURA/nucleo/tests/test_execucao.py
