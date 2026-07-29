@@ -29,6 +29,7 @@ from ARQUITETURA.nucleo.memoria import (
     carregar_site,
     montar_system_com_perfil,
     montar_system_com_resumo,
+    resetar_site,
     salvar_site,
 )
 from ARQUITETURA.nucleo.status import texto_status
@@ -58,8 +59,11 @@ TOOL_SELECIONAR_SITE = {
     "description": (
         "Chame SO quando o humano disser EXPLICITAMENTE com qual site ele "
         "quer trabalhar (3gfoods, adoro ou integrafoods) -- nunca adivinhe "
-        "por contexto vago. Depois de chamar, repita o pedido original dele "
-        "usando as ferramentas daquele site."
+        "por contexto vago. So existe no INICIO da conversa (site ainda nao "
+        "definido pra este chat); depois de chamar, repita o pedido original "
+        "dele usando as ferramentas daquele site. Pra trocar de site depois, "
+        "o humano manda /start -- essa tool nao serve pra trocar site no meio "
+        "de uma conversa ja em andamento."
     ),
     "input_schema": {
         "type": "object",
@@ -83,7 +87,12 @@ def _tools_e_executor(site: str | None, tool_por_nome: dict, cliente_redis, chat
     """Site None (ainda nao selecionado nesta conversa): so
     `selecionar_site` + `registrar_pedido_futuro` disponiveis -- mesma
     filosofia do orchestrator antigo (_ferramentas_base). Site
-    selecionado: catalogo completo pra aquele site.
+    selecionado: catalogo completo pra aquele site, SEM
+    `selecionar_site` -- a troca de site so acontece via /start
+    (reseta a conversa), nunca no meio de um chat ja em andamento, pra
+    nao rodar tools do site antigo com o site novo so gravado no Redis
+    pra proxima mensagem (executor desta mensagem ja foi montado com o
+    site antigo fechado em closure).
 
     `selecionar_site` e a UNICA excecao tratada aqui em main.py (nao em
     agente.py, que continua 100% generico) -- ela muta estado de
@@ -94,7 +103,7 @@ def _tools_e_executor(site: str | None, tool_por_nome: dict, cliente_redis, chat
         tool_pedido = tool_por_nome.get("registrar_pedido_futuro")
         tools = [TOOL_SELECIONAR_SITE] + ([tool_pedido] if tool_pedido else [])
     else:
-        tools = [TOOL_SELECIONAR_SITE] + [t for t in tool_por_nome.values() if t["name"] != "selecionar_site"]
+        tools = [t for t in tool_por_nome.values() if t["name"] != "selecionar_site"]
 
     executor_real = criar_executor_tool(HUB_ROOT, tool_por_nome, site or SITES_VALIDOS[0])
 
@@ -131,6 +140,12 @@ def processar_mensagem(
 ) -> None:
     if texto.strip().lower() == "/status":
         canal.enviar(chat_id, texto_status())
+        return
+
+    if texto.strip().lower() == "/start":
+        repositorio.resetar(chat_id)
+        resetar_site(cliente_redis, chat_id)
+        canal.enviar(chat_id, "Conversa reiniciada. Com qual site voce quer trabalhar? (3gfoods, adoro ou integrafoods)")
         return
 
     estado = repositorio.carregar(chat_id)

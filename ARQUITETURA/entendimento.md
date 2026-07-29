@@ -84,12 +84,25 @@
 > passando no total (`pytest ARQUITETURA/ TOOLS/ -q`).
 >
 > **Site por conversa e perfil de cliente**: portados pro núcleo v2
-> (`memoria.py`: `carregar_site`/`salvar_site`, `carregar_perfil_
-> cliente`, `montar_system_com_perfil`; `main.py`: tool
-> `selecionar_site` tratada em `_tools_e_executor`, catálogo restrito
-> a `selecionar_site`+`registrar_pedido_futuro` até o site ser
-> escolhido). Validado ao vivo (Anthropic real): "Site 3G Foods
+> (`memoria.py`: `carregar_site`/`salvar_site`/`resetar_site`,
+> `carregar_perfil_cliente`, `montar_system_com_perfil`; `main.py`:
+> tool `selecionar_site` tratada em `_tools_e_executor`, catálogo
+> restrito a `selecionar_site`+`registrar_pedido_futuro` até o site
+> ser escolhido). Validado ao vivo (Anthropic real): "Site 3G Foods
 > selecionado! ✅", `carregar_site` retornou `"3gfoods"`.
+>
+> **Correção 2026-07-28**: bug real encontrado no histórico Redis de
+> produção — `selecionar_site` chamado no MEIO de uma conversa (pra
+> "testar" outro site) não trocava o site das tools daquele mesmo
+> turno, porque `criar_executor_tool` fecha o `site` em closure uma vez
+> no início da mensagem (`main.py:_tools_e_executor`); `salvar_site`
+> só valia a partir da PRÓXIMA mensagem. O agente concluiu (errado) que
+> Adoro/Integrafoods não tinham GA4/Search Console/Ads configurados,
+> quando na verdade as tools continuaram batendo no site antigo.
+> Corrigido restringindo o design: `selecionar_site` só existe no
+> catálogo quando `site is None` (início da conversa); trocar de site
+> exige `/start`, que reseta histórico (`repositorio.resetar`) e site
+> (`resetar_site`) do chat — nunca mais troca no meio do turno.
 >
 > **Guardrail `validate_only` (dry-run antes de mutação real)**:
 > implementado em `ads_mutate/mutate.py` — `executar_mutate` monta um

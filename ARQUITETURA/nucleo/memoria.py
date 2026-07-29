@@ -12,6 +12,7 @@ from ARQUITETURA.nucleo.agente import EstadoConversa
 class RepositorioEstado(Protocol):
     def carregar(self, chat_id: str) -> EstadoConversa: ...
     def salvar(self, chat_id: str, estado: EstadoConversa) -> None: ...
+    def resetar(self, chat_id: str) -> None: ...
 
 
 class RepositorioEstadoMemoria:
@@ -23,6 +24,9 @@ class RepositorioEstadoMemoria:
 
     def salvar(self, chat_id: str, estado: EstadoConversa) -> None:
         self._dados[chat_id] = estado
+
+    def resetar(self, chat_id: str) -> None:
+        self._dados.pop(chat_id, None)
 
 
 class RepositorioEstadoRedis:
@@ -49,6 +53,9 @@ class RepositorioEstadoRedis:
         }
         self._cliente.set(f"{self._prefixo}{chat_id}", json.dumps(dados, ensure_ascii=False))
 
+    def resetar(self, chat_id: str) -> None:
+        self._cliente.delete(f"{self._prefixo}{chat_id}")
+
 
 def carregar_resumo(cliente_redis, chat_id: str, prefixo: str = "resumo:") -> str | None:
     return cliente_redis.get(f"{prefixo}{chat_id}")
@@ -64,6 +71,10 @@ def carregar_site(cliente_redis, chat_id: str, prefixo: str = "site:") -> str | 
 
 def salvar_site(cliente_redis, chat_id: str, site: str, prefixo: str = "site:") -> None:
     cliente_redis.set(f"{prefixo}{chat_id}", site)
+
+
+def resetar_site(cliente_redis, chat_id: str, prefixo: str = "site:") -> None:
+    cliente_redis.delete(f"{prefixo}{chat_id}")
 
 
 def carregar_perfil_cliente(cliente_redis, site: str) -> dict:

@@ -5,7 +5,7 @@ from ARQUITETURA.nucleo.memoria import RepositorioEstadoMemoria, RepositorioEsta
 
 
 class ClienteRedisFake:
-    """So os 2 metodos que RepositorioEstadoRedis usa -- sem rede."""
+    """So os metodos que RepositorioEstadoRedis usa -- sem rede."""
 
     def __init__(self):
         self._dados: dict[str, str] = {}
@@ -15,6 +15,9 @@ class ClienteRedisFake:
 
     def set(self, chave: str, valor: str) -> None:
         self._dados[chave] = valor
+
+    def delete(self, chave: str) -> None:
+        self._dados.pop(chave, None)
 
 
 def test_repositorio_memoria_devolve_estado_vazio_pra_chat_novo():
@@ -73,6 +76,22 @@ def test_repositorio_redis_usa_prefixo_customizado():
     assert "outro:chat1" in cliente._dados
 
 
+def test_repositorio_memoria_resetar_apaga_estado():
+    repo = RepositorioEstadoMemoria()
+    repo.salvar("chat1", EstadoConversa(historico=[{"role": "user", "content": "oi"}]))
+    repo.resetar("chat1")
+    assert repo.carregar("chat1").historico == []
+
+
+def test_repositorio_redis_resetar_apaga_chave():
+    cliente = ClienteRedisFake()
+    repo = RepositorioEstadoRedis(cliente)
+    repo.salvar("chat1", EstadoConversa(historico=[{"role": "user", "content": "oi"}]))
+    repo.resetar("chat1")
+    assert repo.carregar("chat1").historico == []
+    assert "estado:chat1" not in cliente._dados
+
+
 from ARQUITETURA.nucleo.memoria import (
     carregar_resumo,
     montar_system_com_resumo,
@@ -107,6 +126,7 @@ from ARQUITETURA.nucleo.memoria import (
     carregar_perfil_cliente,
     carregar_site,
     montar_system_com_perfil,
+    resetar_site,
     salvar_site,
 )
 
@@ -120,6 +140,13 @@ def test_salvar_e_carregar_site():
     cliente = ClienteRedisFake()
     salvar_site(cliente, "chat1", "3gfoods")
     assert carregar_site(cliente, "chat1") == "3gfoods"
+
+
+def test_resetar_site_apaga_selecao():
+    cliente = ClienteRedisFake()
+    salvar_site(cliente, "chat1", "3gfoods")
+    resetar_site(cliente, "chat1")
+    assert carregar_site(cliente, "chat1") is None
 
 
 def test_carregar_perfil_cliente_vazio_quando_nunca_salvo():
